@@ -8,12 +8,20 @@ const state = {
   addprojectshow: false,
   addenvshow: false,
   editenvshow: false,
+  projectdetailshow: false,
+  editprojectshow: false,
   envList:[],
   envDetail:{
     id:'',
+    envId:'',
     envName:'',
     host:'',
     port:''
+  },
+  projectDetail:{
+    id:'',
+    envList: [],
+    name:''
   }
 };
 
@@ -31,19 +39,27 @@ const mutations = {
   changeEditEnvShow(state,bol){
     state.editenvshow = bol;
   },
+  changeProjectDetailShow(state,bol){
+    state.projectdetailshow = bol;
+  },
+  changeEditProjectShow(state,bol){
+    state.editprojectshow = bol;
+  },
   appendEnv(state,env){
     state.envList.push(env);
   },
   rmEnvById(state,id){
     state.envList.splice(id,1);
   },
+  setEnvList(state,envs){
+    state.envList = envs;
+  },
   clearEnvList(){
     state.envList.splice(0,state.envList.length);
   },
   editEnv(state,env){
-    console.log(state.envList);
-    console.log(env.id);
     state.envList.splice(env.id,1,{
+      "envId": env.envId,
       "envName": env.envName,
       "host": env.host,
       "port": env.port
@@ -52,12 +68,23 @@ const mutations = {
   },
   setEnvDetail(state,env){
     state.envDetail = env;
-  }
+  },
+  setProjectDetail(state,project){
+    const p = {
+      "id":project.pid,
+      "name":project.pname,
+      "envList":project.envs
+    };
+    state.projectDetail = p;
+  },
 };
 const getters = {
-  getEnvList: state => {
+  getEnvList(state) {
     return state.envList;
   },
+  getProjectDetail(state){
+    return state.projectDetail;
+  }
 };
 
 

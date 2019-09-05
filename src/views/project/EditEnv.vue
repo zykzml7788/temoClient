@@ -9,7 +9,7 @@
         <el-input v-model="form.host"></el-input>
       </el-form-item>
       <el-form-item label="端口号" prop="port">
-        <el-input v-model="form.port"></el-input>
+        <el-input v-model.number="form.port"></el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -27,19 +27,18 @@
         rules:{
           envName:[
             {required:true,message:'请输入环境名称',trigger:'blur'},
-            { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
           ],
           host:[
             {required:true,message:'请输入域名',trigger:'blur'},
-            { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur' }
           ],
           port:[
-            {required:true,message:'请输入端口号',trigger:'blur'},
-            { min: 1, max: 6, message: '长度在 1 到 6 个字符', trigger: 'blur' }
+            { required:true,message:'请输入端口号',trigger:'blur'},
+            { type: 'number', message: '端口号必须为数字',trigger:'blur'}
           ]
         },
         form:{
           id: this.$store.state.envDetail.id,
+          envId: this.$store.state.envDetail.envId,
           envName: this.$store.state.envDetail.envName,
           host: this.$store.state.envDetail.host,
           port: this.$store.state.envDetail.port
@@ -51,6 +50,7 @@
 
         const env = {
           "id": this.form.id,
+          "envId": this.form.envId,
           "envName":this.form.envName,
           "host":this.form.host,
           "port":this.form.port
@@ -63,8 +63,8 @@
         });
       },
       closeEditEnv(){
-        this.$refs['form'].resetFields();
         this.$store.commit('changeEditEnvShow',false);
+        this.$refs['form'].resetFields();
       }
     },
     watch: {

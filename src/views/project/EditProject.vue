@@ -1,6 +1,6 @@
 <template>
-  <el-dialog title="新增项目" :visible.sync="$store.state.addprojectshow" style="height: 100%;" :close-on-click-modal="false"
-  @close="closeAddProjectView">
+  <el-dialog title="编辑项目" :visible.sync="$store.state.editprojectshow" style="height: 100%;" :close-on-click-modal="false"
+             @close="closeAddProjectView">
     <addenv></addenv>
     <editenv></editenv>
     <el-form :model="form" :rules="rules" ref="form">
@@ -9,10 +9,10 @@
       </el-form-item>
       <br/>
       <div style="text-align:left;">
-      <el-button type="primary" @click="showEnv">添加环境</el-button>
+        <el-button type="primary" @click="showEnv">添加环境</el-button>
       </div>
       <div>
-      <el-divider content-position="left">项目环境</el-divider>
+        <el-divider content-position="left">项目环境</el-divider>
       </div>
       <el-table
         :data="envList"
@@ -50,7 +50,7 @@
 
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="addProject">确 定</el-button>
+      <el-button type="primary" @click="editProject">确 定</el-button>
       <el-button @click="closeAddProjectView">取 消</el-button>
     </div>
   </el-dialog>
@@ -88,31 +88,39 @@
           "host":row.host,
           "port":row.port
         };
-
         this.$store.commit('setEnvDetail',envDetail);
         this.$store.commit('changeEditEnvShow',true);
       },
       delEnv(index){
         this.$store.commit('rmEnvById',index);
       },
-      addProject(){
+      editProject(){
         const project = {
-              "pname": this.form.pname,
-              "envs": this.envList
-            };
+          "pid": this.$store.state.projectDetail.id,
+          "pname": this.form.pname,
+          "envs": this.envList
+        };
         this.$refs['form'].validate(bol=>{
           if (bol){
-            this.$axios.post('/apis/project',project).then(res=>{
-              this.$message({
-                type:'success',
-                message:res.data.msg
-              });
-              this.closeAddProjectView();
-            }).catch(err=>{
+            this.$axios.put('/apis/project/'+project.pid,project).then(res=>{
+              if (res.data.code===200){
                 this.$message({
-                  type:'error',
-                  message:err
+                  type:'success',
+                  message:res.data.msg
                 });
+                this.closeAddProjectView();
+                this.$emit('getProjects');
+              } else{
+                this.$message({
+                  type:'warning',
+                  message:res.data.msg
+                });
+              }
+            }).catch(err=>{
+              this.$message({
+                type:'error',
+                message:err
+              });
             });
 
           }
@@ -120,19 +128,24 @@
       },
       closeAddProjectView(){
         this.$refs['form'].resetFields();
-        this.$store.commit('changeAddProjectShow',false);
+        this.$store.commit('changeEditProjectShow',false);
         this.$store.commit('clearEnvList');
-        this.$emit('getProjects');
+        this.$store.commit('setProjectDetail','');
       }
     },
     computed:{
       envList(){
         return this.$store.getters.getEnvList;
-      },
+      }
     },
     components:{
       "addenv":AddEnv,
       "editenv":EditEnv
-  }
+    },
+    watch:{
+      "$store.state.projectDetail.name":function () {
+        this.form.pname = this.$store.state.projectDetail.name;
+      }
+    }
   };
 </script>

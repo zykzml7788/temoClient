@@ -55,6 +55,9 @@
     },
     components:{
       "comfirm":Comfirm
+    },
+    created() {
+      console.log("楷楷最帅！")
     }
   }
 

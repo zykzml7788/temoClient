@@ -20,6 +20,8 @@
     <div id="addproject">
       <add-project @getProjects="getProjects"></add-project>
     </div>
+    <ProjectDetail></ProjectDetail>
+    <EditProject @getProjects="getProjects"></EditProject>
     <el-table
       :data="projectLists"
       style="width: 100%"
@@ -40,12 +42,12 @@
         prop="env"
         label="环境"
         width="500" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          <el-tooltip class="item" effect="dark" content="env.host" placement="top-start" v-for="env in scope.row.envs">
+        <template slot-scope="scope" >
+          <el-tooltip class="item" effect="light" :content="env.host+':'+env.port" placement="top-start" v-for="env in scope.row.envs">
             <el-tag
               :key="env.envName"
               :type="items[scope.row.envs.indexOf(env)%5]"
-              effect="plain" style="margin-left: 5px;">
+              effect="light" style="margin-left: 5px;">
               {{ env.envName }}
             </el-tag>
           </el-tooltip>
@@ -67,19 +69,19 @@
         width="300">
         <template slot-scope="scope">
           <el-button
-            @click.native.prevent="showProjectDetail(scope.$index, scope.row)"
+            @click.native.prevent="showProjectDetail(scope.row)"
             type="text"
             size="small">
             查看
           </el-button>
           <el-button
-            @click.native.prevent="updateProject(scope.$index, scope.row)"
+            @click.native.prevent="updateProject(scope.row)"
             type="text"
             size="small">
             编辑
           </el-button>
           <el-button
-            @click.native.prevent="deleteProject(scope.$index, scope.row)"
+            @click.native.prevent="deleteProject(scope.row)"
             type="text"
             size="small">
             移除
@@ -92,7 +94,7 @@
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="total" @current-change="handleCurrentChange">
+        :total="total" @current-change="getProjectsByName" :current-page.sync="page">
       </el-pagination>
     </el-footer>
 
@@ -102,7 +104,9 @@
 </template>
 
 <script>
-  import AddProject from '../../views/project/AddProject'
+  import AddProject from '@/views/project/AddProject'
+  import ProjectDetail from '@/views/project/ProjectDetail'
+  import EditProject from '@/views/project/EditProject'
 
   export default {
 
@@ -116,7 +120,7 @@
             this.projectLists = res.data.data.list;
             this.total = res.data.data.total;
           } else {
-            this.message({type:'warning',message:res.data.msg});
+            this.$message({type:'warning',message:res.data.msg});
           }
           this.loading = false;
         }).catch(err=>{
@@ -130,7 +134,7 @@
               this.projectLists = res.data.data.list;
               this.total = res.data.data.total;
             } else {
-              this.message({type:'warning',message:res.data.msg});
+              this.$message({type:'warning',message:res.data.msg});
             }
             this.loading = false;
           }
@@ -143,21 +147,40 @@
         this.$store.commit('changeAddProjectShow',true);
 
       },
-      showProjectDetail(index,row){
+      showProjectDetail(row){
+        this.$axios.get('/apis/project/'+row.pid+'/info').then(res=>{
+          this.$store.commit('setProjectDetail',res.data.data);
+          this.$store.commit('changeProjectDetailShow',true);
+        });
+      },
+      updateProject(row){
+        this.$axios.get('/apis/project/'+row.pid+'/info').then(res=>{
+          this.$store.commit('setProjectDetail',res.data.data);
+          this.$store.commit('setEnvList',res.data.data.envs);
+          this.$store.commit('changeEditProjectShow',true);
+        });
+      },
+      deleteProject(row){
+        this.$confirm('确定要删除吗？').then(_=>{
+          this.$axios.delete('/apis/project/'+row.pid).then(res=>{
+            if (res.data.code===200){
+              this.$message({type:'success',message:res.data.msg});
+            } else {
+              this.$message({type:'warning',message:res.data.msg});
+            }
+            this.page = 1;
+            this.getProjects();
+          }).catch(err=>{
+            this.$message({type:'error',message:err});
+          });
+        }
+        );
 
       },
-      updateProject(index,row){
-
-      },
-      deleteProject(index,row){
-
-      },
-      handleCurrentChange(page){
-        this.getProjectsByName(page);
-      }
     },
     data() {
       return {
+        page:1,
         total: 0,
         search_val:'',
         projectLists: [],
@@ -165,10 +188,13 @@
         items: [
           '','success','info','danger','warning'
         ],
+        dialogVisible: false,
       }
     },
     components:{
-      AddProject
+      AddProject,
+      ProjectDetail,
+      EditProject
     },
     created() {
       this.getProjects();
