@@ -2,30 +2,37 @@
 
   <div id="project">
     <div class="header">
-
+      <span>
+        <el-select v-model="value" placeholder="请选择数据库">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </span>
       <span>
         <el-input
-          placeholder="请输入项目名称"
+          placeholder="请输入数据库名称"
           prefix-icon="el-icon-search"
           v-model="search_val">
-      </el-input>
+        </el-input>
       </span>
       <span>
-        <el-button type="primary" @click="getProjectsByName(1)">搜索</el-button>
-        <el-button type="primary" @click="addProject">新增</el-button>
+        <el-button type="primary" @click="getDataBasesByName(1)">搜索</el-button>
+        <el-button type="primary" @click="addDataBase">新增</el-button>
       </span>
 
 
     </div>
-    <div id="addproject">
-      <add-project @getProjects="getProjects"></add-project>
-    </div>
-    <ProjectDetail></ProjectDetail>
-    <EditProject @getProjects="getProjects"></EditProject>
+
+    <AddDataBase @getDataBases="getDataBases"></AddDataBase>
+
     <el-table
-      :data="projectLists"
+      :data="dataBaseLists"
       style="width: 100%"
-      max-height="80%"  v-loading="loading" height="900" :default-sort="{prop: 'updateTime', order: 'descending'}">
+      max-height="80%"  v-loading="loading" height="600" :default-sort="{prop: 'updateTime', order: 'descending'}">
       <div slot="empty" style="text-align: left;margin: 30px;" >
         <div>
           <img src="../../assets/timo.png" alt="" width="140px" height="140px"/>
@@ -34,33 +41,33 @@
       </div>
       <el-table-column
         fixed="left"
-        prop="pname"
-        label="项目名称"
+        prop="dbName"
+        label="数据库名称"
         width="200" :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
-        prop="env"
-        label="环境"
-        width="500" :show-overflow-tooltip="true">
-        <template slot-scope="scope" >
-          <el-tooltip class="item" effect="light" :content="env.host+':'+env.port" placement="top-start" v-for="env in scope.row.envs">
-            <el-tag
-              :key="env.envName"
-              :type="items[scope.row.envs.indexOf(env)%5]"
-              effect="light" style="margin-left: 5px;">
-              {{ env.envName }}
-            </el-tag>
-          </el-tooltip>
-        </template>
+        prop="dbLibraryName"
+        label="数据库"
+        width="200" :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
-        prop="createTime"
-        label="创建时间"
+        prop="host"
+        label="域名"
         width="300">
       </el-table-column>
       <el-table-column
-        prop="updateTime"
-        label="更新时间"
+        prop="port"
+        label="端口号"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        prop="user"
+        label="账号"
+        width="300">
+      </el-table-column>
+      <el-table-column
+        prop="pwd"
+        label="密码"
         width="300">
       </el-table-column>
       <el-table-column
@@ -69,19 +76,19 @@
         width="300">
         <template slot-scope="scope">
           <el-button
-            @click.native.prevent="showProjectDetail(scope.row)"
+            @click.native.prevent=""
             type="text"
             size="small">
             查看
           </el-button>
           <el-button
-            @click.native.prevent="updateProject(scope.row)"
+            @click.native.prevent=""
             type="text"
             size="small">
             编辑
           </el-button>
           <el-button
-            @click.native.prevent="deleteProject(scope.row)"
+            @click.native.prevent=""
             type="text"
             size="small">
             移除
@@ -94,7 +101,7 @@
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="total" @current-change="getProjectsByName" :current-page.sync="page">
+        :total="1" @current-change="getDataBasesByName(page)" :current-page.sync="page">
       </el-pagination>
     </el-footer>
 
@@ -104,20 +111,20 @@
 </template>
 
 <script>
-  import AddProject from '@/views/project/AddProject'
-  import ProjectDetail from '@/views/project/ProjectDetail'
-  import EditProject from '@/views/project/EditProject'
+  import AddDataBase from '@/views/database/AddDataBase'
+
+
 
   export default {
 
-    name:'Project',
+    name:'DataBases',
     methods: {
 
-      getProjects(){
+      getDataBases(){
         this.loading = true;
-        this.$axios.get('/apis/project/1?filter='+this.search_val).then(res=>{
+        this.$axios.get('/apis/database/1?filter='+this.search_val).then(res=>{
           if (res.data.code === 200){
-            this.projectLists = res.data.data.list;
+            this.dataBaseLists = res.data.data.list;
             this.total = res.data.data.total;
           } else {
             this.$message({type:'warning',message:res.data.msg});
@@ -127,11 +134,11 @@
           this.$message({type:'error',message:err});
         });
       },
-      getProjectsByName(page){
-        this.$axios.get('/apis/project/'+page+'?filter='+this.search_val).then(res=>{
+      getDataBasesByName(page){
+        this.$axios.get('/apis/database/'+page+'?filter='+this.search_val).then(res=>{
             this.loading = true;
             if (res.data.code === 200){
-              this.projectLists = res.data.data.list;
+              this.dataBaseLists = res.data.data.list;
               this.total = res.data.data.total;
             } else {
               this.$message({type:'warning',message:res.data.msg});
@@ -143,9 +150,9 @@
           this.$message({type:'error',message:err});
         });
       },
-      addProject(){
-        this.$store.commit('changeAddProjectShow',true);
-
+      addDataBase(){
+        this.$store.commit('changeAddDataBaseShow',true);
+        console.log(this.$store.state.adddatabaseshow);
       },
       showProjectDetail(row){
         this.$axios.get('/apis/project/'+row.pid+'/info').then(res=>{
@@ -162,18 +169,18 @@
       },
       deleteProject(row){
         this.$confirm('确定要删除吗？').then(_=>{
-          this.$axios.delete('/apis/project/'+row.pid).then(res=>{
-            if (res.data.code===200){
-              this.$message({type:'success',message:res.data.msg});
-            } else {
-              this.$message({type:'warning',message:res.data.msg});
-            }
-            this.page = 1;
-            this.getProjects();
-          }).catch(err=>{
-            this.$message({type:'error',message:err});
-          });
-        }
+            this.$axios.delete('/apis/project/'+row.pid).then(res=>{
+              if (res.data.code===200){
+                this.$message({type:'success',message:res.data.msg});
+              } else {
+                this.$message({type:'warning',message:res.data.msg});
+              }
+              this.page = 1;
+              this.getProjects();
+            }).catch(err=>{
+              this.$message({type:'error',message:err});
+            });
+          }
         );
 
       },
@@ -183,21 +190,28 @@
         page:1,
         total: 0,
         search_val:'',
-        projectLists: [],
+        dataBaseLists: [],
         loading: true,
         items: [
           '','success','info','danger','warning'
         ],
         dialogVisible: false,
+        options: [
+          {
+          value: '产品服务数据库',
+          label: '产品服务数据库'
+          },
+          {
+            value: '支付服务数据库',
+            label: '支付服务数据库'
+          }],
       }
     },
     components:{
-      AddProject,
-      ProjectDetail,
-      EditProject
+      AddDataBase,
     },
     created() {
-      this.getProjects();
+      this.getDataBases();
     }
   }
 
@@ -208,8 +222,10 @@
   .header span{
     display: inline;
     float: left;
-    margin: 30px 20px;
+    margin: 30px 10px;
   }
+
+
 
   #footer {
     margin: 30px 10px;

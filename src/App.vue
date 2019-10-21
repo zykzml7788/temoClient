@@ -1,12 +1,15 @@
 <template>
-  <div>
-    <div id="header">
+  <el-container>
+    <el-aside width="200px">
       <headers></headers>
-    </div>
-    <div id="app">
-      <router-view/>
-    </div>
-  </div>
+    </el-aside>
+    <el-main>
+      <el-header id="el-header" height="10%"></el-header>
+      <div id="app">
+        <router-view/>
+      </div>
+    </el-main>
+  </el-container>
 </template>
 
 <script>
@@ -27,4 +30,8 @@
   text-align: center;
   color: #2c3e50;
 }
+
+  #el-header {
+    background-image: url("assets/header.jpg");
+  }
 </style>

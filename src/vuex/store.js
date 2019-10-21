@@ -10,6 +10,7 @@ const state = {
   editenvshow: false,
   projectdetailshow: false,
   editprojectshow: false,
+  adddatabaseshow: false,
   envList:[],
   envDetail:{
     id:'',
@@ -27,8 +28,8 @@ const state = {
 
 const mutations = {
 
-  changeAddCaseShow(state,bol){
-    state.addcaseshow = bol;
+  changeAddDataBaseShow(state,bol){
+    state.adddatabaseshow = bol;
   },
   changeAddProjectShow(state,bol){
     state.addprojectshow = bol;

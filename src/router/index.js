@@ -3,8 +3,7 @@ import Router from 'vue-router'
 import Login from '@/views/Login'
 import App from '../App'
 import Project from '@/views/project/Project'
-import Case from '@/views/caseSet/TestCase'
-
+import DataBase from '@/views/database/DataBase'
 
 Vue.use(Router);
 
@@ -22,9 +21,9 @@ export default new Router({
       component: Project
     },
     {
-      path: '/case',
-      name: 'case',
-      component: Case
+      path: '/database/config',
+      name: 'database',
+      component: DataBase
     }
   ]
 })

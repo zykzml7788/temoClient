@@ -1,22 +1,39 @@
 <template>
 
   <div id="header">
-    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-      <el-menu-item index="1">首页</el-menu-item>
-      <el-menu-item index="2">项目管理</el-menu-item>
-      <el-menu-item index="3">用例集管理</el-menu-item>
-      <el-menu-item index="4">任务管理</el-menu-item>
+    <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
+      <el-radio-button :label="false">展开</el-radio-button>
+      <el-radio-button :label="true">收起</el-radio-button>
+    </el-radio-group>
+    <el-menu default-active="2" class="el-menu-vertical-demo" @select="handleSelect" :collapse="isCollapse" id="cehuaMenu" width="20%">
+      <el-menu-item index="1">
+        <i class="el-icon-menu"></i>
+        <span slot="title">主页</span>
+      </el-menu-item>
+      <el-menu-item index="2">
+        <i class="el-icon-menu"></i>
+        <span slot="title">项目管理</span>
+      </el-menu-item>
+      <el-menu-item index="3">
+        <i class="el-icon-document"></i>
+        <span slot="title">用例管理</span>
+      </el-menu-item>
+      <el-menu-item index="4">
+        <i class="el-icon-document"></i>
+        <span slot="title">任务管理</span>
+      </el-menu-item>
       <el-submenu index="5">
-        <template slot="title">数据库管理</template>
-        <el-menu-item index="5-1">脚本管理</el-menu-item>
-        <el-menu-item index="5-2">配置管理</el-menu-item>
+        <template slot="title">
+          <i class="el-icon-location"></i>
+          <span slot="title">数据库管理</span>
+        </template>
+        <el-menu-item index="5-1">环境配置管理</el-menu-item>
+        <el-menu-item index="5-2">脚本管理</el-menu-item>
       </el-submenu>
-      <el-menu-item index="6">用户管理</el-menu-item>
-      <span id="logout">
-        <i class="el-icon-user-solid"></i>
-        <el-button type="text" @click="dialog = true">注销</el-button>
-        <comfirm :dialog="dialog" :msg="msg"  @closeCf="closeConfirm"></comfirm>
-      </span>
+      <el-menu-item index="6">
+        <i class="el-icon-document"></i>
+        <span slot="title">用户管理</span>
+      </el-menu-item>
     </el-menu>
 
   </div>
@@ -30,6 +47,7 @@
     name: 'headers',
     data () {
       return {
+        isCollapse: false,
         activeIndex: '1',
         activeIndex2: '1',
         msg:'你确定要注销吗?',
@@ -41,11 +59,18 @@
         switch (key) {
           case '1':
             this.$router.push('/');
+            break;
           case '2':
             this.$router.push('/project');
             break;
           case '3':
             this.$router.push('/case');
+            break;
+          case '5-1':
+            this.$router.push('/database/config');
+            break;
+          case '5-2':
+            this.$router.push('/database/script');
             break;
         }
       },
@@ -67,8 +92,10 @@
 <style scoped>
   #header {
     font-weight: bold;
-  }
 
+  }
+  #cehuaMenu {
+  }
   #logout {
     margin: 10px 10px;
     float: right;
