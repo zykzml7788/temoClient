@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/views/Login'
-import App from '../App'
 import Project from '@/views/project/Project'
 import DataBase from '@/views/database/DataBase'
 

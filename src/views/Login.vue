@@ -79,7 +79,7 @@
   .login-container {
     width: 100%;
     height: 100%;
-    background-image: url("../../static/loginbgp.jpeg");
+    background-image: url("../../static/img/loginbgp.jpeg");
     background-repeat: repeat;
   }
   .login-page {

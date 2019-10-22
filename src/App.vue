@@ -32,6 +32,6 @@
 }
 
   #el-header {
-    background-image: url("assets/header.jpg");
+    background-image: url("../static/img/header.jpg");
   }
 </style>

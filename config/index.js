@@ -12,17 +12,22 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/apis': {
-        target: 'http://localhost:8096',  // 接口域名
+        target: 'http://129.204.148.24:8888',  // nginx反向代理服务器地址，匹配/apis后反向代理为 /temo/
         changeOrigin: true,  //是否跨域
         pathRewrite: {
-          '^/apis': ''   //需要rewrite重写的,
+          // '^/apis': '/apis'   //需要rewrite重写的,
         },
+        onProxyReq: function (proxyReq, req, res) {
+          //实在不知道代理后的路径，可以在这里打印出出来看看
+          console.log("原路径：" + req.originalUrl, "代理路径：" + req.path)
+        }
       }
     },
 
+
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
-    port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    port: 8090, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,
@@ -49,9 +54,9 @@ module.exports = {
     index: path.resolve(__dirname, '../dist/index.html'),
 
     // Paths
-    assetsRoot: path.resolve(__dirname, '../dist'),
+    assetsRoot: path.resolve(__dirname, '../dist'),  // 看下打包好的目录，对比之后会发现多了一层deploy目录，这个多出来的路径是index和assetsRoot这两个设置决定的
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: '/dist/',  // assetsPublicPath则是确定打包后的文件引用路径
 
     /**
      * Source Maps

@@ -28,7 +28,7 @@
       max-height="80%"  v-loading="loading" height="900" :default-sort="{prop: 'updateTime', order: 'descending'}">
       <div slot="empty" style="text-align: left;margin: 30px;" >
         <div>
-          <img src="../../assets/timo.png" alt="" width="140px" height="140px"/>
+          <img src="../../../static/img/timo.png" alt="" width="140px" height="140px"/>
         </div>
         <p>没有查询到数据呦～</p>
       </div>
