@@ -51,12 +51,12 @@ module.exports = {
 
   build: {
     // Template for index.html
-    index: path.resolve(__dirname, '../dist/index.html'),
+    index: path.resolve(__dirname, '../teemo/index.html'),
 
     // Paths
-    assetsRoot: path.resolve(__dirname, '../dist'),  // 看下打包好的目录，对比之后会发现多了一层deploy目录，这个多出来的路径是index和assetsRoot这两个设置决定的
+    assetsRoot: path.resolve(__dirname, '../teemo'),  // 看下打包好的目录，对比之后会发现多了一层deploy目录，这个多出来的路径是index和assetsRoot这两个设置决定的
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/dist/',  // assetsPublicPath则是确定打包后的文件引用路径
+    assetsPublicPath: '/teemo/',  // assetsPublicPath则是确定打包后的文件引用路径
 
     /**
      * Source Maps
