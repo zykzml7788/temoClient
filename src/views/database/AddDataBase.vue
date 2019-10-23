@@ -1,8 +1,6 @@
 <template>
   <el-dialog title="新增数据库配置" :visible.sync="$store.state.adddatabaseshow" style="height: 100%;" :close-on-click-modal="false"
   @close="closeAddProjectView">
-    <addenv></addenv>
-    <editenv></editenv>
     <el-form :model="form" :rules="rules" ref="form">
       <el-form-item label="配置名称" :label-width="formLabelWidth" prop="dbName">
         <el-input placeholder="请输入数据库自定义配置名" v-model="form.dbName" autocomplete="off"></el-input>
@@ -16,23 +14,22 @@
       <el-form-item label="端口号" :label-width="formLabelWidth" prop="port">
         <el-input  placeholder="请输入端口号" v-model="form.port" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="账号" :label-width="formLabelWidth" prop="usr">
-        <el-input placeholder="请输入数据库账号" v-model="form.usr" autocomplete="off"></el-input>
+      <el-form-item label="账号" :label-width="formLabelWidth" prop="user">
+        <el-input placeholder="请输入数据库账号" v-model="form.user" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="密码" :label-width="formLabelWidth" prop="pwd">
         <el-input placeholder="请输入数据库密码" v-model="form.pwd" show-password></el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="addProject">确 定</el-button>
-      <el-button @click="closeAddProjectView">取 消</el-button>
+      <el-button type="primary" @click="addDataBase">确 定</el-button>
+      <el-button @click="closeAddDatabaseView">取 消</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
-  import AddEnv from '@/views/project/AddEnv'
-  import EditEnv from '@/views/project/EditEnv'
+
 
   export default {
     data() {
@@ -65,44 +62,30 @@
           dbLibraryName:'',
           host:'',
           port:'',
-          usr:'',
+          user:'',
           pwd:''
         },
         formLabelWidth: '80px',
       };
     },
     methods:{
-      showEnv(){
-        this.$store.commit('changeAddEnvShow',true);
-      },
-      showEditEnv(id,row){
-        const envDetail = {
-          "id":id,
-          "envId":row.envId,
-          "envName":row.envName,
-          "host":row.host,
-          "port":row.port
-        };
-
-        this.$store.commit('setEnvDetail',envDetail);
-        this.$store.commit('changeEditEnvShow',true);
-      },
-      delEnv(index){
-        this.$store.commit('rmEnvById',index);
-      },
-      addProject(){
-        const project = {
-              "pname": this.form.pname,
-              "envs": this.envList
+      addDataBase(){
+        const database = {
+              "dbName": this.form.dbName,
+              "dbLibraryName": this.form.dbLibraryName,
+              "host": this.form.host,
+              "port": this.form.port,
+              "user": this.form.user,
+              "pwd": this.form.pwd
             };
         this.$refs['form'].validate(bol=>{
           if (bol){
-            this.$axios.post('/apis/project',project).then(res=>{
+            this.$axios.post('/apis/database/',database).then(res=>{
               this.$message({
                 type:'success',
                 message:res.data.msg
               });
-              this.closeAddProjectView();
+              this.closeAddDatabaseView();
             }).catch(err=>{
                 this.$message({
                   type:'error',
@@ -113,21 +96,16 @@
           }
         });
       },
-      closeAddProjectView(){
+      closeAddDatabaseView(){
         this.$refs['form'].resetFields();
-        this.$store.commit('changeAddProjectShow',false);
-        this.$store.commit('clearEnvList');
+        this.$store.commit('changeAddDataBaseShow',false);
         this.$emit('getDataBases');
       }
     },
-    computed:{
-      envList(){
-        return this.$store.getters.getEnvList;
-      },
+    computed: {
+
     },
     components:{
-      "addenv":AddEnv,
-      "editenv":EditEnv
   }
   };
 </script>

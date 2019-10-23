@@ -32,7 +32,7 @@
     <el-table
       :data="dataBaseLists"
       style="width: 100%"
-      max-height="80%"  v-loading="loading" height="600" :default-sort="{prop: 'updateTime', order: 'descending'}">
+      max-height="80%"  v-loading="loading" height="600" :default-sort="{prop: 'updatetime', order: 'descending'}">
       <div slot="empty" style="text-align: left;margin: 30px;" >
         <div>
           <img src="../../../static/img/timo.png" alt="" width="140px" height="140px"/>
@@ -71,6 +71,16 @@
         width="300">
       </el-table-column>
       <el-table-column
+        prop="createtime"
+        label="创建时间"
+        width="300">
+      </el-table-column>
+      <el-table-column
+        prop="updatetime"
+        label="更新时间"
+        width="300">
+      </el-table-column>
+      <el-table-column
         fixed="right"
         label="操作"
         width="300">
@@ -101,7 +111,7 @@
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="1" @current-change="getDataBasesByName(page)" :current-page.sync="page">
+        :total="total" @current-change="getDataBasesByName(page)" :current-page.sync="page">
       </el-pagination>
     </el-footer>
 
