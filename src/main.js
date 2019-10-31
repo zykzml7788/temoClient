@@ -7,14 +7,17 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 import store from './vuex/store'
+import VCharts from 'v-charts'
 
 Vue.config.productionTip = false;
 
+// 引入VEcharts库
+Vue.use(VCharts);
 // 引入element-ui库
 Vue.use(ElementUI);
 Vue.prototype.$axios=axios;
 axios.defaults.timeout = 10000;
-axios.defaults.baseURL = 'http://129.204.148.24:8888';
+// axios.defaults.baseURL = 'http://129.204.148.24:8888';
 
 
 /* eslint-disable no-new */
