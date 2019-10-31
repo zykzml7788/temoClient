@@ -79,6 +79,7 @@
                                 type:'success',
                                 message:res.data.msg
                             });
+                            this.$emit('getDataBases');
                             this.closeEditDatabaseView();
                         }).catch(err=>{
                             this.$message({
@@ -93,7 +94,7 @@
             closeEditDatabaseView(){
                 this.$store.commit('changeEditDataBaseShow',false);
                 this.$refs['form'].resetFields();
-                this.$emit('getDataBases');
+
             }
         },
         watch: {

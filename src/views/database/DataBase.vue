@@ -116,8 +116,9 @@
     methods: {
 
       getDataBases(){
-        this.loading = true;
-        this.$axios.get('/apis/database/1?filter='+this.search_val).then(res=>{
+          this.page=1;
+          this.loading = true;
+          this.$axios.get('/apis/database/1?filter='+this.search_val).then(res=>{
           if (res.data.code === 200){
             this.dataBaseLists = res.data.data.list;
             this.total = res.data.data.total;
