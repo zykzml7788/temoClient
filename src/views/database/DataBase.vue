@@ -18,6 +18,7 @@
     </div>
 
     <AddDataBase @getDataBases="getDataBases"></AddDataBase>
+    <EditDataBase @getDataBases="getDataBases"></EditDataBase>
 
     <el-table
       :data="dataBaseLists"
@@ -76,19 +77,13 @@
         width="300">
         <template slot-scope="scope">
           <el-button
-            @click.native.prevent=""
-            type="text"
-            size="small">
-            查看
-          </el-button>
-          <el-button
-            @click.native.prevent=""
+            @click.native.prevent="updateDataBase(scope.row)"
             type="text"
             size="small">
             编辑
           </el-button>
           <el-button
-            @click.native.prevent=""
+            @click.native.prevent="deleteDatabase(scope.row)"
             type="text"
             size="small">
             移除
@@ -112,7 +107,7 @@
 
 <script>
   import AddDataBase from '@/views/database/AddDataBase'
-
+  import EditDataBase from "@/views/database/EditDataBase";
 
 
   export default {
@@ -152,31 +147,23 @@
       },
       addDataBase(){
         this.$store.commit('changeAddDataBaseShow',true);
-        console.log(this.$store.state.adddatabaseshow);
       },
-      showProjectDetail(row){
-        this.$axios.get('/apis/project/'+row.pid+'/info').then(res=>{
-          this.$store.commit('setProjectDetail',res.data.data);
-          this.$store.commit('changeProjectDetailShow',true);
+      updateDataBase(row){
+        this.$axios.get('/apis/database/'+row.dbId+'/info').then(res=>{
+            this.$store.commit('setDatabaseDetail',res.data.data);
+            this.$store.commit('changeEditDataBaseShow',true);
         });
       },
-      updateProject(row){
-        this.$axios.get('/apis/project/'+row.pid+'/info').then(res=>{
-          this.$store.commit('setProjectDetail',res.data.data);
-          this.$store.commit('setEnvList',res.data.data.envs);
-          this.$store.commit('changeEditProjectShow',true);
-        });
-      },
-      deleteProject(row){
+      deleteDatabase(row){
         this.$confirm('确定要删除吗？').then(_=>{
-            this.$axios.delete('/apis/project/'+row.pid).then(res=>{
+            this.$axios.delete('/apis/database/'+row.dbId).then(res=>{
               if (res.data.code===200){
                 this.$message({type:'success',message:res.data.msg});
               } else {
                 this.$message({type:'warning',message:res.data.msg});
               }
               this.page = 1;
-              this.getProjects();
+              this.getDataBases();
             }).catch(err=>{
               this.$message({type:'error',message:err});
             });
@@ -208,7 +195,8 @@
       }
     },
     components:{
-      AddDataBase,
+        AddDataBase,
+        EditDataBase
     },
     created() {
       this.getDataBases();

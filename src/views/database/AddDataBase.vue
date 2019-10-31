@@ -1,6 +1,6 @@
 <template>
   <el-dialog title="新增数据库配置" :visible.sync="$store.state.adddatabaseshow" style="height: 100%;" :close-on-click-modal="false"
-  @close="closeAddProjectView">
+  @close="closeAddDatabaseView">
     <el-form :model="form" :rules="rules" ref="form">
       <el-form-item label="配置名称" :label-width="formLabelWidth" prop="dbName">
         <el-input placeholder="请输入数据库自定义配置名" v-model="form.dbName" autocomplete="off"></el-input>
