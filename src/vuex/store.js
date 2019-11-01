@@ -11,6 +11,7 @@ const state = {
   projectdetailshow: false,
   editprojectshow: false,
   adddatabaseshow: false,
+  editdatabaseshow: false,
   envList:[],
   envDetail:{
     id:'',
@@ -23,6 +24,9 @@ const state = {
     id:'',
     envList: [],
     name:''
+  },
+  databaseDetail:{
+
   }
 };
 
@@ -30,6 +34,9 @@ const mutations = {
 
   changeAddDataBaseShow(state,bol){
     state.adddatabaseshow = bol;
+  },
+  changeEditDataBaseShow(state,bol){
+    state.editdatabaseshow = bol;
   },
   changeAddProjectShow(state,bol){
     state.addprojectshow = bol;
@@ -71,13 +78,25 @@ const mutations = {
     state.envDetail = env;
   },
   setProjectDetail(state,project){
-    const p = {
-      "id":project.pid,
-      "name":project.pname,
-      "envList":project.envs
+    state.projectDetail = {
+      "id": project.pid,
+      "name": project.pname,
+      "envList": project.envs
     };
-    state.projectDetail = p;
   },
+  setDatabaseDetail(state,database){
+    state.databaseDetail = {
+      "dbId": database.dbId,
+      "dbName": database.dbName,
+      "host": database.host,
+      "port": database.port,
+      "user": database.user,
+      "pwd": database.pwd,
+      "dbLibraryName": database.dbLibraryName,
+      "updatetime": database.updatetime,
+      "createtime": database.createtime
+    };
+  }
 };
 const getters = {
   getEnvList(state) {

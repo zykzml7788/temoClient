@@ -115,6 +115,7 @@
 
       getProjects(){
         this.loading = true;
+        this.page=1;
         this.$axios.get('/apis/project/1?filter='+this.search_val).then(res=>{
           if (res.data.code === 200){
             this.projectLists = res.data.data.list;
