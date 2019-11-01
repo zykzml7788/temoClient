@@ -86,6 +86,7 @@
                 message:res.data.msg
               });
               this.closeAddDatabaseView();
+              this.$emit('getDataBases');
             }).catch(err=>{
                 this.$message({
                   type:'error',
@@ -99,7 +100,6 @@
       closeAddDatabaseView(){
         this.$refs['form'].resetFields();
         this.$store.commit('changeAddDataBaseShow',false);
-        this.$emit('getDataBases');
       }
     },
     computed: {
