@@ -12,6 +12,8 @@ const state = {
   editprojectshow: false,
   adddatabaseshow: false,
   editdatabaseshow: false,
+  addscriptshow: false,
+  editscriptshow: false,
   envList:[],
   envDetail:{
     id:'',
@@ -25,9 +27,8 @@ const state = {
     envList: [],
     name:''
   },
-  databaseDetail:{
-
-  }
+  databaseDetail:{},
+  scriptDetail:{}
 };
 
 const mutations = {
@@ -52,6 +53,12 @@ const mutations = {
   },
   changeEditProjectShow(state,bol){
     state.editprojectshow = bol;
+  },
+  changeAddScriptShow(state,bol){
+    state.addscriptshow = bol;
+  },
+  changeEditScriptShow(state,bol){
+    state.editscriptshow = bol;
   },
   appendEnv(state,env){
     state.envList.push(env);
@@ -96,6 +103,9 @@ const mutations = {
       "updatetime": database.updatetime,
       "createtime": database.createtime
     };
+  },
+  setScriptDetail(state,script){
+    state.scriptDetail = script;
   }
 };
 const getters = {

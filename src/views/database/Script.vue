@@ -3,7 +3,7 @@
   <div id="script">
     <div class="header">
       <span>
-        <el-select v-model="value" filterable placeholder="请选择数据源" @click.native="getDataBases()">
+        <el-select v-model="value" filterable placeholder="请选择数据源">
           <el-option
             v-for="item in dbOptions"
             :key="item.dbId"
@@ -28,7 +28,7 @@
     </div>
 
     <AddScript @getScripts="getScripts(1)"></AddScript>
-    <EditDataBase @getDataBases="getDataBases"></EditDataBase>
+    <EditScript @getScripts="getScripts(1)"></EditScript>
 
     <el-table
       :data="scriptLists"
@@ -67,7 +67,7 @@
         width="300">
         <template slot-scope="scope">
           <el-button
-            @click.native.prevent="updateDataBase(scope.row)"
+            @click.native.prevent="updateScript(scope.row)"
             type="text"
             size="small">
             编辑
@@ -97,7 +97,7 @@
 
 <script>
     import AddScript from '@/views/database/AddScript'
-    import EditDataBase from "@/views/database/EditDataBase";
+    import EditScript from "@/views/database/EditScript";
 
 
     export default {
@@ -137,10 +137,10 @@
             addScript(){
                 this.$store.commit('changeAddScriptShow',true);
             },
-            updateDataBase(row){
-                this.$axios.get('/apis/database/'+row.dbId+'/info').then(res=>{
-                    this.$store.commit('setDatabaseDetail',res.data.data);
-                    this.$store.commit('changeEditDataBaseShow',true);
+            updateScript(row){
+                this.$axios.get('/apis/script/'+row.scriptId+'/info').then(res=>{
+                    this.$store.commit('setScriptDetail',res.data.data);
+                    this.$store.commit('changeEditScriptShow',true);
                 });
             },
             deleteScript(row){
@@ -178,10 +178,11 @@
         },
         components:{
             AddScript,
-            EditDataBase
+            EditScript
         },
         created() {
             this.getScripts(1);
+            this.getDataBases();
         }
     }
 
