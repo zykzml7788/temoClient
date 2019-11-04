@@ -1,6 +1,6 @@
 <template>
 
-  <div id="project">
+  <div id="database">
     <div class="header">
       <span>
         <el-input
