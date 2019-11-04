@@ -17,7 +17,7 @@ Vue.use(VCharts);
 Vue.use(ElementUI);
 Vue.prototype.$axios=axios;
 axios.defaults.timeout = 10000;
-// axios.defaults.baseURL = 'http://129.204.148.24:8888';
+axios.defaults.baseURL = 'http://129.204.148.24:8888';
 
 
 /* eslint-disable no-new */
