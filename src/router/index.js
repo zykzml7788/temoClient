@@ -5,6 +5,7 @@ import Project from '@/views/project/Project'
 import DataBase from '@/views/database/DataBase'
 import Script from '@/views/database/Script'
 import Main from '@/views/Main'
+import Script from '@/views/database/Script'
 
 Vue.use(Router);
 
