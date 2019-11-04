@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import Login from '@/views/Login'
 import Project from '@/views/project/Project'
 import DataBase from '@/views/database/DataBase'
-import Script from '@/views/database/Script'
 import Main from '@/views/Main'
 import Script from '@/views/database/Script'
 
