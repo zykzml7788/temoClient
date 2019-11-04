@@ -4,6 +4,7 @@ import Login from '@/views/Login'
 import Project from '@/views/project/Project'
 import DataBase from '@/views/database/DataBase'
 import Main from '@/views/Main'
+import Script from '@/views/database/Script'
 
 Vue.use(Router);
 
@@ -29,6 +30,11 @@ export default new Router({
       path: '/database/config',
       name: 'database',
       component: DataBase
+    },
+    {
+      path: '/database/script',
+      name: 'script',
+      component: Script
     }
   ]
 })
