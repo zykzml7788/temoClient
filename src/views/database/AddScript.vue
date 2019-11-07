@@ -155,6 +155,7 @@
             closeAddScriptView(){
                 this.$refs['form'].resetFields();
                 this.$store.commit('changeAddScriptShow',false);
+
             },
             removeSql(item) {
                 const index = this.sqls.indexOf(item);
