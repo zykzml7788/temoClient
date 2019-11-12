@@ -14,10 +14,13 @@
         <i class="el-icon-menu"></i>
         <span slot="title">项目管理</span>
       </el-menu-item>
-      <el-menu-item index="3">
-        <i class="el-icon-document"></i>
-        <span slot="title">用例管理</span>
-      </el-menu-item>
+      <el-submenu index="3">
+        <template slot="title">
+          <i class="el-icon-location"></i>
+          <span slot="title">用例管理</span>
+        </template>
+        <el-menu-item index="3-1">用例集管理</el-menu-item>
+      </el-submenu>
       <el-menu-item index="4">
         <i class="el-icon-document"></i>
         <span slot="title">任务管理</span>
@@ -27,7 +30,7 @@
           <i class="el-icon-location"></i>
           <span slot="title">数据库管理</span>
         </template>
-        <el-menu-item index="5-1">环境配置管理</el-menu-item>
+        <el-menu-item index="5-1">数据源管理</el-menu-item>
         <el-menu-item index="5-2">脚本管理</el-menu-item>
       </el-submenu>
       <el-menu-item index="6">
@@ -63,7 +66,7 @@
           case '2':
             this.$router.push('/project');
             break;
-          case '3':
+          case '3-1':
             this.$router.push('/case');
             break;
           case '5-1':

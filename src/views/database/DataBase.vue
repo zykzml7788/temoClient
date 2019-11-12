@@ -1,6 +1,11 @@
 <template>
 
   <div id="database">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>数据库管理</el-breadcrumb-item>
+      <el-breadcrumb-item>数据源管理</el-breadcrumb-item>
+    </el-breadcrumb>
     <div class="header">
       <span>
         <el-input

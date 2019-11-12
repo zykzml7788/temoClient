@@ -1,5 +1,9 @@
 <template>
   <div>
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>/</el-breadcrumb-item>
+    </el-breadcrumb>
     <ve-line :data="chartData" :settings="time"></ve-line>
     <ve-histogram :data="chartData2"></ve-histogram>
   </div>

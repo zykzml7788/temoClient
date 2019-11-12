@@ -5,6 +5,7 @@ import Project from '@/views/project/Project'
 import DataBase from '@/views/database/DataBase'
 import Main from '@/views/Main'
 import Script from '@/views/database/Script'
+import Case from '@/views/case/Case'
 
 Vue.use(Router);
 
@@ -35,6 +36,11 @@ export default new Router({
       path: '/database/script',
       name: 'script',
       component: Script
+    },
+    {
+      path: '/case',
+      name: 'Case',
+      component: Case
     }
   ]
 })

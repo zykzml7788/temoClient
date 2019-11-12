@@ -1,9 +1,9 @@
 <template>
-  <el-dialog title="编辑数据库配置" :visible.sync="$store.state.editdatabaseshow" style="height: 100%;" :close-on-click-modal="false"
+  <el-dialog title="编辑数据源配置" :visible.sync="$store.state.editdatabaseshow" style="height: 100%;" :close-on-click-modal="false"
              @close="closeEditDatabaseView">
     <el-form :model="form" :rules="rules" ref="form">
       <el-form-item label="配置名称" :label-width="formLabelWidth" prop="dbName">
-        <el-input placeholder="请输入数据库自定义配置名" v-model="form.dbName" autocomplete="off"></el-input>
+        <el-input placeholder="请输入数据源名" v-model="form.dbName" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="数据库" :label-width="formLabelWidth" prop="dbLibraryName">
         <el-input placeholder="请输入数据库" v-model="form.dbLibraryName" autocomplete="off"></el-input>
@@ -36,7 +36,7 @@
             return {
                 rules:{
                     dbName:[
-                        {required:true,message:'请输入自定义配置名称',trigger:'blur'},
+                        {required:true,message:'请输入数据源名称',trigger:'blur'},
                     ],
                     dbLibraryName:[
                         {required:true,message:'请输入数据库名称',trigger:'blur'},
