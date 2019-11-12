@@ -8,6 +8,16 @@
     </el-breadcrumb>
     <div class="header">
       <span>
+        <el-select v-model="value" filterable placeholder="请选择项目">
+          <el-option
+            v-for="item in projectOptions"
+            :key="item.pid"
+            :label="item.pname"
+            :value="item.pid">
+          </el-option>
+        </el-select>
+      </span>
+      <span>
         <el-input
           placeholder="请输入用例集名称"
           prefix-icon="el-icon-search"
@@ -16,14 +26,13 @@
       </span>
       <span>
         <el-button type="primary" @click="getDataBasesByName(1)">搜索</el-button>
-        <el-button type="primary" @click="addDataBase">新增</el-button>
+        <el-button type="primary" @click="addCaseSet">新增</el-button>
       </span>
 
 
     </div>
 
-    <AddDataBase @getDataBases="getDataBases"></AddDataBase>
-    <EditDataBase @getDataBases="getDataBases"></EditDataBase>
+    <AddCaseSet @getDataBases="getDataBases"></AddCaseSet>
 
     <el-table
       :data="dataBaseLists"
@@ -37,34 +46,14 @@
       </div>
       <el-table-column
         fixed="left"
-        prop="dbName"
-        label="数据库名称"
+        prop="caseName"
+        label="用例集名称"
         width="200" :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
-        prop="dbLibraryName"
-        label="数据库"
+        prop="caseDesc"
+        label="用例集描述"
         width="200" :show-overflow-tooltip="true">
-      </el-table-column>
-      <el-table-column
-        prop="host"
-        label="域名"
-        width="300">
-      </el-table-column>
-      <el-table-column
-        prop="port"
-        label="端口号"
-        width="100">
-      </el-table-column>
-      <el-table-column
-        prop="user"
-        label="账号"
-        width="300">
-      </el-table-column>
-      <el-table-column
-        prop="pwd"
-        label="密码"
-        width="300">
       </el-table-column>
       <el-table-column
         prop="createtime"
@@ -111,8 +100,8 @@
 </template>
 
 <script>
-    import AddDataBase from '@/views/database/AddDataBase'
-    import EditDataBase from "@/views/database/EditDataBase";
+    import AddCaseSet from '@/views/case/AddCaseSet'
+
 
 
     export default {
@@ -151,8 +140,9 @@
                     this.$message({type:'error',message:err});
                 });
             },
-            addDataBase(){
-                this.$store.commit('changeAddDataBaseShow',true);
+            addCaseSet(){
+                this.$store.commit('changeAddCaseSetShow',true);
+                console.log(this.$store.state.addcasesetshow);
             },
             updateDataBase(row){
                 this.$axios.get('/apis/database/'+row.dbId+'/info').then(res=>{
@@ -189,20 +179,11 @@
                     '','success','info','danger','warning'
                 ],
                 dialogVisible: false,
-                options: [
-                    {
-                        value: '产品服务数据库',
-                        label: '产品服务数据库'
-                    },
-                    {
-                        value: '支付服务数据库',
-                        label: '支付服务数据库'
-                    }],
+                projectOptions: [],
             }
         },
         components:{
-            AddDataBase,
-            EditDataBase
+            AddCaseSet,
         },
         created() {
             this.getDataBases();

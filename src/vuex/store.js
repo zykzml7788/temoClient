@@ -14,6 +14,7 @@ const state = {
   editdatabaseshow: false,
   addscriptshow: false,
   editscriptshow: false,
+  addcasesetshow: false,
   envList:[],
   envDetail:{
     id:'',
@@ -59,6 +60,9 @@ const mutations = {
   },
   changeEditScriptShow(state,bol){
     state.editscriptshow = bol;
+  },
+  changeAddCaseSetShow(state,bol){
+    state.addcasesetshow = bol;
   },
   appendEnv(state,env){
     state.envList.push(env);
