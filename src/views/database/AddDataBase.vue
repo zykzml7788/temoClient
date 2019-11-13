@@ -46,6 +46,7 @@
           ],
           port:[
             {required:true,message:'端口号不能为空',trigger:'blur'},
+              { type: 'number', message: '端口号必须为数字',trigger: 'blur'}
           ],
           user:[
             {required:true,message:'请输入数据库账号',trigger:'blur'},
