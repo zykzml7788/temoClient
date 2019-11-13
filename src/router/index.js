@@ -5,7 +5,7 @@ import Project from '@/views/project/Project'
 import DataBase from '@/views/database/DataBase'
 import Main from '@/views/Main'
 import Script from '@/views/database/Script'
-import Case from '@/views/case/CaseSet'
+import Case from '@/views/case/CaseSets'
 
 Vue.use(Router);
 
