@@ -1,44 +1,43 @@
 <template>
 
-  <div id="script">
+  <div id="case">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>数据库管理</el-breadcrumb-item>
-      <el-breadcrumb-item>脚本管理</el-breadcrumb-item>
+      <el-breadcrumb-item>用例管理</el-breadcrumb-item>
+      <el-breadcrumb-item>用例集管理</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="header">
       <span>
-        <el-select v-model="value" filterable placeholder="请选择数据源">
+        <el-select v-model="value" filterable placeholder="请选择项目">
           <el-option
-            v-for="item in dbOptions"
-            :key="item.dbId"
-            :label="item.dbName"
-            :value="item.dbId">
+            v-for="item in projectOptions"
+            :key="item.pid"
+            :label="item.pname"
+            :value="item.pid">
           </el-option>
         </el-select>
       </span>
       <span>
         <el-input
-          placeholder="请输入脚本名称"
+          placeholder="请输入用例集名称"
           prefix-icon="el-icon-search"
           v-model="search_val">
         </el-input>
       </span>
       <span>
-        <el-button type="primary" @click="getScripts(1)">搜索</el-button>
-        <el-button type="primary" @click="addScript">新增</el-button>
+        <el-button type="primary" @click="getDataBasesByName(1)">搜索</el-button>
+        <el-button type="primary" @click="addCaseSet">新增</el-button>
       </span>
 
 
     </div>
 
-    <AddScript @getScripts="getScripts(1)"></AddScript>
-    <EditScript @getScripts="getScripts(1)"></EditScript>
+    <AddCaseSet @getDataBases="getDataBases"></AddCaseSet>
 
     <el-table
-      :data="scriptLists"
+      :data="dataBaseLists"
       style="width: 100%"
-      max-height="80%"  v-loading="loading" height="650" :default-sort="{prop: 'updatetime', order: 'descending'}">
+      max-height="80%"  v-loading="loading" height="600" :default-sort="{prop: 'updatetime', order: 'descending'}">
       <div slot="empty" style="text-align: left;margin: 30px;" >
         <div>
           <img src="../../../static/img/timo.png" alt="" width="140px" height="140px"/>
@@ -47,22 +46,22 @@
       </div>
       <el-table-column
         fixed="left"
-        prop="scriptName"
-        label="脚本名称"
+        prop="caseName"
+        label="用例集名称"
         width="200" :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
-        prop="sqlScript"
-        label="脚本内容"
-        width="300" :show-overflow-tooltip="true">
+        prop="caseDesc"
+        label="用例集描述"
+        width="200" :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
-        prop="createTime"
+        prop="createtime"
         label="创建时间"
         width="300">
       </el-table-column>
       <el-table-column
-        prop="updateTime"
+        prop="updatetime"
         label="更新时间"
         width="300">
       </el-table-column>
@@ -72,13 +71,13 @@
         width="300">
         <template slot-scope="scope">
           <el-button
-            @click.native.prevent="updateScript(scope.row)"
+            @click.native.prevent="updateDataBase(scope.row)"
             type="text"
             size="small">
             编辑
           </el-button>
           <el-button
-            @click.native.prevent="deleteScript(scope.row)"
+            @click.native.prevent="deleteDatabase(scope.row)"
             type="text"
             size="small">
             移除
@@ -91,7 +90,7 @@
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="total" @current-change="getScripts(page)" :current-page.sync="page">
+        :total="total" @current-change="getDataBasesByName(page)" :current-page.sync="page">
       </el-pagination>
     </el-footer>
 
@@ -101,20 +100,22 @@
 </template>
 
 <script>
-    import AddScript from '@/views/database/AddScript'
-    import EditScript from "@/views/database/EditScript";
+    import AddCaseSet from '@/views/case/AddCaseSet'
+
 
 
     export default {
 
-        name:'Script',
-
+        name:'DataBases',
         methods: {
 
             getDataBases(){
-                this.$axios.get('/apis/database/').then(res=>{
+                this.page=1;
+                this.loading = true;
+                this.$axios.get('/apis/database/1?filter='+this.search_val).then(res=>{
                     if (res.data.code === 200){
-                        this.dbOptions = res.data.data;
+                        this.dataBaseLists = res.data.data.list;
+                        this.total = res.data.data.total;
                     } else {
                         this.$message({type:'warning',message:res.data.msg});
                     }
@@ -123,11 +124,11 @@
                     this.$message({type:'error',message:err});
                 });
             },
-            getScripts(page){
-                this.$axios.get('/apis/script/'+page+'?dbName='+this.search_val+'&dbId='+this.value).then(res=>{
+            getDataBasesByName(page){
+                this.$axios.get('/apis/database/'+page+'?filter='+this.search_val).then(res=>{
                         this.loading = true;
                         if (res.data.code === 200){
-                            this.scriptLists = res.data.data.list;
+                            this.dataBaseLists = res.data.data.list;
                             this.total = res.data.data.total;
                         } else {
                             this.$message({type:'warning',message:res.data.msg});
@@ -139,25 +140,26 @@
                     this.$message({type:'error',message:err});
                 });
             },
-            addScript(){
-                this.$store.commit('changeAddScriptShow',true);
+            addCaseSet(){
+                this.$store.commit('changeAddCaseSetShow',true);
+                console.log(this.$store.state.addcasesetshow);
             },
-            updateScript(row){
-                this.$axios.get('/apis/script/'+row.scriptId+'/info').then(res=>{
-                    this.$store.commit('setScriptDetail',res.data.data);
-                    this.$store.commit('changeEditScriptShow',true);
+            updateDataBase(row){
+                this.$axios.get('/apis/database/'+row.dbId+'/info').then(res=>{
+                    this.$store.commit('setDatabaseDetail',res.data.data);
+                    this.$store.commit('changeEditDataBaseShow',true);
                 });
             },
-            deleteScript(row){
+            deleteDatabase(row){
                 this.$confirm('确定要删除吗？').then(_=>{
-                        this.$axios.delete('/apis/script/'+row.scriptId).then(res=>{
+                        this.$axios.delete('/apis/database/'+row.dbId).then(res=>{
                             if (res.data.code===200){
                                 this.$message({type:'success',message:res.data.msg});
                             } else {
                                 this.$message({type:'warning',message:res.data.msg});
                             }
                             this.page = 1;
-                            this.getScripts(1);
+                            this.getDataBases();
                         }).catch(err=>{
                             this.$message({type:'error',message:err});
                         });
@@ -168,25 +170,22 @@
         },
         data() {
             return {
-                value:'',
                 page:1,
                 total: 0,
                 search_val:'',
-                dbOptions:[],
-                scriptLists: [],
+                dataBaseLists: [],
                 loading: true,
                 items: [
                     '','success','info','danger','warning'
                 ],
                 dialogVisible: false,
+                projectOptions: [],
             }
         },
         components:{
-            AddScript,
-            EditScript
+            AddCaseSet,
         },
         created() {
-            this.getScripts(1);
             this.getDataBases();
         }
     }

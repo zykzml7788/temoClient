@@ -1,6 +1,10 @@
 <template>
 
   <div id="project">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>项目管理</el-breadcrumb-item>
+    </el-breadcrumb>
     <div class="header">
 
       <span>
@@ -25,7 +29,7 @@
     <el-table
       :data="projectLists"
       style="width: 100%"
-      max-height="80%"  v-loading="loading" height="900" :default-sort="{prop: 'updateTime', order: 'descending'}">
+      max-height="80%"  v-loading="loading" height="650" :default-sort="{prop: 'updateTime', order: 'descending'}">
       <div slot="empty" style="text-align: left;margin: 30px;" >
         <div>
           <img src="../../../static/img/timo.png" alt="" width="140px" height="140px"/>

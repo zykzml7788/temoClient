@@ -3,7 +3,7 @@
     <el-aside width="200px">
       <headers></headers>
     </el-aside>
-    <el-main>
+    <el-main style="height: 90%">
       <el-header id="el-header" height="10%"></el-header>
       <div id="app">
         <router-view/>
