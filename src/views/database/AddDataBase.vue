@@ -2,7 +2,7 @@
   <el-dialog title="新增数据源配置" :visible.sync="$store.state.adddatabaseshow" style="height: 100%;" :close-on-click-modal="false"
   @close="closeAddDatabaseView">
     <el-form :model="form" :rules="rules" ref="form">
-      <el-form-item label="配置名称" :label-width="formLabelWidth" prop="dbName">
+      <el-form-item label="数据源名" :label-width="formLabelWidth" prop="dbName">
         <el-input placeholder="请输入数据源名" v-model="form.dbName" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="数据库" :label-width="formLabelWidth" prop="dbLibraryName">
@@ -12,7 +12,7 @@
         <el-input placeholder="请输入主机域名" v-model="form.host" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="端口号" :label-width="formLabelWidth" prop="port">
-        <el-input  placeholder="请输入端口号" v-model="form.port" autocomplete="off"></el-input>
+        <el-input  placeholder="请输入端口号" v-model.number="form.port" type="number" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="账号" :label-width="formLabelWidth" prop="user">
         <el-input placeholder="请输入数据库账号" v-model="form.user" autocomplete="off"></el-input>

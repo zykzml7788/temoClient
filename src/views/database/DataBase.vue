@@ -9,7 +9,7 @@
     <div class="header">
       <span>
         <el-input
-          placeholder="请输入数据库名称"
+          placeholder="请输入数据源名称"
           prefix-icon="el-icon-search"
           v-model="search_val">
         </el-input>
@@ -38,7 +38,7 @@
       <el-table-column
         fixed="left"
         prop="dbName"
-        label="数据库名称"
+        label="数据源名称"
         width="200" :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
