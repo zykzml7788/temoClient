@@ -3,7 +3,7 @@
              @close="closeEditScriptView">
     <el-form :model="form" :rules="rules" ref="form" style="text-align: left">
 
-      <el-form-item label="数据库" :label-width="formLabelWidth" prop="dbId">
+      <el-form-item label="数据源" :label-width="formLabelWidth" prop="dbId">
         <el-select v-model="form.dbId" filterable placeholder="请选择数据源">
           <el-option
             v-for="item in dbOptions"
