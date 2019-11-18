@@ -78,11 +78,16 @@
                 });
             },
             editScript(){
+              const sqlValue = [];
+              const sqls = this.sqls;
+              for (let index in sqls){
+                sqlValue.push(sqls[index].value);
+              }
                 const script = {
                     "dbId": this.form.dbId,
                     "scriptId": this.form.scriptId,
                     "scriptName": this.form.scriptName,
-                    "sqlScript": this.form.sqlScript
+                    "sqlScript": sqlValue.join("$")
                 };
                 this.$refs['form'].validate(bol=>{
                     if (bol){
@@ -163,7 +168,8 @@
             removeSql(item) {
                 const index = this.sqls.indexOf(item);
                 if (index !== -1) {
-                    this.sqls.splice(index, 1)
+                    this.sqls.splice(index, 1);
+                    console.log(this.sqls);
                 }
             },
             addSql() {
