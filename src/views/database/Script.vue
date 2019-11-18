@@ -57,6 +57,11 @@
         width="300" :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
+        prop="db.dbName"
+        label="所属数据源"
+        width="300" :show-overflow-tooltip="true">
+      </el-table-column>
+      <el-table-column
         prop="createTime"
         label="创建时间"
         width="300">
@@ -124,7 +129,7 @@
                 });
             },
             getScripts(page){
-                this.$axios.get('/apis/script/'+page+'?dbName='+this.search_val+'&dbId='+this.value).then(res=>{
+                this.$axios.get('/apis/script/'+page+'?scriptName='+this.search_val+'&dbId='+this.value).then(res=>{
                         this.loading = true;
                         if (res.data.code === 200){
                             this.scriptLists = res.data.data.list;
