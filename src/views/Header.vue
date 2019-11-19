@@ -5,7 +5,7 @@
       <el-radio-button :label="false">展开</el-radio-button>
       <el-radio-button :label="true">收起</el-radio-button>
     </el-radio-group>
-    <el-menu default-active="2" class="el-menu-vertical-demo" @select="handleSelect" :collapse="isCollapse" id="cehuaMenu" width="20%">
+    <el-menu default-active="1" class="el-menu-vertical-demo" @select="handleSelect" :collapse="isCollapse" id="cehuaMenu" width="20%">
       <el-menu-item index="1">
         <i class="el-icon-menu"></i>
         <span slot="title">主页</span>

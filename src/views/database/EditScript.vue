@@ -147,7 +147,9 @@
                                     type: 'error',
                                     showClose: true,
                                     duration: 10000,
-                                    message: "SQL调试出现异常！本次共执行"+res.data.data.total+"条sql,失败"+res.data.data.error+"条"+errorMsg.join(" \n ")
+                                    dangerouslyUseHTMLString: true,
+                                    message: "SQL调试出现异常！本次共执行"+res.data.data.total+"条sql,失败"+res.data.data.error+"条,详情请查看" +
+                                      "<strong style='color: indianred'>NetWork</strong>"
                                     })
                                 });
                             }
@@ -184,6 +186,7 @@
                     key: Date.now()
                 });
             },
+
 
         },
         computed: {
