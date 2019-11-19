@@ -140,8 +140,8 @@
                                     message:res.data.msg+"本次共执行"+res.data.data.total+"条sql,全部成功！"
                                 });
                             }else {
-                                let errorMsg = [];
-                                res.data.data.errorList.forEach(v=>{errorMsg.push("【错误SQL:"+v.sql+",错误信息:"+v.errMsg+"】");
+                                // let errorMsg = [];
+                                // res.data.data.errorList.forEach(v=>{errorMsg.push("【错误SQL:"+v.sql+",错误信息:"+v.errMsg+"】");
                                 this.$notify({
                                     title: '调试失败',
                                     type: 'error',
@@ -151,15 +151,8 @@
                                     message: "SQL调试出现异常！本次共执行"+res.data.data.total+"条sql,失败"+res.data.data.error+"条,详情请查看" +
                                       "<strong style='color: indianred'>NetWork</strong>"
                                     })
-                                });
                             }
-                        }).catch(err=>{
-                            this.$notify({
-                                title: '失败',
-                                type:'error',
-                                message:err
-                            });
-                        });
+                        })
 
                     }
                 });
