@@ -121,11 +121,11 @@
                     if (res.data.code === 200){
                         this.dbOptions = res.data.data;
                     } else {
-                        this.$message({type:'warning',message:res.data.msg});
+                        this.$notify({title: '成功',type:'warning',message:res.data.msg});
                     }
                     this.loading = false;
                 }).catch(err=>{
-                    this.$message({type:'error',message:err});
+                    this.$notify({title: '失败',type:'error',message:err});
                 });
             },
             getScripts(page){
@@ -135,13 +135,13 @@
                             this.scriptLists = res.data.data.list;
                             this.total = res.data.data.total;
                         } else {
-                            this.$message({type:'warning',message:res.data.msg});
+                            this.$notify({type:'warning',message:res.data.msg});
                         }
                         this.loading = false;
                     }
 
                 ).catch(err=>{
-                    this.$message({type:'error',message:err});
+                    this.$notify({type:'error',message:err});
                 });
             },
             addScript(){
@@ -157,14 +157,14 @@
                 this.$confirm('确定要删除吗？').then(_=>{
                         this.$axios.delete('/apis/script/'+row.scriptId).then(res=>{
                             if (res.data.code===200){
-                                this.$message({type:'success',message:res.data.msg});
+                                this.$notify({title: '成功',type:'success',message:res.data.msg});
                             } else {
-                                this.$message({type:'warning',message:res.data.msg});
+                                this.$notify({title: '失败',type:'warning',message:res.data.msg});
                             }
                             this.page = 1;
                             this.getScripts(1);
                         }).catch(err=>{
-                            this.$message({type:'error',message:err});
+                            this.$notify({title: '失败',type:'error',message:err});
                         });
                     }
                 );

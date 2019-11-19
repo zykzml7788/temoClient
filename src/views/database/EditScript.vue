@@ -70,11 +70,11 @@
                     if (res.data.code === 200){
                         this.dbOptions = res.data.data;
                     } else {
-                        this.$message({type:'warning',message:res.data.msg});
+                        this.$notify({type:'warning',message:res.data.msg});
                     }
                     this.loading = false;
                 }).catch(err=>{
-                    this.$message({type:'error',message:err});
+                    this.$notify({type:'error',message:err});
                 });
             },
             editScript(){
@@ -93,20 +93,23 @@
                     if (bol){
                         this.$axios.put('/apis/script/'+this.form.scriptId,script).then(res=>{
                             if (res.data.code === 200){
-                                this.$message({
+                                this.$notify({
+                                    title: '成功',
                                     type:'success',
                                     message:res.data.msg
                                 });
                                 this.closeEditScriptView();
                                 this.$emit('getScripts');
                             }else{
-                                this.$message({
+                                this.$notify({
+                                    title: '失败',
                                     type:'error',
                                     message:res.data.msg
                                 });
                             }
                         }).catch(err=>{
-                            this.$message({
+                            this.$notify({
+                                title: '失败',
                                 type:'error',
                                 message:err
                             });
@@ -131,14 +134,16 @@
                     if (bol){
                         this.$axios.post('/apis/sqlExecute/',script).then(res=>{
                             if (res.data.code === 200){
-                                this.$message({
+                                this.$notify({
+                                    title: '调试成功',
                                     type:'success',
                                     message:res.data.msg+"本次共执行"+res.data.data.total+"条sql,全部成功！"
                                 });
                             }else {
                                 let errorMsg = [];
                                 res.data.data.errorList.forEach(v=>{errorMsg.push("【错误SQL:"+v.sql+",错误信息:"+v.errMsg+"】");
-                                this.$message({
+                                this.$notify({
+                                    title: '调试失败',
                                     type: 'error',
                                     showClose: true,
                                     duration: 10000,
@@ -147,7 +152,8 @@
                                 });
                             }
                         }).catch(err=>{
-                            this.$message({
+                            this.$notify({
+                                title: '失败',
                                 type:'error',
                                 message:err
                             });

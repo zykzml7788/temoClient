@@ -103,13 +103,15 @@
         this.$refs['form'].validate(bol=>{
           if (bol){
             this.$axios.post('/apis/project',project).then(res=>{
-              this.$message({
+              this.$notify({
+                title: '成功',
                 type:'success',
                 message:res.data.msg
               });
               this.closeAddProjectView();
             }).catch(err=>{
-                this.$message({
+                this.$notify({
+                  title: '失败',
                   type:'error',
                   message:err
                 });

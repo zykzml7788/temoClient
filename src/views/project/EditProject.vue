@@ -104,20 +104,23 @@
           if (bol){
             this.$axios.put('/apis/project/'+project.pid,project).then(res=>{
               if (res.data.code===200){
-                this.$message({
+                this.$notify({
+                  title: '成功',
                   type:'success',
                   message:res.data.msg
                 });
                 this.closeAddProjectView();
                 this.$emit('getProjects');
               } else{
-                this.$message({
+                this.$notify({
+                  title: '失败',
                   type:'warning',
                   message:res.data.msg
                 });
               }
             }).catch(err=>{
-              this.$message({
+              this.$notify({
+                title: '失败',
                 type:'error',
                 message:err
               });

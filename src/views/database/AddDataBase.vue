@@ -82,14 +82,16 @@
         this.$refs['form'].validate(bol=>{
           if (bol){
             this.$axios.post('/apis/database/',database).then(res=>{
-              this.$message({
+              this.$notify({
+                title: '成功',
                 type:'success',
                 message:res.data.msg
               });
               this.closeAddDatabaseView();
               this.$emit('getDataBases');
             }).catch(err=>{
-                this.$message({
+                this.$notify({
+                  title: '失败',
                   type:'error',
                   message:err
                 });

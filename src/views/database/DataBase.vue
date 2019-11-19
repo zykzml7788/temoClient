@@ -128,11 +128,11 @@
             this.dataBaseLists = res.data.data.list;
             this.total = res.data.data.total;
           } else {
-            this.$message({type:'warning',message:res.data.msg});
+            this.$notify({type:'warning',message:res.data.msg});
           }
           this.loading = false;
         }).catch(err=>{
-          this.$message({type:'error',message:err});
+          this.$notify({type:'error',message:err});
         });
       },
       getDataBasesByName(page){
@@ -142,13 +142,13 @@
               this.dataBaseLists = res.data.data.list;
               this.total = res.data.data.total;
             } else {
-              this.$message({type:'warning',message:res.data.msg});
+              this.$notify({type:'warning',message:res.data.msg});
             }
             this.loading = false;
           }
 
         ).catch(err=>{
-          this.$message({type:'error',message:err});
+          this.$notify({type:'error',message:err});
         });
       },
       addDataBase(){
@@ -164,14 +164,14 @@
         this.$confirm('确定要删除吗？').then(_=>{
             this.$axios.delete('/apis/database/'+row.dbId).then(res=>{
               if (res.data.code===200){
-                this.$message({type:'success',message:res.data.msg});
+                this.$notify({title:'成功',type:'success',message:res.data.msg});
               } else {
-                this.$message({type:'warning',message:res.data.msg});
+                this.$notify({title:'失败',type:'warning',message:res.data.msg});
               }
               this.page = 1;
               this.getDataBases();
             }).catch(err=>{
-              this.$message({type:'error',message:err});
+              this.$notify({title:'失败',type:'error',message:err});
             });
           }
         );

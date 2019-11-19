@@ -125,11 +125,11 @@
             this.projectLists = res.data.data.list;
             this.total = res.data.data.total;
           } else {
-            this.$message({type:'warning',message:res.data.msg});
+            this.$notify({title: '失败',type:'warning',message:res.data.msg});
           }
           this.loading = false;
         }).catch(err=>{
-          this.$message({type:'error',message:err});
+          this.$notify({title: '失败',type:'error',message:err});
         });
       },
       getProjectsByName(page){
@@ -139,13 +139,13 @@
               this.projectLists = res.data.data.list;
               this.total = res.data.data.total;
             } else {
-              this.$message({type:'warning',message:res.data.msg});
+              this.$notify({title: '失败',type:'warning',message:res.data.msg});
             }
             this.loading = false;
           }
 
         ).catch(err=>{
-          this.$message({type:'error',message:err});
+          this.$notify({title: '失败',type:'error',message:err});
         });
       },
       addProject(){
@@ -169,14 +169,14 @@
         this.$confirm('确定要删除吗？').then(_=>{
           this.$axios.delete('/apis/project/'+row.pid).then(res=>{
             if (res.data.code===200){
-              this.$message({type:'success',message:res.data.msg});
+              this.$notify({type:'success',message:res.data.msg});
             } else {
-              this.$message({type:'warning',message:res.data.msg});
+              this.$notify({type:'warning',message:res.data.msg});
             }
             this.page = 1;
             this.getProjects();
           }).catch(err=>{
-            this.$message({type:'error',message:err});
+            this.$notify({type:'error',message:err});
           });
         }
         );

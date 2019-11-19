@@ -76,14 +76,16 @@
                 this.$refs['form'].validate(bol=>{
                     if (bol){
                         this.$axios.put('/apis/database/'+database.dbId,database).then(res=>{
-                            this.$message({
+                            this.$notify({
+                                title:'成功',
                                 type:'success',
                                 message:res.data.msg
                             });
                             this.$emit('getDataBases');
                             this.closeEditDatabaseView();
                         }).catch(err=>{
-                            this.$message({
+                            this.$notify({
+                                title:'失败',
                                 type:'error',
                                 message:err
                             });
