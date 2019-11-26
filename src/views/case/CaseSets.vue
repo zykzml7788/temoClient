@@ -25,14 +25,14 @@
         </el-input>
       </span>
       <span>
-        <el-button type="primary" @click="getDataBasesByName(1)">搜索</el-button>
+        <el-button type="primary" @click="getCaseSet(1)">搜索</el-button>
         <el-button type="primary" @click="addCaseSet">新增</el-button>
       </span>
 
 
     </div>
 
-    <AddCaseSet @getDataBases="getDataBases"></AddCaseSet>
+    <AddCase @getCaseSet="getCaseSet(1)"></AddCase>
 
     <el-table
       :data="dataBaseLists"
@@ -70,18 +70,35 @@
         label="操作"
         width="300">
         <template slot-scope="scope">
-          <el-button
-            @click.native.prevent="updateDataBase(scope.row)"
-            type="text"
-            size="small">
-            编辑
-          </el-button>
-          <el-button
-            @click.native.prevent="deleteDatabase(scope.row)"
-            type="text"
-            size="small">
-            移除
-          </el-button>
+          <div style="margin-bottom: 10px;">
+            <el-button
+              @click.native.prevent="addCaseSet(scope.row)"
+              type="primary"
+              size="mini">
+              执行
+            </el-button>
+            <el-button
+              @click.native.prevent="addCaseSet(scope.row)"
+              type="success"
+              size="mini">
+              添加用例
+            </el-button>
+          </div>
+          <div>
+            <el-button
+              @click.native.prevent="updateCaseSet(scope.row)"
+              type="warning"
+              size="mini">
+              编辑
+            </el-button>
+            <el-button
+              @click.native.prevent="deleteCaseSet(scope.row)"
+              type="danger"
+              size="mini">
+              移除
+            </el-button>
+          </div>
+
         </template>
       </el-table-column>
     </el-table>
@@ -90,7 +107,7 @@
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="total" @current-change="getDataBasesByName(page)" :current-page.sync="page">
+        :total="total" @current-change="getCaseSet(page)" :current-page.sync="page">
       </el-pagination>
     </el-footer>
 
@@ -100,32 +117,18 @@
 </template>
 
 <script>
-  import AddCaseSet from '@/views/case/AddCaseSet'
+  import AddCase from '@/views/case/AddCase'
 
 
 
   export default {
 
-    name:'DataBases',
+    name:'CaseSet',
     methods: {
 
-      getDataBases(){
-        this.page=1;
-        this.loading = true;
-        this.$axios.get('/apis/database/1?filter='+this.search_val).then(res=>{
-          if (res.data.code === 200){
-            this.dataBaseLists = res.data.data.list;
-            this.total = res.data.data.total;
-          } else {
-            this.$message({type:'warning',message:res.data.msg});
-          }
-          this.loading = false;
-        }).catch(err=>{
-          this.$message({type:'error',message:err});
-        });
-      },
-      getDataBasesByName(page){
-        this.$axios.get('/apis/database/'+page+'?filter='+this.search_val).then(res=>{
+
+      getCaseSet(page){
+        this.$axios.get('/apis/caseset/'+page+'?filter='+this.search_val).then(res=>{
             this.loading = true;
             if (res.data.code === 200){
               this.dataBaseLists = res.data.data.list;
@@ -144,13 +147,13 @@
         this.$store.commit('changeAddCaseSetShow',true);
         console.log(this.$store.state.addcasesetshow);
       },
-      updateDataBase(row){
+      updateCaseSet(row){
         this.$axios.get('/apis/database/'+row.dbId+'/info').then(res=>{
           this.$store.commit('setDatabaseDetail',res.data.data);
           this.$store.commit('changeEditDataBaseShow',true);
         });
       },
-      deleteDatabase(row){
+      deleteCaseSet(row){
         this.$confirm('确定要删除吗？').then(_=>{
             this.$axios.delete('/apis/database/'+row.dbId).then(res=>{
               if (res.data.code===200){
@@ -173,8 +176,15 @@
         page:1,
         total: 0,
         search_val:'',
-        dataBaseLists: [],
-        loading: true,
+        dataBaseLists: [
+          {
+            caseName:"测试用例集1",
+            caseDesc:"操作步骤",
+
+
+          }
+        ],
+        loading: false,
         items: [
           '','success','info','danger','warning'
         ],
@@ -183,10 +193,10 @@
       }
     },
     components:{
-      AddCaseSet,
+      AddCase,
     },
     created() {
-      this.getDataBases();
+      // this.getDataBases();
     }
   }
 
