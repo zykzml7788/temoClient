@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="$store.state.addcasesetshow" style="height: 100%;" :close-on-click-modal="false"
+  <el-dialog :visible.sync="$store.state.addcaseshow" style="height: 100%;" :close-on-click-modal="false"
              @close="">
   <div id="caseTest">
     <h2 style="text-align: left">添加用例及脚本</h2>

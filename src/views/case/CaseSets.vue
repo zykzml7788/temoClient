@@ -33,6 +33,7 @@
     </div>
 
     <AddCase @getCaseSet="getCaseSet(1)"></AddCase>
+    <AddCaseSet @getCaseSet="getCaseSet(1)"></AddCaseSet>
 
     <el-table
       :data="dataBaseLists"
@@ -78,7 +79,7 @@
               执行
             </el-button>
             <el-button
-              @click.native.prevent="addCaseSet(scope.row)"
+              @click.native.prevent="addCase(scope.row)"
               type="success"
               size="mini">
               添加用例
@@ -118,7 +119,7 @@
 
 <script>
   import AddCase from '@/views/case/AddCase'
-
+  import AddCaseSet from '@/views/case/AddCaseSet'
 
 
   export default {
@@ -145,7 +146,9 @@
       },
       addCaseSet(){
         this.$store.commit('changeAddCaseSetShow',true);
-        console.log(this.$store.state.addcasesetshow);
+      },
+      addCase(){
+        this.$store.commit('changeAddCaseShow',true);
       },
       updateCaseSet(row){
         this.$axios.get('/apis/database/'+row.dbId+'/info').then(res=>{
@@ -194,6 +197,7 @@
     },
     components:{
       AddCase,
+      AddCaseSet
     },
     created() {
       // this.getDataBases();

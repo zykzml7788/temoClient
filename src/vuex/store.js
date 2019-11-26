@@ -64,6 +64,9 @@ const mutations = {
   changeAddCaseSetShow(state,bol){
     state.addcasesetshow = bol;
   },
+  changeAddCaseShow(state,bol){
+    state.addcaseshow = bol;
+  },
   appendEnv(state,env){
     state.envList.push(env);
   },
