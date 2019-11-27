@@ -6,6 +6,8 @@
     <h3>当前用例集：</h3>
     <el-button type="primary" @click="" style="float: right">调试</el-button>
 
+    <AddCaseForApi></AddCaseForApi>
+
     <el-tabs v-model="activeName" @tab-click="handleClick">
 
       <el-tab-pane label="前置脚本添加" name="first">
@@ -110,7 +112,7 @@
       <el-tab-pane label="用例列表" name="third">
         <div id="cases">
           <h3 style="text-align: left">用例列表</h3>
-          <el-button type="primary" @click="" style="float: left;margin: 10px;">添加接口用例</el-button>
+          <el-button type="primary" @click="" style="float: left;margin: 10px;" @click="showAddCaseForApi">添加接口用例</el-button>
           <el-button type="primary" @click="" style="float: left;margin: 10px;">添加数据库用例</el-button>
           <el-table
             :data="cases"
@@ -147,6 +149,12 @@
                   下移
                 </el-button>
                 <el-button
+                  @click.native.prevent=""
+                  type="warning"
+                  size="mini">
+                  编辑
+                </el-button>
+                <el-button
                   @click.native.prevent="deleteDatabase(scope.row)"
                   type="danger"
                   size="mini">
@@ -177,7 +185,7 @@
 </template>
 
 <script>
-
+    import AddCaseForApi from '@/views/case/AddCaseForApi'
 
     export default {
         data() {
@@ -216,12 +224,16 @@
         methods:{
             handleClick(tab, event) {
                 console.log(tab, event);
+            },
+            showAddCaseForApi(){
+              this.$store.commit("changeAddcaseForApiShow",true);
             }
         },
         computed: {
 
         },
         components:{
+          AddCaseForApi,
         }
     };
 </script>
