@@ -8,6 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 import store from './vuex/store'
 import VCharts from 'v-charts'
+import JsonViewer from 'vue-json-viewer'
 
 Vue.config.productionTip = false;
 
@@ -15,6 +16,9 @@ Vue.config.productionTip = false;
 Vue.use(VCharts);
 // 引入element-ui库
 Vue.use(ElementUI);
+// Import JsonViewer as a Vue.js plugin
+Vue.use(JsonViewer);
+
 Vue.prototype.$axios=axios;
 axios.defaults.timeout = 10000;
 // axios.defaults.baseURL = 'http://129.204.148.24:8888';
@@ -25,6 +29,19 @@ new Vue({
   el: '#app',
   router,
   store,
+  data:{
+    return:{
+      jsonData: {
+        total: 25,
+        limit: 10,
+        skip: 0,
+        links: {
+          previous: undefined,
+          next: function () {},
+        }
+      }
+    }
+  },
   components: { App },
   template: '<App/>'
 });
