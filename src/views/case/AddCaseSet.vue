@@ -4,8 +4,23 @@
   <div id="caseTest">
     <h2 style="text-align: left">新增用例集</h2>
     <el-tabs v-model="activeName" @tab-click="handleClick">
-
-      <el-tab-pane label="前/后置脚本添加" name="first">
+      <el-tab-pane label="基本信息" name="first">
+        <div id="base">
+          <h3 style="text-align: left">基本信息</h3>
+          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+            <el-form-item label="用例集名称" prop="name">
+              <el-input v-model="baseInfo.setName"  placeholder="请输入用例集名称"></el-input>
+            </el-form-item>
+            <el-form-item label="调试环境" prop="name" style="text-align: left">
+              <el-cascader
+                placeholder="请选择调试环境"
+                :options="baseInfo.envOptions"
+                filterable></el-cascader>
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="前/后置脚本添加" name="second">
 
         <div id="setup_script">
           <h3 style="text-align: left">前置脚本列表</h3>
@@ -79,7 +94,7 @@
           </el-table>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="用例列表" name="second">
+      <el-tab-pane label="用例列表" name="third">
         <div id="cases">
           <h3 style="text-align: left">用例列表</h3>
           <el-button type="primary" @click="" style="float: left;margin: 20px;">添加接口用例</el-button>
@@ -128,6 +143,12 @@
     export default {
         data() {
             return {
+                baseInfo:{
+                    setName:'',
+                    envOptions:[
+
+                    ]
+                },
                 activeName: 'first',
                 setUpScripts: [
                     {sorting:1,scriptName:"CRM系统登入",scriptType:"接口脚本"},
@@ -162,6 +183,11 @@
         },
         computed: {
 
+        },
+        created:{
+            getEnvs(){
+
+            }
         },
         components:{
         }
