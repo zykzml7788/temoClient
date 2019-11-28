@@ -1,9 +1,12 @@
 <template>
   <el-dialog :visible.sync="$store.state.addcaseforapishow" style="height: 100%;" :close-on-click-modal="false" :append-to-body="true"
              @close="">
-    <div id="caseTest">
+    <div id="caseAdd">
       <h2 style="text-align: left">添加接口用例</h2>
-
+      <el-form :model="caseInfo" :rules="rules" ref="caseInfo" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="用例描述" prop="caseDesc">
+          <el-input v-model="caseInfo.caseDesc"></el-input>
+        </el-form-item>
       <el-tabs v-model="activeName" @tab-click="handleClick">
 
         <el-tab-pane label="接口基本信息" name="apiInfo">
@@ -212,6 +215,7 @@
 
         </el-tab-pane>
       </el-tabs>
+      </el-form>
     </div>
   </el-dialog>
 </template>
@@ -292,7 +296,15 @@
                   expect:''
               }
           ],
-          jsonAssert:''
+          jsonAssert:'',
+          caseInfo:{
+            caseDesc:''
+          },
+          rules:{
+              caseDesc:[
+                  { required: true, message: '请输入用例描述', trigger: 'blur' },
+              ],
+          }
       };
     },
     methods:{
