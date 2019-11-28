@@ -112,10 +112,98 @@
           </el-tabs>
         </el-tab-pane>
         <el-tab-pane label="关联参数设置" name="paramSave">
+          <strong>关联参数</strong>
+          <el-tooltip content="KEY为自定义的变量名，可供后续用例使用，可选择从响应体或者响应头提取，可选择关联方式为JSONPATH OR 正则表达式" placement="top">
+            <i class="el-icon-question"></i>
+          </el-tooltip>
 
+          <div  v-for="save in saves" style="margin-top: 20px">
+            <el-select v-model="save.saveFrom"  placeholder="saveFrom" style="width: 150px;" size="small">
+              <el-option label="Response Body" value="1"></el-option>
+              <el-option label="Response Header" value="2"></el-option>
+              <el-option label="Cookie" value="3"></el-option>
+            </el-select>
+            <el-input
+              placeholder="KEY"
+              v-model="save.key" style="width: 200px" size="small">
+            </el-input>
+            <el-select v-model="save.saveBy"  placeholder="saveBy" style="width: 150px;" size="small" @change="clearSave(save)">
+              <el-option label="JSONPATH" value="1"></el-option>
+              <el-option label="REGEX" value="2"></el-option>
+            </el-select>
+            <el-input
+                placeholder="JSONPATH"
+                v-model="save.jsonpath" style="width: 200px" size="small" v-if="save.saveBy!=='2'" >
+            </el-input>
+            <el-input
+              placeholder="REGEX"
+              v-model="save.regex" style="width: 200px" size="small" v-if="save.saveBy==='2'">
+            </el-input>
+            <el-button type="primary" round icon="el-icon-circle-plus-outline" size="small" style="margin-left: 10px" @click="addSaveKv">ADD</el-button>
+            <el-button type="danger" round icon="el-icon-remove-outline" size="small" v-if="save.length!==1"  @click="delSaveKv(save)">DELETE</el-button>
+          </div>
         </el-tab-pane>
         <el-tab-pane label="断言设置" name="verify">
+          <strong>Assertion</strong>
+          <el-tooltip content="设置相关断言，可选择正则断言 OR JSONPATH 断言,支持多种关系选择" placement="top">
+            <i class="el-icon-question"></i>
+          </el-tooltip>
+          <br>
+          <br>
+          <el-radio-group v-model="assertType">
+            <el-radio :label="1">
+              <el-tooltip content="断言点添加" placement="top">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+              Assert Point
+            </el-radio>
+            <el-radio :label="2">
+              <el-tooltip content="JSON断言添加，只会比对JSON中存在的字段是否一致" placement="top">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+              JSON Assert
+            </el-radio>
 
+          </el-radio-group>
+          <div  v-for="assert in asserts" style="margin-top: 20px" v-if="assertType===1">
+            <el-select v-model="assert.assertBy"  placeholder="assertBy" style="width: 150px;" size="small" @change="clearAssert(assert)">
+              <el-option label="JSONPATH" value="1"></el-option>
+              <el-option label="REGEX" value="2"></el-option>
+            </el-select>
+            <el-input
+              placeholder="JSONPATH"
+              v-model="assert.jsonpath" style="width: 200px" size="small" v-if="assert.assertBy!=='2'" >
+            </el-input>
+            <el-input
+              placeholder="REGEX"
+              v-model="assert.regex" style="width: 200px" size="small" v-if="assert.assertBy==='2'">
+            </el-input>
+            <el-select v-model="assert.relation"  placeholder="relation" style="width: 150px;" size="small">
+              <el-option label="is" value="1"></el-option>
+              <el-option label="not" value="2"></el-option>
+              <el-option label="contains" value="3"></el-option>
+              <el-option label="not contains" value="4"></el-option>
+              <el-option label="in" value="5"></el-option>
+              <el-option label="not in" value="6"></el-option>
+              <el-option label="is null" value="7"></el-option>
+              <el-option label="not null" value="8"></el-option>
+              <el-option label=">" value="9"></el-option>
+              <el-option label="<" value="10"></el-option>
+              <el-option label=">=" value="11"></el-option>
+              <el-option label="<=" value="12"></el-option>
+            </el-select>
+            <el-input
+              placeholder="EXPECT"
+              v-model="assert.expect" style="width: 200px" size="small" disabled v-if="assert.relation==='7' || assert.relation==='8'">
+            </el-input>
+            <el-input
+              placeholder="EXPECT"
+              v-model="assert.expect" style="width: 200px" size="small" v-if="assert.relation!=='7' && assert.relation!=='8'">
+            </el-input>
+            <el-button type="primary" round icon="el-icon-circle-plus-outline" size="small" style="margin-left: 10px" @click="addAssertKv">ADD</el-button>
+            <el-button type="danger" round icon="el-icon-remove-outline" size="small" v-if="asserts.length!==1"  @click="delAssertKv(assert)">DELETE</el-button>
+          </div>
+          <div><el-input type="textarea" v-model="jsonAssert" :rows="20" style="margin-top: 20px" v-if="assertType===2"></el-input></div>
         </el-tab-pane>
         <el-tab-pane label="延迟时间" name="delayTime">
 
@@ -137,6 +225,7 @@
         activeName: 'apiInfo',
         activeNameForApi: 'params',
           contentType:1,
+          assertType:1,
         methodOptions: [{
           value: 'GET',
           label: 'GET'
@@ -185,7 +274,25 @@
               }
           ],
           json:'',
-
+          saves:[
+              {
+                  saveFrom:'',
+                  saveBy: '',
+                  key: '',
+                  jsonpath: '',
+                  regex:''
+              }
+          ],
+          asserts:[
+              {
+                  assertBy: '',
+                  jsonpath: '',
+                  regex:'',
+                  relation:'',
+                  expect:''
+              }
+          ],
+          jsonAssert:''
       };
     },
     methods:{
@@ -222,6 +329,38 @@
         delCookieKv(param){
             this.cookies.splice(this.params.indexOf(param),1)
         },
+        addSaveKv(){
+            this.saves.push({
+                saveFrom:'',
+                saveBy: '',
+                key: '',
+                jsonpath: '',
+                regex:''
+            });
+        },
+        delSaveKv(param){
+            this.saves.splice(this.saves.indexOf(param),1)
+        },
+        clearSave(save){
+          save.jsonpath='';
+          save.regex='';
+        },
+        clearAssert(assert){
+          assert.jsonpath='';
+          assert.regex='';
+        },
+        addAssertKv(){
+            this.asserts.push({
+                assertBy: '',
+                jsonpath: '',
+                regex:'',
+                relation:'',
+                expect:''
+            });
+        },
+        delAssertKv(param){
+            this.asserts.splice(this.asserts.indexOf(param),1)
+        },
     },
     computed: {
         jsonFormatObject(){
@@ -235,7 +374,8 @@
             }else{
                 return {};
             }
-        }
+        },
+
     },
 
     components:{
