@@ -38,7 +38,7 @@
     <el-table
       :data="caseSetLists"
       style="width: 100%"
-      max-height="80%"  v-loading="loading" height="600" :default-sort="{prop: 'updatetime', order: 'descending'}" @row-click="updateCaseSet">
+      max-height="80%"  v-loading="loading" height="600" :default-sort="{prop: 'createTime', order: 'descending'}" @row-click="updateCaseSet">
       <div slot="empty" style="text-align: left;margin: 30px;" >
         <div>
           <img src="../../../static/img/timo.png" alt="" width="140px" height="140px"/>
@@ -57,23 +57,21 @@
         width="400" :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
-        prop="status"
+        prop="setStatus"
         label="状态"
         width="200">
       </el-table-column>
       <el-table-column
-        prop="valid"
         label="是否启用"
         width="200">
+        <template slot-scope="scope">
+          <p  v-if="caseSetLists[scope.$index].valid==='0'">禁用</p>
+          <p  v-if="caseSetLists[scope.$index].valid==='1'">启用</p>
+        </template>
       </el-table-column>
       <el-table-column
-        prop="createtime"
+        prop="createTime"
         label="创建时间"
-        width="300">
-      </el-table-column>
-      <el-table-column
-        prop="updatetime"
-        label="更新时间"
         width="300">
       </el-table-column>
       <el-table-column
@@ -163,19 +161,19 @@
       updateCaseSet(row){
         this.$axios.get('/apis/testcaseset/'+row.setId+'/info').then(res=>{
           this.$store.commit('setDatabaseDetail',res.data.data);
-          this.$store.commit('changeEditDataBaseShow',true);
+          this.$store.commit('changeAddCaseShow',true);
         });
       },
       deleteCaseSet(row){
         this.$confirm('确定要删除吗？').then(_=>{
-            this.$axios.delete('/apis/database/'+row.dbId).then(res=>{
+            this.$axios.delete('/apis/testcaseset/'+row.setId).then(res=>{
               if (res.data.code===200){
                 this.$message({type:'success',message:res.data.msg});
               } else {
                 this.$message({type:'warning',message:res.data.msg});
               }
               this.page = 1;
-              this.getDataBases();
+              this.getCaseSet(1);
             }).catch(err=>{
               this.$message({type:'error',message:err});
             });
