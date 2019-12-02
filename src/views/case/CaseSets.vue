@@ -137,7 +137,7 @@
 
 
       getCaseSet(page){
-        this.$axios.get('/apis/testcaseset/'+page,{"set_name":this.search_val,"project_id":this.project_id}).then(res=>{
+        this.$axios.get('/apis/testcaseset/'+page,{params:{set_name:this.search_val,project_id:this.projectId}}).then(res=>{
             this.loading = true;
             if (res.data.code === 200){
               this.caseSetLists = res.data.data.list;
