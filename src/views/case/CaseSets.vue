@@ -8,7 +8,7 @@
     </el-breadcrumb>
     <div class="header">
       <span>
-        <el-select v-model="value" filterable placeholder="请选择项目">
+        <el-select v-model="projectId" filterable placeholder="请选择项目">
           <el-option
             v-for="item in projectOptions"
             :key="item.pid"
@@ -36,9 +36,9 @@
     <AddCaseSet @getCaseSet="getCaseSet(1)"></AddCaseSet>
 
     <el-table
-      :data="dataBaseLists"
+      :data="caseSetLists"
       style="width: 100%"
-      max-height="80%"  v-loading="loading" height="600" :default-sort="{prop: 'updatetime', order: 'descending'}">
+      max-height="80%"  v-loading="loading" height="600" :default-sort="{prop: 'updatetime', order: 'descending'}" @row-click="updateCaseSet">
       <div slot="empty" style="text-align: left;margin: 30px;" >
         <div>
           <img src="../../../static/img/timo.png" alt="" width="140px" height="140px"/>
@@ -47,14 +47,24 @@
       </div>
       <el-table-column
         fixed="left"
-        prop="caseName"
+        prop="setName"
         label="用例集名称"
         width="200" :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
-        prop="caseDesc"
+        prop="setDesc"
         label="用例集描述"
-        width="200" :show-overflow-tooltip="true">
+        width="400" :show-overflow-tooltip="true">
+      </el-table-column>
+      <el-table-column
+        prop="status"
+        label="状态"
+        width="200">
+      </el-table-column>
+      <el-table-column
+        prop="valid"
+        label="是否启用"
+        width="200">
       </el-table-column>
       <el-table-column
         prop="createtime"
@@ -129,10 +139,10 @@
 
 
       getCaseSet(page){
-        this.$axios.get('/apis/caseset/'+page+'?filter='+this.search_val).then(res=>{
+        this.$axios.get('/apis/testcaseset/'+page,{"set_name":this.search_val,"project_id":this.project_id}).then(res=>{
             this.loading = true;
             if (res.data.code === 200){
-              this.dataBaseLists = res.data.data.list;
+              this.caseSetLists = res.data.data.list;
               this.total = res.data.data.total;
             } else {
               this.$message({type:'warning',message:res.data.msg});
@@ -151,7 +161,7 @@
         this.$store.commit('changeAddCaseShow',true);
       },
       updateCaseSet(row){
-        this.$axios.get('/apis/database/'+row.dbId+'/info').then(res=>{
+        this.$axios.get('/apis/testcaseset/'+row.setId+'/info').then(res=>{
           this.$store.commit('setDatabaseDetail',res.data.data);
           this.$store.commit('changeEditDataBaseShow',true);
         });
@@ -179,13 +189,8 @@
         page:1,
         total: 0,
         search_val:'',
-        dataBaseLists: [
-          {
-            caseName:"测试用例集1",
-            caseDesc:"操作步骤",
-
-
-          }
+          projectId:'',
+        caseSetLists: [
         ],
         loading: false,
         items: [
@@ -200,7 +205,7 @@
       AddCaseSet
     },
     created() {
-      // this.getDataBases();
+       this.getCaseSet(1);
     }
   }
 
