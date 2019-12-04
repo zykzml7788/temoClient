@@ -157,13 +157,13 @@
               this.caseSetLists = res.data.data.list;
               this.total = res.data.data.total;
             } else {
-              this.$message({type:'warning',message:res.data.msg});
+              this.$notify({title:'操作成功',type:'warning',message:res.data.msg});
             }
             this.loading = false;
           }
 
         ).catch(err=>{
-          this.$message({type:'error',message:err});
+          this.$notify({title:'操作失败',type:'error',message:err});
         });
       },
       addCaseSet(){
@@ -182,14 +182,14 @@
         this.$confirm('确定要删除吗？').then(_=>{
             this.$axios.delete('/apis/testcaseset/'+row.setId).then(res=>{
               if (res.data.code===200){
-                this.$message({type:'success',message:res.data.msg});
+                this.$notify({title:'操作成功',type:'success',message:res.data.msg});
               } else {
-                this.$message({type:'warning',message:res.data.msg});
+                this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
               }
               this.page = 1;
               this.getCaseSet(1);
             }).catch(err=>{
-              this.$message({type:'error',message:err});
+              this.$notify({title:'操作失败',type:'error',message:err});
             });
           }
         );
