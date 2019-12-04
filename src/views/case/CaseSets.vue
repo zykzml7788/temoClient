@@ -18,6 +18,13 @@
         </el-select>
       </span>
       <span>
+        <el-select v-model="setStatus" filterable placeholder="请选择状态">
+          <el-option label="待完成" :value="'0'"></el-option>
+          <el-option label="待维护" :value="'1'"></el-option>
+          <el-option label="已完成" :value="'2'"></el-option>
+        </el-select>
+      </span>
+      <span>
         <el-input
           placeholder="请输入用例集名称"
           prefix-icon="el-icon-search"
@@ -34,11 +41,12 @@
 
     <AddCase @getCaseSet="getCaseSet(1)"></AddCase>
     <AddCaseSet @getCaseSet="getCaseSet(1)"></AddCaseSet>
+    <EditCaseSet @getCaseSet="getCaseSet(1)"></EditCaseSet>
 
     <el-table
       :data="caseSetLists"
       style="width: 100%"
-      max-height="80%"  v-loading="loading" height="600" :default-sort="{prop: 'createTime', order: 'descending'}" @row-click="updateCaseSet">
+      max-height="80%"  v-loading="loading" height="600" :default-sort="{prop: 'createTime', order: 'descending'}">
       <div slot="empty" style="text-align: left;margin: 30px;" >
         <div>
           <img src="../../../static/img/timo.png" alt="" width="140px" height="140px"/>
@@ -60,6 +68,11 @@
         prop="setStatus"
         label="状态"
         width="200">
+        <template slot-scope="scope">
+          <p  v-if="caseSetLists[scope.$index].setStatus==='0'">待完成</p>
+          <p  v-if="caseSetLists[scope.$index].setStatus==='1'">待维护</p>
+          <p  v-if="caseSetLists[scope.$index].setStatus==='2'">已完成</p>
+        </template>
       </el-table-column>
       <el-table-column
         label="是否启用"
@@ -127,6 +140,7 @@
 
 <script>
   import AddCase from '@/views/case/AddCase'
+  import EditCaseSet from '@/views/case/EditCaseSet'
   import AddCaseSet from '@/views/case/AddCaseSet'
 
 
@@ -137,7 +151,7 @@
 
 
       getCaseSet(page){
-        this.$axios.get('/apis/testcaseset/'+page,{params:{set_name:this.search_val,project_id:this.projectId}}).then(res=>{
+        this.$axios.get('/apis/testcaseset/'+page,{params:{set_name:this.search_val,project_id:this.projectId,set_status:this.setStatus}}).then(res=>{
             this.loading = true;
             if (res.data.code === 200){
               this.caseSetLists = res.data.data.list;
@@ -160,8 +174,8 @@
       },
       updateCaseSet(row){
         this.$axios.get('/apis/testcaseset/'+row.setId+'/info').then(res=>{
-          this.$store.commit('setDatabaseDetail',res.data.data);
-          this.$store.commit('changeAddCaseShow',true);
+          this.$store.commit('setCaseSetDetail',res.data.data);
+          this.$store.commit('changeEditCaseSetShow',true);
         });
       },
       deleteCaseSet(row){
@@ -188,6 +202,7 @@
         total: 0,
         search_val:'',
           projectId:'',
+          setStatus:'',
         caseSetLists: [
         ],
         loading: false,
@@ -200,7 +215,8 @@
     },
     components:{
       AddCase,
-      AddCaseSet
+      AddCaseSet,
+        EditCaseSet
     },
     created() {
        this.getCaseSet(1);

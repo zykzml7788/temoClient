@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="$store.state.addcaseforapishow" style="height: 100%;" :close-on-click-modal="false" :append-to-body="true"
-             @close="">
+             @close="" :width="'70%'">
     <div id="caseAdd">
       <h2 style="text-align: left">添加接口用例</h2>
       <el-form :model="caseInfo" :rules="rules" ref="caseInfo" label-width="100px" class="demo-ruleForm">

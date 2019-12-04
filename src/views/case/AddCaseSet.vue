@@ -2,15 +2,39 @@
   <el-dialog title="新增用例集" :visible.sync="$store.state.addcasesetshow" style="height: 100%;" :close-on-click-modal="false"
              @close="closeAddCaseSetView">
     <el-form :model="form" :rules="rules" ref="form">
-      <el-form-item label="名称" :label-width="formLabelWidth" prop="caseSetName">
-        <el-input placeholder="请输入用例集名称" v-model="form.caseSetName" autocomplete="off"></el-input>
+      <el-form-item label="名称" :label-width="formLabelWidth" prop="setName">
+        <el-input placeholder="请输入用例集名称" v-model="form.setName" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="步骤" :label-width="formLabelWidth" prop="caseSetDesc">
-        <el-input type="textarea" v-model="form.caseSetDesc" placeholder="请在此填写描述" :rows="15"></el-input>
+      <el-form-item label="步骤" :label-width="formLabelWidth" prop="setDesc">
+        <el-input type="textarea" v-model="form.setDesc" placeholder="请在此填写描述" :rows="15"></el-input>
+      </el-form-item>
+      <el-form-item label="所属项目" :label-width="formLabelWidth" prop="projectId" style="text-align: left">
+        <el-select v-model="form.projectId" filterable placeholder="请选择项目">
+          <el-option
+            v-for="item in projects"
+            :key="item.pid"
+            :label="item.pname"
+            :value="item.pid">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="状态" :label-width="formLabelWidth" prop="caseSetStatus" style="text-align: left">
+        <el-select v-model="form.setStatus" placeholder="请选择状态">
+          <el-option label="待完成" value="0"></el-option>
+          <el-option label="待维护" value="1"></el-option>
+          <el-option label="已完成" value="2"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="启用" :label-width="formLabelWidth" style="text-align: left">
+        <el-switch
+          v-model="form.valid"
+          active-color="#13ce66"
+          inactive-color="#ff4949">
+        </el-switch>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="addDataBase">确 定</el-button>
+      <el-button type="primary" @click="addCaseSet">确 定</el-button>
       <el-button @click="closeAddCaseSetView">取 消</el-button>
     </div>
   </el-dialog>
@@ -22,12 +46,18 @@
   export default {
     data() {
       return {
+          projects:[
+              {pname:"111",pid:"123456"}
+          ],
         rules:{
-          caseSetName:[
+            projectId:[
+                {required:true,message:'请选择项目',trigger:'blur'},
+            ],
+            setName:[
             {required:true,message:'请输入用例集名称',trigger:'blur'},
           ],
 
-          caseSetDesc:[
+            setDesc:[
             {required:true,message:'请输入用例集步骤描述',trigger:'blur'},
           ]
 
@@ -35,32 +65,34 @@
         dialogTableVisible: false,
         dialogFormVisible: false,
         form: {
-          caseSetName:'',
-          caseSetDesc:''
+            projectId:'',
+            setName:'',
+            setDesc:'',
+            setStatus:'',
+            valid:true,
         },
         formLabelWidth: '80px',
       };
     },
     methods:{
-      addDataBase(){
-        const database = {
-          "dbName": this.form.dbName,
-          "dbLibraryName": this.form.dbLibraryName,
-          "host": this.form.host,
-          "port": this.form.port,
-          "user": this.form.user,
-          "pwd": this.form.pwd
+      addCaseSet(){
+        const caseSet = {
+            projectId:this.form.projectId,
+            setName:this.form.setName,
+            setDesc:this.form.setDesc,
+            setStatus:this.form.setStatus,
+            valid: this.form.valid?1:0,
         };
         this.$refs['form'].validate(bol=>{
           if (bol){
-            this.$axios.post('/apis/database/',database).then(res=>{
+            this.$axios.post('/apis/testcaseset/',caseSet).then(res=>{
               this.$notify({
                 title: '成功',
                 type:'success',
                 message:res.data.msg
               });
-              this.closeAddDatabaseView();
-              this.$emit('getDataBases');
+              this.closeAddCaseSetView();
+              this.$emit('getCaseSet');
             }).catch(err=>{
               this.$notify({
                 title: '失败',
@@ -81,6 +113,8 @@
 
     },
     components:{
-    }
+    },
+      created() {
+      }
   };
 </script>

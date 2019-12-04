@@ -15,6 +15,7 @@ const state = {
   addscriptshow: false,
   editscriptshow: false,
   addcasesetshow: false,
+  editcasesetshow:false,
   addcaseforapishow: false,
   envList:[],
   envDetail:{
@@ -30,7 +31,8 @@ const state = {
     name:''
   },
   databaseDetail:{},
-  scriptDetail:{}
+  scriptDetail:{},
+  caseSetDetail:{},
 };
 
 const mutations = {
@@ -68,6 +70,9 @@ const mutations = {
   changeAddCaseShow(state,bol){
     state.addcaseshow = bol;
   },
+  changeEditCaseSetShow(state,bol){
+    state.editcasesetshow = bol;
+  },
   changeAddcaseForApiShow(state,bol){
     state.addcaseforapishow = bol;
   },
@@ -94,6 +99,9 @@ const mutations = {
   },
   setEnvDetail(state,env){
     state.envDetail = env;
+  },
+  setCaseSetDetail(state,caseSet){
+    state.caseSetDetail = caseSet;
   },
   setProjectDetail(state,project){
     state.projectDetail = {

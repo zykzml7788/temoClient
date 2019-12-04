@@ -112,7 +112,7 @@
       <el-tab-pane label="用例列表" name="third">
         <div id="cases">
           <h3 style="text-align: left">用例列表</h3>
-          <el-button type="primary" @click="" style="float: left;margin: 10px;" @click="showAddCaseForApi">添加接口用例</el-button>
+          <el-button type="primary" style="float: left;margin: 10px;" @click="showAddCaseForApi">添加接口用例</el-button>
           <el-button type="primary" @click="" style="float: left;margin: 10px;">添加数据库用例</el-button>
           <el-table
             :data="cases"
