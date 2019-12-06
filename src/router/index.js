@@ -23,6 +23,11 @@ export default new Router({
       component: Main
     },
     {
+      path: '/main',
+      name: 'main',
+      component: Main
+    },
+    {
       path: '/project',
       name: 'project',
       component: Project

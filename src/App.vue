@@ -1,15 +1,20 @@
 <template>
-  <el-container>
-    <el-aside width="200px">
-      <headers></headers>
-    </el-aside>
-    <el-main style="height: 90%">
-      <el-header id="el-header" height="10%"></el-header>
-      <div id="app">
-        <router-view/>
-      </div>
-    </el-main>
-  </el-container>
+  <div style="">
+    <div id="app" v-if="this.$route.path==='/login'" style="height: 2000px;margin:0;background-image: url('../static/img/loginbgp.jpeg'); background-repeat: repeat;">
+      <router-view/>
+    </div>
+    <el-container v-else>
+      <el-aside width="200px">
+        <headers></headers>
+      </el-aside>
+      <el-main style="height: 90%">
+        <el-header id="el-header" height="10%"></el-header>
+        <div id="app">
+          <router-view/>
+        </div>
+      </el-main>
+    </el-container>
+  </div>
 </template>
 
 <script>

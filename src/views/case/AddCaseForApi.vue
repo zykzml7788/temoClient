@@ -591,9 +591,11 @@
                     this.$axios.post('/apis/testcase/',data).then(res=>{
                             this.loading = true;
                             if (res.data.code === 200){
+                                this.$store.commit("changeAddcaseForApiShow",false);
+                                this.$notify({title:'操作成功',type:'success',message:res.data.msg});
                                 this.caseSetLists = res.data.data.list;
                             } else {
-                                this.$notify({title:'操作成功',type:'warning',message:res.data.msg});
+                                this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
                             }
                             this.loading = false;
                         }
