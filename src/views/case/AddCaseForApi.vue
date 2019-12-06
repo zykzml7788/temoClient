@@ -267,6 +267,7 @@
       return {
         activeName: 'apiInfo',
         activeNameForApi: 'params',
+        setId:'',
           contentType:1,
           assertType:1,
         methodOptions: [{
@@ -584,7 +585,7 @@
                 param:params,
                 saves:saves,
                 verify:asserts,
-                setId:''
+                setId:this.setId
             };
             this.$refs['caseInfo'].validate(bol=>{
                 if (bol){
@@ -593,11 +594,11 @@
                             if (res.data.code === 200){
                                 this.$store.commit("changeAddcaseForApiShow",false);
                                 this.$notify({title:'操作成功',type:'success',message:res.data.msg});
-                                this.caseSetLists = res.data.data.list;
+                                this.$emit("getCaseInfo");
                             } else {
                                 this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
                             }
-                            this.loading = false;
+
                         }
 
                     ).catch(err=>{
@@ -668,6 +669,11 @@
             }
         },
 
+    },
+    watch:{
+      '$store.state.caseSetInfo': function (val) {
+        this.setId = val.setId;
+      }
     },
 
     components:{

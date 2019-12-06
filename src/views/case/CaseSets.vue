@@ -157,7 +157,7 @@
               this.caseSetLists = res.data.data.list;
               this.total = res.data.data.total;
             } else {
-              this.$notify({title:'操作成功',type:'warning',message:res.data.msg});
+              this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
             }
             this.loading = false;
           }
@@ -169,7 +169,19 @@
       addCaseSet(){
         this.$store.commit('changeAddCaseSetShow',true);
       },
-      addCase(){
+      addCase(row){
+        this.$axios.get('/apis/testcaseset/'+row.setId+'/info').then(res=>{
+            this.loading = true;
+            if (res.data.code === 200){
+              this.$store.commit('setCaseSetInfo',res.data.data);
+            } else {
+              this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
+            }
+            this.loading = false;
+          }
+        ).catch(err=>{
+          this.$notify({title:'操作失败',type:'error',message:err});
+        });
         this.$store.commit('changeAddCaseShow',true);
       },
       updateCaseSet(row){

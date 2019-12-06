@@ -33,6 +33,7 @@ const state = {
   databaseDetail:{},
   scriptDetail:{},
   caseSetDetail:{},
+  caseSetInfo:{}
 };
 
 const mutations = {
@@ -125,6 +126,9 @@ const mutations = {
   },
   setScriptDetail(state,script){
     state.scriptDetail = script;
+  },
+  setCaseSetInfo(state,param){
+    state.caseSetInfo = param;
   }
 };
 const getters = {
@@ -133,6 +137,9 @@ const getters = {
   },
   getProjectDetail(state){
     return state.projectDetail;
+  },
+  getCaseSetInfo(state){
+    return state.caseSetInfo;
   }
 };
 
