@@ -47,7 +47,6 @@
         data() {
             return {
                 projects:[
-                    {pname:"111",pid:"123456"}
                 ],
                 rules:{
                     projectId:[
@@ -118,7 +117,18 @@
                     valid:true,
                 };
                 this.$store.commit('changeEditCaseSetShow',false);
-            }
+            },
+          getProjects(){
+            this.$axios.get('/apis/project/list').then(res=> {
+              this.projects = res.data.data;
+            }).catch(err=>{
+              this.$notify({
+                title: '失败',
+                type:'error',
+                message:err
+              });
+            });
+          }
         },
         computed: {
 
@@ -135,7 +145,8 @@
                 this.form.valid = this.$store.state.caseSetDetail.valid === '1';
             }
         },
-        created() {
-        }
+      created() {
+        this.getProjects();
+      }
     };
 </script>

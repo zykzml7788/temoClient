@@ -10,7 +10,7 @@
       <span>
         <el-select v-model="projectId" filterable placeholder="请选择项目">
           <el-option
-            v-for="item in projectOptions"
+            v-for="item in projects"
             :key="item.pid"
             :label="item.pname"
             :value="item.pid">
@@ -195,6 +195,17 @@
         );
 
       },
+      getProjects(){
+        this.$axios.get('/apis/project/list').then(res=> {
+          this.projects = res.data.data;
+        }).catch(err=>{
+          this.$notify({
+            title: '失败',
+            type:'error',
+            message:err
+          });
+        });
+      }
     },
     data() {
       return {
@@ -203,6 +214,7 @@
         search_val:'',
           projectId:'',
           setStatus:'',
+        projects:[],
         caseSetLists: [
         ],
         loading: false,
@@ -210,7 +222,6 @@
           '','success','info','danger','warning'
         ],
         dialogVisible: false,
-        projectOptions: [],
       }
     },
     components:{
@@ -220,6 +231,7 @@
     },
     created() {
        this.getCaseSet(1);
+      this.getProjects();
     }
   }
 

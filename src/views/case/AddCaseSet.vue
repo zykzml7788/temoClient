@@ -47,7 +47,6 @@
     data() {
       return {
           projects:[
-              {pname:"111",pid:"123456"}
           ],
         rules:{
             projectId:[
@@ -68,7 +67,7 @@
             projectId:'',
             setName:'',
             setDesc:'',
-            setStatus:'',
+            setStatus:'0',
             valid:true,
         },
         formLabelWidth: '80px',
@@ -107,6 +106,17 @@
       closeAddCaseSetView(){
         this.$refs['form'].resetFields();
         this.$store.commit('changeAddCaseSetShow',false);
+      },
+      getProjects(){
+        this.$axios.get('/apis/project/list').then(res=> {
+            this.projects = res.data.data;
+        }).catch(err=>{
+          this.$notify({
+            title: '失败',
+            type:'error',
+            message:err
+          });
+        });
       }
     },
     computed: {
@@ -115,6 +125,7 @@
     components:{
     },
       created() {
+        this.getProjects();
       }
   };
 </script>
