@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="$store.state.addcaseforapishow" style="height: 100%;" :close-on-click-modal="false" :append-to-body="true"
-             @close="" :width="'70%'">
+             @close="closeAddCase" :width="'70%'">
     <div id="caseAdd">
       <h2 style="text-align: left">添加接口用例</h2>
       <el-form :model="caseInfo" :rules="rules" ref="caseInfo" label-width="100px" class="demo-ruleForm">
@@ -209,13 +209,52 @@
           <div><el-input type="textarea" v-model="jsonAssert" :rows="20" style="margin-top: 20px" v-if="assertType===2"></el-input></div>
         </el-tab-pane>
         <el-tab-pane label="延迟时间" name="delayTime">
-
+          <el-form-item label="延迟时间(s)">
+            <el-input v-model="delayTime"></el-input>
+          </el-form-item>
         </el-tab-pane>
         <el-tab-pane label="全局Cookie & Header注入" name="cookieAndHeader">
-
+          <el-tabs type="border-card">
+            <el-tab-pane label="Global Headers">
+              <h5>Global Headers</h5>
+              <div class="demo-input-suffix" v-for="globalHeader in globalHeaders" style="margin-bottom: 10px">
+                <el-input
+                  placeholder="KEY"
+                  v-model="globalHeader.key" style="width: 200px" size="small">
+                </el-input>
+                -
+                <el-input
+                  placeholder="VALUE"
+                  v-model="globalHeader.value" style="width: 200px" size="small">
+                </el-input>
+                <el-button type="primary" round icon="el-icon-circle-plus-outline" size="small" style="margin-left: 30px" @click="addGlobalHeaderKv">ADD</el-button>
+                <el-button type="danger" round icon="el-icon-remove-outline" size="small" v-if="globalHeaders.length!==1"  @click="delGlobalHeaderKv(param)">DELETE</el-button>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="Global Cookies">
+              <h5>Global Cookies</h5>
+              <div class="demo-input-suffix" v-for="globalCooie in globalCookies" style="margin-bottom: 10px">
+                <el-input
+                  placeholder="KEY"
+                  v-model="globalCooie.key" style="width: 200px" size="small">
+                </el-input>
+                -
+                <el-input
+                  placeholder="VALUE"
+                  v-model="globalCooie.value" style="width: 200px" size="small">
+                </el-input>
+                <el-button type="primary" round icon="el-icon-circle-plus-outline" size="small" style="margin-left: 30px" @click="addGlobalCookieKv">ADD</el-button>
+                <el-button type="danger" round icon="el-icon-remove-outline" size="small" v-if="globalCookies.length!==1"  @click="delGlobalCookieKv(param)">DELETE</el-button>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
         </el-tab-pane>
       </el-tabs>
       </el-form>
+    </div>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="addCase">确 定</el-button>
+      <el-button @click="closeAddCase">取 消</el-button>
     </div>
   </el-dialog>
 </template>
@@ -245,7 +284,7 @@
         }],
         api:{
           url:'',
-          method:''
+          method:'GET'
         },
           params:[
               {
@@ -259,6 +298,18 @@
                   value: ''
               }
           ],
+          globalHeaders:[
+              {
+                  key: '',
+                  value: ''
+              }
+          ],
+          globalCookies:[
+              {
+                  key: '',
+                  value: ''
+              }
+          ],
           formParams:[
               {
                   key: '',
@@ -266,7 +317,7 @@
               }
           ],
           urlParams:[
-              {
+            {
                   key: '',
                   value: ''
               }
@@ -296,6 +347,7 @@
                   expect:''
               }
           ],
+          delayTime:'0',
           jsonAssert:'',
           caseInfo:{
             caseDesc:''
@@ -321,25 +373,37 @@
             this.headers.push({key:'',value:''})
         },
         delHeaderKv(param){
-            this.headers.splice(this.params.indexOf(param),1)
+            this.headers.splice(this.headers.indexOf(param),1)
         },
         addFormParamKv(){
             this.formParams.push({key:'',value:''})
         },
         delFormParamKv(param){
-            this.formParams.splice(this.params.indexOf(param),1)
+            this.formParams.splice(this.formParams.indexOf(param),1)
         },
         addUrlParamKv(){
             this.urlParams.push({key:'',value:''})
         },
         delUrlParamKv(param){
-            this.urlParams.splice(this.params.indexOf(param),1)
+            this.urlParams.splice(this.urlParams.indexOf(param),1)
         },
         addCookieKv(){
             this.cookies.push({key:'',value:''})
         },
         delCookieKv(param){
-            this.cookies.splice(this.params.indexOf(param),1)
+            this.cookies.splice(this.cookies.indexOf(param),1)
+        },
+        addGlobalCookieKv(){
+            this.globalCookies.push({key:'',value:''})
+        },
+        delGlobalCookieKv(param){
+            this.globalCookies.splice(this.globalCookies.indexOf(param),1)
+        },
+        addGlobalHeaderKv(){
+            this.globalHeaders.push({key:'',value:''})
+        },
+        delGlobalHeaderKv(param){
+            this.globalHeaders.splice(this.globalHeaders.indexOf(param),1)
         },
         addSaveKv(){
             this.saves.push({
@@ -373,6 +437,220 @@
         delAssertKv(param){
             this.asserts.splice(this.asserts.indexOf(param),1)
         },
+        addCase(){
+            let body = {};
+            let url = this.api.url;
+            let params = {};
+            let headers = {};
+            let cookies = {};
+            let globalHeaders = {};
+            let globalCookies = {};
+            let saves = [];
+            let asserts = [];
+            if (this.activeNameForApi === 'body'){
+                if (this.contentType===1){
+                    for (const index in this.formParams){
+                        if (this.formParams.length===1 && this.formParams[0].key===''){
+                            body = null;
+                            break;
+                        }
+                        const key = this.formParams[index].key;
+                        body[key] = this.formParams[index].value;
+                    }
+                    if (body!==null){
+                        body = JSON.stringify(body);
+                    }
+
+                }else if (this.contentType===2){
+                    const kvs = [];
+                    body=null;
+                    for (const index in this.urlParams){
+                        if (this.urlParams.length===1 && this.urlParams[0].key===''){
+                            break;
+                        }
+                        const key = this.urlParams[index].key;
+                        const value = this.urlParams[index].value;
+                        kvs.push(key+"="+value);
+                    }
+                    if (kvs.length!==0){
+                        url = url+"?"+kvs.join("&");
+                    }
+                }else{
+                    body = this.json;
+                }
+            }else{
+                body = null;
+            }
+            for (const index in this.params){
+                if (this.params.length===1 && this.params[0].key===''){
+                    params = null;
+                    break;
+                }
+                const key = this.params[index].key;
+                params[key] = this.params[index].value;
+            }
+            if (params!==null){
+                params = JSON.stringify(params);
+            }
+
+            for (const index in this.headers){
+                if (this.headers.length===1 && this.headers[0].key===''){
+                    headers = null;
+                    break;
+                }
+                const key = this.headers[index].key;
+                headers[key] = this.headers[index].value;
+            }
+            if (headers!==null){
+                headers = JSON.stringify(headers);
+            }
+
+            for (const index in this.cookies){
+                if (this.cookies.length===1 && this.cookies[0].key===''){
+                    cookies = null;
+                    break;
+                }
+                const key = this.cookies[index].key;
+                cookies[key] = this.cookies[index].value;
+            }
+            if (cookies!=null){
+                cookies = JSON.stringify(cookies);
+            }
+            for (const index in this.globalHeaders){
+                if (this.globalHeaders.length===1 && this.globalHeaders[0].key===''){
+                    globalHeaders = null;
+                    break;
+                }
+                const key = this.globalHeaders[index].key;
+                globalHeaders[key] = this.globalHeaders[index].value;
+            }
+            if (globalHeaders!==null){
+                globalHeaders = JSON.stringify(globalHeaders);
+            }
+
+            for (const index in this.globalCookies){
+                if (this.globalCookies.length===1 && this.globalCookies[0].key===''){
+                    globalCookies = null;
+                    break;
+                }
+                const key = this.globalCookies[index].key;
+                globalCookies[key] = this.globalCookies[index].value;
+            }
+            if (globalCookies!==null){
+                globalCookies = JSON.stringify(globalCookies);
+            }
+
+            for (const index in this.saves){
+                if (this.saves.length===1 && this.saves[0].key===''){
+                    saves = null;
+                    break;
+                }
+              const save = {
+                  jexpression:this.saves[index].jsonpath,
+                  paramKey:this.saves[index].key,
+                  regex:this.saves[index].regex,
+                  saveFrom:this.saves[index].saveFrom,
+                  saveType:this.saves[index].saveBy
+              };
+              saves.push(save);
+            }
+            for (const index in this.asserts){
+                if (this.asserts.length===1 && this.asserts[0].expect===''){
+                    asserts = null;
+                    break;
+                }
+                const assert = {
+                    verifyType:this.asserts[index].assertBy,
+                    rexpression:this.asserts[index].regex,
+                    jexpression:this.asserts[index].jsonpath,
+                    expect:this.asserts[index].expect,
+                    relationShip:this.asserts[index].relation
+                };
+                asserts.push(assert);
+            }
+
+            const data = {
+                body:body,
+                caseDesc: this.caseInfo.caseDesc,
+                caseType: 1,
+                cookies: cookies,
+                delayTime: this.delayTime,
+                globalCookies:globalCookies,
+                globalHeaders:globalHeaders,
+                header:headers,
+                jsonAssert:this.jsonAssert?this.jsonAssert:null,
+                url:url,
+                method:this.api.method,
+                param:params,
+                saves:saves,
+                verify:asserts,
+                setId:''
+            };
+            this.$refs['caseInfo'].validate(bol=>{
+                if (bol){
+                    this.$axios.post('/apis/testcase/',data).then(res=>{
+                            this.loading = true;
+                            if (res.data.code === 200){
+                                this.caseSetLists = res.data.data.list;
+                            } else {
+                                this.$notify({title:'操作成功',type:'warning',message:res.data.msg});
+                            }
+                            this.loading = false;
+                        }
+
+                    ).catch(err=>{
+                        this.$notify({title:'操作失败',type:'error',message:err});
+                    });
+                }
+
+            });
+
+        },
+        closeAddCase(){
+          this.api={
+              url:'',
+              method:'GET'
+          };
+          const setUp = [
+              {
+                  key: '',
+                  value: ''
+              }
+          ];
+          this.params=setUp;
+          this.urlParams=setUp;
+          this.headers=setUp;
+          this.cookie=setUp;
+          this.formParams=setUp;
+          this.globalHeaders=setUp;
+          this.globalCookies=setUp;
+          this.json='';
+          this.saves=[
+              {
+                  saveFrom:'',
+                  saveBy: '',
+                  key: '',
+                  jsonpath: '',
+                  regex:''
+              }
+          ];
+          this.asserts=[{
+              assertBy: '',
+              jsonpath: '',
+              regex:'',
+              relation:'',
+              expect:''
+          }];
+          this.delayTime='0';
+          this.jsonAssert='';
+          this.caseInfo.caseDesc='';
+          this.activeName='apiInfo';
+            this.activeNameForApi= 'params';
+            this.contentType=1;
+            this.assertType=1;
+            this.$refs['caseInfo'].resetFields();
+            this.$store.commit('changeAddcaseForApiShow',false);
+        }
     },
     computed: {
         jsonFormatObject(){
