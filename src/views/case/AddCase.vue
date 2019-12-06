@@ -50,7 +50,7 @@
                   下移
                 </el-button>
                 <el-button
-                  @click.native.prevent="deleteDatabase(scope.row)"
+                  @click.native.prevent="deleteTestCase(scope.row)"
                   type="danger"
                   size="mini">
                   移除
@@ -99,7 +99,7 @@
                   下移
                 </el-button>
                 <el-button
-                  @click.native.prevent="deleteDatabase(scope.row)"
+                  @click.native.prevent="deleteTestCase(scope.row)"
                   type="danger"
                   size="mini">
                   移除
@@ -118,7 +118,7 @@
             :data="cases"
             stripe height="100%" :default-sort="{prop: 'sorting',order:'ascending'}">
             <el-table-column
-              prop="sorting"
+              type="index"
               label="执行顺序"
               width="80">
             </el-table-column>
@@ -159,7 +159,7 @@
                   编辑
                 </el-button>
                 <el-button
-                  @click.native.prevent="deleteDatabase(scope.row)"
+                  @click.native.prevent="deleteTestCase(scope.row)"
                   type="danger"
                   size="mini">
                   移除
@@ -278,6 +278,21 @@
               this.$notify({title:'操作失败',type:'error',message:err});
             });
           },
+          deleteTestCase(row){
+            this.$confirm('确定要删除吗？').then(_=>{
+                this.$axios.delete('/apis/testcase/'+row.caseId).then(res=>{
+                  if (res.data.code===200){
+                    this.$notify({title:'操作成功',type:'success',message:res.data.msg});
+                  } else {
+                    this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
+                  }
+                  this.getCaseInfo();
+                }).catch(err=>{
+                  this.$notify({title:'操作失败',type:'error',message:err});
+                });
+              }
+            );
+          }
 
         },
         computed: {
