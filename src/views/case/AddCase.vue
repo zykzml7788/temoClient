@@ -116,9 +116,9 @@
           <el-button type="primary" @click="" style="float: left;margin: 10px;">添加数据库用例</el-button>
           <el-table
             :data="cases"
-            stripe height="100%" :default-sort="{prop: 'sorting',order:'ascending'}">
+            stripe height="100%" :default-sort="{prop: 'sorting',order:'ascending'}" v-loading="loading">
             <el-table-column
-              type="index"
+              prop="sorting"
               label="执行顺序"
               width="80">
             </el-table-column>
@@ -196,6 +196,7 @@
             return {
                 setId:'',
                 setName:'',
+                loading:false,
                 activeName: 'first',
                 setUpScripts: [
                     {sorting:1,scriptName:"CRM系统登入",scriptType:"接口脚本"},
@@ -230,7 +231,8 @@
               this.$store.commit("changeAddcaseForApiShow",true);
             },
           getCaseInfo(){
-            this.$axios.get('/apis/testcaseset/'+this.setId+'/info').then(res=>{
+              this.loading=true;
+              this.$axios.get('/apis/testcaseset/'+this.setId+'/info').then(res=>{
                 if (res.data.code === 200){
                   this.$store.commit('setCaseSetInfo',res.data.data);
                 } else {
@@ -241,6 +243,7 @@
             ).catch(err=>{
               this.$notify({title:'操作失败',type:'error',message:err});
             });
+              this.loading=false;
           },
           upCase(row){
             let data = new FormData();
