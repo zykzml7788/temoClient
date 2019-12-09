@@ -169,14 +169,14 @@
         this.$confirm('确定要删除吗？').then(_=>{
           this.$axios.delete('/apis/project/'+row.pid).then(res=>{
             if (res.data.code===200){
-              this.$notify({type:'success',message:res.data.msg});
+              this.$notify({title:'操作成功',type:'success',message:res.data.msg});
             } else {
-              this.$notify({type:'warning',message:res.data.msg});
+              this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
             }
             this.page = 1;
             this.getProjects();
           }).catch(err=>{
-            this.$notify({type:'error',message:err});
+            this.$notify({title:'操作失败',type:'error',message:err});
           });
         }
         );
