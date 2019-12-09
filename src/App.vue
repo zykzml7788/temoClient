@@ -10,7 +10,7 @@
       <el-main style="height: 100%;padding: 0;">
         <el-header id="el-header" height="50px" style="background-color: dodgerblue;">
           <h5 style="float: right;margin: 20px 10px;color: white;" class="el-icon-setting">测试用户</h5>
-          <img src="../static/img/user.jpg" style="height: 30px;width: 30px;float: right;margin-top: 10px" alt="">
+          <img src="../static/img/user.jpg" style="height: 30px;width: 30px;float: right;margin-top: 10px" alt="" class="circle">
         </el-header>
         <div id="app" style="margin: 20px;">
           <router-view/>
@@ -53,5 +53,9 @@
 .el-aside::-webkit-scrollbar {
   width: 0 !important
 }
+
+  .circle {
+    border-radius:50%
+  }
 
 </style>

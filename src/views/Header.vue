@@ -9,7 +9,7 @@
       <p style="font-weight: normal;font-size: small;color: #eaeaea">AutoTest For Api</p>
     </div>
     <div id="user" style="margin: 20px">
-      <div style="display: inline-block;width: 20%;height: 100%"><img src="../../static/img/user.jpg" style="width:  100%;height: 100%" alt=""></div>
+      <div style="display: inline-block;width: 20%;height: 100%"><img src="../../static/img/user.jpg" style="width:  100%;height: 100%" alt="" class="circle"></div>
       <div style="display: inline-block;">
         <div><strong class="el-icon-user-solid" style="color: white">test</strong></div>
         <i class="el-icon-switch-button" style="color:red;"><strong style="font-size: small">注销</strong></i>
