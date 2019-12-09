@@ -1,15 +1,16 @@
 <template>
 
-    <div id="app" v-if="this.$route.path==='/login'" style="height: 2000px;margin:0;background-image: url('../static/img/loginbgp.jpeg'); background-repeat: repeat;">
+    <div id="app" v-if="this.$route.path==='/login'" style="height: 100%;margin:0;background-image: url('../static/img/loginbgp.jpeg'); background-repeat: repeat;">
       <router-view/>
     </div>
-    <el-container v-else>
-      <el-aside width="210px" class="el-aside" style="height: 100%;padding: 0;margin: 0;">
+    <el-container v-else style="height: 100%">
+      <el-aside width="210px" class="el-aside" style="height: 100%;padding: 0;margin: 0;background-color: midnightblue;">
         <headers></headers>
       </el-aside>
-      <el-main style="height: 90%;padding: 0;">
-        <el-header id="el-header" height="10%" style="padding: 30px;background-color: dodgerblue">
-
+      <el-main style="height: 100%;padding: 0;">
+        <el-header id="el-header" height="50px" style="background-color: dodgerblue;">
+          <h5 style="float: right;margin: 20px 10px;color: white;" class="el-icon-setting">测试用户</h5>
+          <img src="../static/img/user.jpg" style="height: 30px;width: 30px;float: right;margin-top: 10px" alt="">
         </el-header>
         <div id="app" style="margin: 20px;">
           <router-view/>
@@ -42,10 +43,15 @@
     height: 300px;
   }
 
-  body {
+  html,body {
     margin: 0;
     padding: 0;
-    border: 0
+    border: 0;
+    height: 100%;
   }
+
+.el-aside::-webkit-scrollbar {
+  width: 0 !important
+}
 
 </style>
