@@ -4,14 +4,14 @@
       <router-view/>
     </div>
     <el-container v-else>
-      <el-aside width="200px" class="el-aside">
+      <el-aside width="210px" class="el-aside" style="height: 100%;padding: 0;margin: 0;">
         <headers></headers>
       </el-aside>
-      <el-main style="height: 90%">
-        <el-header id="el-header" height="10%">
+      <el-main style="height: 90%;padding: 0;">
+        <el-header id="el-header" height="10%" style="padding: 30px;background-color: dodgerblue">
 
         </el-header>
-        <div id="app">
+        <div id="app" style="margin: 20px;">
           <router-view/>
         </div>
       </el-main>
@@ -40,6 +40,12 @@
   #el-header {
     background-color: dodgerblue;
     height: 300px;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    border: 0
   }
 
 </style>

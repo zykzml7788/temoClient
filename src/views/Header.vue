@@ -1,6 +1,6 @@
 <template>
 
-  <div id="header" style="background-color: dodgerblue;margin-top: 0">
+  <div id="header" style="background-color: midnightblue;padding: 1px">
 <!--    <div style="background-color: coral">-->
 <!--      <img src="../../static/img/mogu.jpg" alt="" style="height: 20%;width: 20%">Teemo-->
 <!--    </div>-->
@@ -16,8 +16,8 @@
       </div>
     </div>
 
-    <el-menu default-active="1" class="el-menu-vertical-demo" @select="handleSelect" :collapse="isCollapse" id="cehuaMenu" width="20%" background-color="dodgerblue"
-             text-color="white" active-text-color="black">
+    <el-menu default-active="1" class="el-menu-vertical-demo" @select="handleSelect" :collapse="isCollapse" id="cehuaMenu" width="20%" background-color="midnightblue"
+             text-color="white" >
       <el-menu-item index="1">
         <i class="el-icon-menu" style="color:white"></i>
         <span slot="title">主页</span>
