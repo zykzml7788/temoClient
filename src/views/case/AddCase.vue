@@ -1,13 +1,13 @@
 <template>
   <el-dialog :visible.sync="$store.state.addcaseshow" style="height: 100%;" :close-on-click-modal="false"
-             @close="">
+             @close="closeView">
   <div id="caseTest">
     <h2 style="text-align: left">添加用例及脚本</h2>
     <h4>用例集：<strong style="color: red;">{{setName}}</strong></h4>
     <el-button type="primary" @click="" style="float: right">调试</el-button>
 
     <AddCaseForApi @getCaseInfo="getCaseInfo"></AddCaseForApi>
-
+    <EditCaseForApi @getCaseInfo="getCaseInfo"></EditCaseForApi>
     <el-tabs v-model="activeName" @tab-click="handleClick">
 
       <el-tab-pane label="前置脚本添加" name="first">
@@ -153,7 +153,7 @@
                   下移
                 </el-button>
                 <el-button
-                  @click.native.prevent=""
+                  @click.native.prevent="updateCase(scope.row)"
                   type="warning"
                   size="mini">
                   编辑
@@ -170,15 +170,25 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="执行环境" name="forth">
-        <el-form :model="envInfo"  ref="" label-width="100px" class="demo-ruleForm" style="float: left">
+        <el-form :model="envInfo"  :rules="rules" ref="envInfo" label-width="100px" class="demo-ruleForm" style="float: left">
           <el-form-item label="项目" prop="project">
-            <el-select v-model="envInfo.project" placeholder="请选择项目">
-              <el-option label="百度" value="百度"></el-option>
+            <el-select v-model="envInfo.project" placeholder="请选择项目" @change="getEnvs">
+              <el-option
+                v-for="item in projects"
+                :key="item.pid"
+                :label="item.pname"
+                :value="item.pid">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="环境" prop="env">
             <el-select v-model="envInfo.env" placeholder="请选择调试环境">
-              <el-option label="www.baidu.com" value="www.baidu.com"></el-option>
+              <el-option
+                v-for="item in envs"
+                :key="item.envId"
+                :label="item.envName"
+                :value="item.envId">
+              </el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -190,7 +200,7 @@
 
 <script>
     import AddCaseForApi from '@/views/case/AddCaseForApi'
-
+    import EditCaseForApi from "@/views/case/EditCaseForApi";
     export default {
         data() {
             return {
@@ -221,6 +231,16 @@
                   project:'',
                   env:''
                 },
+                projects:[],
+                envs:[],
+                rules:{
+                    project:[
+                        {required:true,message:'请选择项目',trigger:'blur'},
+                    ],
+                    env:[
+                        {required:true,message:'请选择环境',trigger:'blur'},
+                    ],
+                }
             };
         },
         methods:{
@@ -245,6 +265,12 @@
             });
               this.loading=false;
           },
+            updateCase(row){
+                this.$axios.get('/apis/testcase/'+row.caseId+'/info').then(res=>{
+                    this.$store.commit('setCaseInfo',res.data.data);
+                    this.$store.commit('changeEditcaseForApiShow',true);
+                });
+            },
           upCase(row){
             let data = new FormData();
             data.append('caseId',row.caseId);
@@ -295,13 +321,49 @@
                 });
               }
             );
-          }
+          },
+            getProjects(){
+                this.$axios.get('/apis/project/list').then(res=> {
+                    this.projects = res.data.data;
+                }).catch(err=>{
+                    this.$notify({
+                        title: '失败',
+                        type:'error',
+                        message:err
+                    });
+                });
+            },
+            getEnvs(){
+                this.$axios.get('/apis/project/env/?projectId='+this.envInfo.project).then(res=>{
+                        if (res.data.code === 200){
+                            this.envs = res.data.data;
+                        } else {
+                            this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
+                        }
 
+                    }
+                ).catch(err=>{
+                    this.$notify({title:'操作失败',type:'error',message:err});
+                });
+            },
+            closeView(){
+                this.$refs['envInfo'].resetFields();
+                this.envs = [];
+                this.envInfo = {
+                    project:'',
+                    env:''
+                };
+            }
+
+        },
+        created(){
+          this.getProjects();
         },
         computed: {
         },
         components:{
-          AddCaseForApi,
+            AddCaseForApi,
+            EditCaseForApi,
         },
         watch:{
           '$store.state.caseSetInfo': function (val) {
