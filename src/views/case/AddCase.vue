@@ -11,102 +11,31 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
 
       <el-tab-pane label="前置脚本添加" name="first">
-
-        <div id="setup_script">
-          <h3 style="text-align: left">前置脚本列表</h3>
-          <el-button type="primary" @click="" style="float: left;margin: 10px;">添加前置脚本</el-button>
-          <el-table
-            :data="setUpScripts"
-            stripe height="100%">
-            <el-table-column
-              prop="sorting"
-              label="执行顺序"
-              width="80">
-            </el-table-column>
-            <el-table-column
-              prop="scriptName"
-              label="脚本名称"
-              width="180">
-            </el-table-column>
-            <el-table-column
-              prop="scriptType"
-              label="脚本类别">
-            </el-table-column>
-            <el-table-column
-              fixed="right"
-              label="操作"
-              width="300">
-              <template slot-scope="scope">
-                <el-button
-                  @click.native.prevent=""
-                  type="primary"
-                  size="mini">
-                  上移
-                </el-button>
-                <el-button
-                  @click.native.prevent=""
-                  type="info"
-                  size="mini">
-                  下移
-                </el-button>
-                <el-button
-                  @click.native.prevent="deleteTestCase(scope.row)"
-                  type="danger"
-                  size="mini">
-                  移除
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+        <h3 style="text-align: left">前置脚本列表</h3>
+        <div id="setup_script" style="text-align: left">
+          <el-transfer
+            filterable
+            :filter-method="filterMethod"
+            filter-placeholder="请输入脚本名称"
+            v-model="setUpScripts"
+            :data="scripts"  :titles="['脚本列表','前置脚本列表']">
+          </el-transfer>
+          <el-button type="primary" round style="margin-top: 20px">保存</el-button>
+          <el-button type="danger" round style="margin-top: 20px">重置</el-button>
         </div>
       </el-tab-pane>
       <el-tab-pane label="后置脚本添加" name="second">
-        <div id="teardown_script">
+        <div id="teardown_script" style="text-align: left">
           <h3 style="text-align: left">后置脚本列表</h3>
-          <el-button type="primary" @click="" style="float: left;margin: 10px;">添加后置脚本</el-button>
-          <el-table
-            :data="tearDownScripts"
-            stripe height="100%">
-            <el-table-column
-              prop="sorting"
-              label="执行顺序"
-              width="80">
-            </el-table-column>
-            <el-table-column
-              prop="scriptName"
-              label="脚本名称"
-              width="180">
-            </el-table-column>
-            <el-table-column
-              prop="scriptType"
-              label="脚本类别">
-            </el-table-column>
-            <el-table-column
-              fixed="right"
-              label="操作"
-              width="300">
-              <template slot-scope="scope">
-                <el-button
-                  @click.native.prevent=""
-                  type="primary"
-                  size="mini">
-                  上移
-                </el-button>
-                <el-button
-                  @click.native.prevent=""
-                  type="info"
-                  size="mini">
-                  下移
-                </el-button>
-                <el-button
-                  @click.native.prevent="deleteTestCase(scope.row)"
-                  type="danger"
-                  size="mini">
-                  移除
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+          <el-transfer
+            filterable
+            :filter-method="filterMethod"
+            filter-placeholder="请输入脚本名称"
+            v-model="tearDownScripts"
+            :data="tScripts"  :titles="['脚本列表','后置脚本列表']">
+          </el-transfer>
+          <el-button type="primary" round style="margin-top: 20px">保存</el-button>
+          <el-button type="danger" round style="margin-top: 20px">重置</el-button>
         </div>
       </el-tab-pane>
       <el-tab-pane label="用例列表" name="third">
@@ -208,25 +137,11 @@
                 setName:'',
                 loading:false,
                 activeName: 'first',
-                setUpScripts: [
-                    {sorting:1,scriptName:"CRM系统登入",scriptType:"接口脚本"},
-                    {sorting:2,scriptName:"查询所有项目id",scriptType:"数据库脚本"},
-                    {sorting:3,scriptName:"查询所有项目id",scriptType:"数据库脚本"},
-                    {sorting:4,scriptName:"查询所有项目id",scriptType:"数据库脚本"},
-                    {sorting:5,scriptName:"查询所有项目id",scriptType:"数据库脚本"},
-                    {sorting:6,scriptName:"查询所有项目id",scriptType:"数据库脚本"}
-                ],
-                tearDownScripts: [
-                    {sorting:1,scriptName:"CRM系统登入",scriptType:"接口脚本"},
-                    {sorting:2,scriptName:"查询所有项目id",scriptType:"数据库脚本"},
-                    {sorting:3,scriptName:"查询所有项目id",scriptType:"数据库脚本"},
-                    {sorting:4,scriptName:"查询所有项目id",scriptType:"数据库脚本"},
-                    {sorting:5,scriptName:"查询所有项目id",scriptType:"数据库脚本"},
-                    {sorting:6,scriptName:"查询所有项目id",scriptType:"数据库脚本"}
-                ],
-                cases: [
-
-                ],
+                scripts: [],
+                tScripts:[],
+                setUpScripts: [],
+                tearDownScripts: [],
+                cases: [],
                 envInfo: {
                   project:'',
                   env:''
@@ -240,6 +155,9 @@
                     env:[
                         {required:true,message:'请选择环境',trigger:'blur'},
                     ],
+                },
+                filterMethod(query, item) {
+                    return  item.label.indexOf(query)!==-1;
                 }
             };
         },
@@ -249,6 +167,23 @@
             },
             showAddCaseForApi(){
               this.$store.commit("changeAddcaseForApiShow",true);
+            },
+            getScripts(){
+                this.$axios.get('/apis/script/list').then(res=>{
+                    res.data.data.forEach(n => {this.scripts.push({
+                        key:n.scriptId,
+                        label:n.scriptName,
+
+                    });
+                        this.tScripts.push({
+                            key:n.scriptId,
+                            label:n.scriptName,
+
+                        })
+
+                    });
+
+                });
             },
           getCaseInfo(){
               this.loading=true;
@@ -334,6 +269,7 @@
                 });
             },
             getEnvs(){
+                this.envInfo.env = '';
                 this.$axios.get('/apis/project/env/?projectId='+this.envInfo.project).then(res=>{
                         if (res.data.code === 200){
                             this.envs = res.data.data;
@@ -353,11 +289,18 @@
                     project:'',
                     env:''
                 };
+                this.activeName = 'first';
+                this.setUpScripts = [];
+                this.tearDownScripts = [];
+                this.tScripts = [];
+                this.scripts = [];
+                this.getScripts();
             }
 
         },
         created(){
           this.getProjects();
+          this.getScripts();
         },
         computed: {
         },
