@@ -10,7 +10,7 @@
     <EditCaseForApi @getCaseInfo="getCaseInfo"></EditCaseForApi>
     <el-tabs v-model="activeName" @tab-click="handleClick">
 
-      <el-tab-pane label="前置脚本添加" name="first">
+      <el-tab-pane label="前/后置脚本添加" name="first">
         <h3 style="text-align: left">前置脚本列表</h3>
         <div id="setup_script" style="text-align: left">
           <el-transfer
@@ -20,11 +20,7 @@
             v-model="setUpScripts"
             :data="scripts"  :titles="['脚本列表','前置脚本列表']">
           </el-transfer>
-          <el-button type="primary" round style="margin-top: 20px">保存</el-button>
-          <el-button type="danger" round style="margin-top: 20px">重置</el-button>
         </div>
-      </el-tab-pane>
-      <el-tab-pane label="后置脚本添加" name="second">
         <div id="teardown_script" style="text-align: left">
           <h3 style="text-align: left">后置脚本列表</h3>
           <el-transfer
@@ -34,8 +30,8 @@
             v-model="tearDownScripts"
             :data="tScripts"  :titles="['脚本列表','后置脚本列表']">
           </el-transfer>
-          <el-button type="primary" round style="margin-top: 20px">保存</el-button>
-          <el-button type="danger" round style="margin-top: 20px">重置</el-button>
+          <el-button type="primary" round style="margin-top: 20px" @click="addSTScript">保存</el-button>
+          <el-button type="danger" round style="margin-top: 20px" @click="reset">重置</el-button>
         </div>
       </el-tab-pane>
       <el-tab-pane label="用例列表" name="third">
@@ -141,6 +137,8 @@
                 tScripts:[],
                 setUpScripts: [],
                 tearDownScripts: [],
+                stScripts:[],
+                tdScripts:[],
                 cases: [],
                 envInfo: {
                   project:'',
@@ -170,18 +168,60 @@
             },
             getScripts(){
                 this.$axios.get('/apis/script/list').then(res=>{
-                    res.data.data.forEach(n => {this.scripts.push({
-                        key:n.scriptId,
-                        label:n.scriptName,
-
-                    });
+                    res.data.data.forEach(n => {
+                        this.scripts.push({
+                            key:n.scriptId,
+                            label:n.scriptName,
+                        });
                         this.tScripts.push({
                             key:n.scriptId,
                             label:n.scriptName,
-
-                        })
+                        });
+                        this.stScripts.push(
+                            {
+                                exScriptId: n.scriptId,
+                                exScriptType: "0",
+                                stScriptType: "1"
+                            }
+                        );
+                        this.tdScripts.push(
+                            {
+                                exScriptId: n.scriptId,
+                                exScriptType: "0",
+                                stScriptType: "2"
+                            }
+                        );
 
                     });
+
+                });
+                this.$axios.get('/apis/testcaseset/list').then(res=>{
+                    res.data.data.forEach(n => {this.scripts.push({
+                        key:n.setId,
+                        label:n.setName,
+                    });
+                        this.tScripts.push({
+                            key:n.setId,
+                            label:n.setName,
+                        });
+                        this.stScripts.push(
+                            {
+                                exScriptId: n.setId,
+                                exScriptType: "1",
+                                stScriptType: "1"
+                            }
+                        );
+                        this.tdScripts.push(
+                            {
+                                exScriptId: n.setId,
+                                exScriptType: "1",
+                                stScriptType: "2"
+                            }
+                        );
+
+
+                    });
+
 
                 });
             },
@@ -295,8 +335,40 @@
                 this.tScripts = [];
                 this.scripts = [];
                 this.getScripts();
-            }
+            },
+            addSTScript(){
+                let body = {
+                    setId: this.setId,
+                    stScriptRequests:  []
+                };
+                this.setUpScripts.forEach(n => {
+                   const script = this.stScripts.filter(m => m.exScriptId === n)[0];
+                   script.sorting = this.setUpScripts.indexOf(n);
+                   script.setId = this.setId;
+                   body.stScriptRequests.push(script);
+                });
+                this.tearDownScripts.forEach(n => {
+                    const script = this.tdScripts.filter(m => m.exScriptId === n)[0];
+                    script.sorting = this.tearDownScripts.indexOf(n);
+                    script.setId = this.setId;
+                    body.stScriptRequests.push(script);
+                });
+                this.$axios.post('/apis/testcaseset/stScript',body).then(res=>{
+                        if (res.data.code === 200){
+                            this.$notify({title:'操作成功',type:'success',message:res.data.msg});
+                        } else {
+                            this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
+                        }
 
+                    }
+                ).catch(err=>{
+                    this.$notify({title:'操作失败',type:'error',message:err});
+                });
+            },
+            reset(){
+                this.tearDownScripts = [];
+                this.setUpScripts = [];
+            }
         },
         created(){
           this.getProjects();
@@ -313,6 +385,19 @@
             this.setId = val.setId;
             this.setName = val.setName;
             this.cases = val.testCase;
+            for (const index in val.stScript){
+                if (val.stScript[index].stScriptType === "1"){
+                    this.setUpScripts.push(
+                        val.stScript[index].exScriptId
+                    );
+                    // this.scripts.splice(this.scripts.indexOf(this.scripts.filter(n => n.key === val.stScript[index].stScriptId)[0]),1);
+                }else{
+                    this.tearDownScripts.push(
+                        val.stScript[index].exScriptId
+                    );
+                    // this.tScripts.splice(this.scripts.indexOf(this.scripts.filter(n => n.key === val.stScript[index].stScriptId)[0]),1);
+                }
+            }
           }
         }
     };
