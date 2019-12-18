@@ -11,28 +11,35 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
 
       <el-tab-pane label="前/后置脚本添加" name="first" >
-        <h3 style="text-align: left">前置脚本列表</h3>
-        <div id="setup_script" style="text-align: left">
-          <el-transfer
-            filterable
-            :filter-method="filterMethod"
-            filter-placeholder="请输入脚本名称"
-            v-model="setUpScripts"
-            :data="scripts"  :titles="['脚本列表','前置脚本列表']">
-          </el-transfer>
-        </div>
-        <div id="teardown_script" style="text-align: left">
-          <h3 style="text-align: left">后置脚本列表</h3>
-          <el-transfer
-            filterable
-            :filter-method="filterMethod"
-            filter-placeholder="请输入脚本名称"
-            v-model="tearDownScripts"
-            :data="tScripts"  :titles="['脚本列表','后置脚本列表']">
-          </el-transfer>
+        <el-collapse v-model="activeNames"  accordion>
+          <el-collapse-item title="前置脚本" name="setup">
+            <div id="setup_script" style="text-align: left">
+              <el-transfer
+                filterable
+                :filter-method="filterMethod"
+                filter-placeholder="请输入脚本名称"
+                v-model="setUpScripts"
+                :data="scripts"  :titles="['脚本列表','前置脚本列表']">
+              </el-transfer>
+            </div>
+          </el-collapse-item>
+          <el-collapse-item title="后置脚本" name="teardown">
+            <div id="teardown_script" style="text-align: left">
+              <el-transfer
+                filterable
+                :filter-method="filterMethod"
+                filter-placeholder="请输入脚本名称"
+                v-model="tearDownScripts"
+                :data="tScripts"  :titles="['脚本列表','后置脚本列表']">
+              </el-transfer>
+            </div>
+          </el-collapse-item>
+        </el-collapse>
+        <div style="text-align: left">
           <el-button type="primary" round style="margin-top: 20px" @click="addSTScript">保存</el-button>
           <el-button type="danger" round style="margin-top: 20px" @click="reset">重置</el-button>
         </div>
+
       </el-tab-pane>
       <el-tab-pane label="用例列表" name="third">
         <div id="cases">
@@ -132,6 +139,7 @@
                 setId:'',
                 setName:'',
                 loading:false,
+                activeNames: ['setup'],
                 activeName: 'first',
                 scripts: [],
                 tScripts:[],
@@ -334,6 +342,7 @@
                 this.tearDownScripts = [];
                 this.tScripts = [];
                 this.scripts = [];
+                this.activeNames = ['setup'];
                 this.getScripts();
             },
             addSTScript(){
