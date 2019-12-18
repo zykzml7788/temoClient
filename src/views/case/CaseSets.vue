@@ -8,7 +8,7 @@
     </el-breadcrumb>
     <div class="header">
       <span>
-        <el-select v-model="projectId" filterable placeholder="请选择项目">
+        <el-select v-model="projectId" filterable clearable placeholder="请选择项目">
           <el-option
             v-for="item in projects"
             :key="item.pid"
@@ -18,7 +18,7 @@
         </el-select>
       </span>
       <span>
-        <el-select v-model="setStatus" filterable placeholder="请选择状态">
+        <el-select v-model="setStatus" filterable clearable placeholder="请选择状态">
           <el-option label="待完成" :value="'0'"></el-option>
           <el-option label="待维护" :value="'1'"></el-option>
           <el-option label="已完成" :value="'2'"></el-option>

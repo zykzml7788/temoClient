@@ -10,7 +10,7 @@
     <EditCaseForApi @getCaseInfo="getCaseInfo"></EditCaseForApi>
     <el-tabs v-model="activeName" @tab-click="handleClick">
 
-      <el-tab-pane label="前/后置脚本添加" name="first">
+      <el-tab-pane label="前/后置脚本添加" name="first" >
         <h3 style="text-align: left">前置脚本列表</h3>
         <div id="setup_script" style="text-align: left">
           <el-transfer
@@ -41,7 +41,7 @@
           <el-button type="primary" @click="" style="float: left;margin: 10px;">添加数据库用例</el-button>
           <el-table
             :data="cases"
-            stripe height="100%" :default-sort="{prop: 'sorting',order:'ascending'}" v-loading="loading">
+            stripe height="400px" :default-sort="{prop: 'sorting',order:'ascending'}" v-loading="loading">
             <el-table-column
               prop="sorting"
               label="执行顺序"

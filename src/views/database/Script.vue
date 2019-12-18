@@ -8,7 +8,7 @@
     </el-breadcrumb>
     <div class="header">
       <span>
-        <el-select v-model="value" filterable placeholder="请选择数据源">
+        <el-select v-model="value" filterable  clearable placeholder="请选择数据源">
           <el-option
             v-for="item in dbOptions"
             :key="item.dbId"
