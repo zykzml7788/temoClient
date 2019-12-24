@@ -576,6 +576,7 @@
                 const data = {
                     caseId: this.caseId,
                     body:body,
+                    contentType:this.contentType,
                     caseDesc: this.caseInfo.caseDesc,
                     caseType: 1,
                     cookies: cookies,
@@ -709,12 +710,27 @@
             '$store.state.caseInfo': function (val) {
                 this.setId = val.setId;
                 this.caseId = val.caseId;
-                this.json = val.body?val.body:'' ;
                 this.caseInfo.caseDesc = val.caseDesc;
                 this.delayTime = val.delayTime;
                 this.jsonAssert = val.jsonAssert;
                 this.api.method = val.method;
                 this.api.url = val.url;
+                this.contentType = parseInt(val.contentType);
+                if (this.contentType === 1){
+                  const body = JSON.parse(val.body);
+                  this.formParams = [];
+                  for (const k in body){
+                    this.formParams.push({key:k,value:body[k]});
+                  }
+                } else if (this.contentType === 2){
+                  const body = JSON.parse(val.body);
+                  this.urlParams = [];
+                  for (const k in body){
+                    this.urlParams.push({key:k,value:body[k]});
+                  }
+                } else{
+                  this.json = val.body?val.body:'' ;
+                }
                 if (val.cookies!==null && val.cookies!==''){
                     const cookies = JSON.parse(val.cookies);
                     this.cookies=[];

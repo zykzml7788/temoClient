@@ -572,6 +572,7 @@
 
             const data = {
                 body:body,
+                contentType:this.contentType,
                 caseDesc: this.caseInfo.caseDesc,
                 caseType: 1,
                 cookies: cookies,
