@@ -50,14 +50,14 @@
                 ],
                 rules:{
                     projectId:[
-                        {required:true,message:'请选择项目',trigger:'blur'},
+                        {required:true,message:'请选择项目',trigger:'change'},
                     ],
                     setName:[
                         {required:true,message:'请输入用例集名称',trigger:'blur'},
                     ],
 
                     setDesc:[
-                        {required:true,message:'请输入用例集步骤描述',trigger:'blur'},
+                        {required:true,message:'请输入用例集步骤描述',trigger:'change'},
                     ]
 
                 },

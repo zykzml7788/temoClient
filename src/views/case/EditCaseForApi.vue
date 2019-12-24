@@ -718,18 +718,20 @@
                 this.contentType = parseInt(val.contentType);
                 if (this.contentType === 1){
                   const body = JSON.parse(val.body);
-                  this.formParams = [];
-                  for (const k in body){
-                    this.formParams.push({key:k,value:body[k]});
+                  if (body!==null){
+                      this.formParams = [];
+                      for (const k in body){
+                          this.formParams.push({key:k,value:body[k]});
+                      }
+                  } else if (this.contentType === 2){
+                      const body = JSON.parse(val.body);
+                      this.urlParams = [];
+                      for (const k in body){
+                          this.urlParams.push({key:k,value:body[k]});
+                      }
+                  } else{
+                      this.json = val.body?val.body:'' ;
                   }
-                } else if (this.contentType === 2){
-                  const body = JSON.parse(val.body);
-                  this.urlParams = [];
-                  for (const k in body){
-                    this.urlParams.push({key:k,value:body[k]});
-                  }
-                } else{
-                  this.json = val.body?val.body:'' ;
                 }
                 if (val.cookies!==null && val.cookies!==''){
                     const cookies = JSON.parse(val.cookies);
