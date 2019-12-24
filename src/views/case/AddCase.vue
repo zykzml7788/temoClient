@@ -137,8 +137,11 @@
       size="50%"
       >
       <div style="margin: 20px">
-        <el-progress type="circle" :percentage="percentage" status="success" v-if="percentage===100"></el-progress>
-        <el-progress type="circle" :percentage="percentage" v-else></el-progress>
+        <el-progress type="circle" :percentage="executedRate" status="success" v-if="executedRate===100"></el-progress>
+        <el-progress type="circle" :percentage="executedRate" v-else></el-progress>
+      </div>
+      <div style="margin: 20px">
+        <el-progress type="circle" :percentage="successRate"></el-progress>
       </div>
     </el-drawer>
   </el-dialog>
@@ -150,7 +153,9 @@
     export default {
         data() {
             return {
-                percentage:30,
+                executedRate:0,
+                successRate:0,
+                error:0,
                 drawer:false,
                 path:"ws://129.204.148.24:8080/temo/websocket/123",
                 socket:"",
@@ -408,6 +413,8 @@
                   ).catch(err=>{
                     this.$notify({title:'操作失败',type:'error',message:err,position: 'top-left'});
                   });
+                  this.executedRate = 0;
+                  this.successRate = 0;
                   this.drawer = true;
                 }else{
                   this.activeName = "forth";
@@ -439,7 +446,11 @@
               console.log("连接错误")
             },
             getMessage: function (msg) {
-              console.log(msg.data)
+              console.log(msg.data);
+              let testResult = JSON.parse(msg.data);
+              this.executedRate = parseFloat(testResult.executedRate);
+              this.successRate = parseFloat(testResult.successRate);
+              this.error = testResult.error;
             },
             send: function () {
               this.socket.send(params)
