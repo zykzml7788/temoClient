@@ -4,7 +4,10 @@
   <div id="caseTest">
     <h2 style="text-align: left">添加用例及脚本</h2>
     <h4>用例集：<strong style="color: red;">{{setName}}</strong></h4>
-    <el-button type="primary" @click="" style="float: right">调试</el-button>
+    <div style="text-align: right">
+      <el-button type="primary" @click="testCaseSet" >调试</el-button>
+    </div>
+
 
     <AddCaseForApi @getCaseInfo="getCaseInfo"></AddCaseForApi>
     <EditCaseForApi @getCaseInfo="getCaseInfo"></EditCaseForApi>
@@ -127,6 +130,17 @@
       </el-tab-pane>
     </el-tabs>
   </div>
+    <el-drawer
+      title="调试结果查看"
+      :visible.sync="drawer"
+      :direction="'rtl'"
+      size="50%"
+      >
+      <div style="margin: 20px">
+        <el-progress type="circle" :percentage="percentage" status="success" v-if="percentage===100"></el-progress>
+        <el-progress type="circle" :percentage="percentage" v-else></el-progress>
+      </div>
+    </el-drawer>
   </el-dialog>
 </template>
 
@@ -136,6 +150,10 @@
     export default {
         data() {
             return {
+                percentage:30,
+                drawer:false,
+                path:"ws://129.204.148.24:8080/temo/websocket/123",
+                socket:"",
                 setId:'',
                 setName:'',
                 loading:false,
@@ -374,14 +392,73 @@
                     this.$notify({title:'操作失败',type:'error',message:err});
                 });
             },
+            testCaseSet(){
+              this.$refs['envInfo'].validate(bol=> {
+                if (bol) {
+                  let formData = new FormData();
+                  formData.append('envId',this.envInfo.env);
+                  this.$axios.post('/apis/testcaseset/execute/'+this.setId,formData).then(res=>{
+                      if (res.data.code === 200){
+                        this.$notify({title:'操作成功',type:'success',message:res.data.msg,position: 'top-left'});
+                      } else {
+                        this.$notify({title:'操作失败',type:'warning',message:res.data.msg,position: 'top-left'});
+                      }
+
+                    }
+                  ).catch(err=>{
+                    this.$notify({title:'操作失败',type:'error',message:err,position: 'top-left'});
+                  });
+                  this.drawer = true;
+                }else{
+                  this.activeName = "forth";
+                }
+              });
+            },
             reset(){
                 this.tearDownScripts = [];
                 this.setUpScripts = [];
+            },
+            init: function () {
+              if(typeof(WebSocket) === "undefined"){
+                alert("您的浏览器不支持socket")
+              }else{
+                // 实例化socket
+                this.socket = new WebSocket(this.path);
+                // 监听socket连接
+                this.socket.onopen = this.open;
+                // 监听socket错误信息
+                this.socket.onerror = this.error;
+                // 监听socket消息
+                this.socket.onmessage = this.getMessage;
+              }
+            },
+            open: function () {
+              console.log("socket连接成功")
+            },
+            error: function () {
+              console.log("连接错误")
+            },
+            getMessage: function (msg) {
+              console.log(msg.data)
+            },
+            send: function () {
+              this.socket.send(params)
+            },
+            close: function () {
+              console.log("socket已经关闭")
             }
         },
+
         created(){
           this.getProjects();
           this.getScripts();
+        },
+        mounted(){
+          this.init();
+        },
+        destroyed () {
+          // 销毁监听
+          this.socket.onclose = this.close;
         },
         computed: {
         },

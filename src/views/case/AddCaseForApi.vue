@@ -233,15 +233,15 @@
             </el-tab-pane>
             <el-tab-pane label="Global Cookies">
               <h5>Global Cookies</h5>
-              <div class="demo-input-suffix" v-for="globalCooie in globalCookies" style="margin-bottom: 10px">
+              <div class="demo-input-suffix" v-for="globalCookie in globalCookies" style="margin-bottom: 10px">
                 <el-input
                   placeholder="KEY"
-                  v-model="globalCooie.key" style="width: 200px" size="small">
+                  v-model="globalCookie.key" style="width: 200px" size="small">
                 </el-input>
                 -
                 <el-input
                   placeholder="VALUE"
-                  v-model="globalCooie.value" style="width: 200px" size="small">
+                  v-model="globalCookie.value" style="width: 200px" size="small">
                 </el-input>
                 <el-button type="primary" round icon="el-icon-circle-plus-outline" size="small" style="margin-left: 30px" @click="addGlobalCookieKv">ADD</el-button>
                 <el-button type="danger" round icon="el-icon-remove-outline" size="small" v-if="globalCookies.length!==1"  @click="delGlobalCookieKv(param)">DELETE</el-button>
@@ -614,19 +614,48 @@
               url:'',
               method:'GET'
           };
-          const setUp = [
-              {
-                  key: '',
-                  value: ''
-              }
+          this.params=[
+            {
+              key: '',
+              value: ''
+            }
           ];
-          this.params=setUp;
-          this.urlParams=setUp;
-          this.headers=setUp;
-          this.cookie=setUp;
-          this.formParams=setUp;
-          this.globalHeaders=setUp;
-          this.globalCookies=setUp;
+          this.urlParams=[
+            {
+              key: '',
+              value: ''
+            }
+          ];
+          this.headers=[
+            {
+              key: '',
+              value: ''
+            }
+          ];
+          this.cookie=[
+            {
+              key: '',
+              value: ''
+            }
+          ];
+          this.formParams=[
+            {
+              key: '',
+              value: ''
+            }
+          ];
+          this.globalHeaders=[
+            {
+              key: '',
+              value: ''
+            }
+          ];
+          this.globalCookies=[
+            {
+              key: '',
+              value: ''
+            }
+          ];
           this.json='';
           this.saves=[
               {
