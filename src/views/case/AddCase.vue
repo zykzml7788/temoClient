@@ -137,12 +137,12 @@
       size="50%"
       >
       <div style="margin: 20px;display: inline">
-        <el-card shadow="always" style="width:40%;margin:10px;text-align: center;float: left">
+        <el-card shadow="always" style="width:40%;margin:20px;text-align: center;float: left">
           <div style="margin-bottom: 20px">执行进度</div>
           <el-progress type="circle" :percentage="executedRate" status="success" v-if="executedRate===100"></el-progress>
           <el-progress type="circle" :percentage="executedRate" v-else></el-progress>
         </el-card>
-        <el-card shadow="always" style="width:40%;margin:10px;text-align: center;float: left">
+        <el-card shadow="always" style="width:40%;margin:20px;text-align: center;float: left">
           <div style="margin-bottom: 20px">成功率</div>
           <el-progress type="circle" :percentage="successRate"></el-progress>
         </el-card>
