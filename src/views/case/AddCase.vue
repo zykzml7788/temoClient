@@ -1,7 +1,7 @@
 <template>
   <el-dialog :visible.sync="$store.state.addcaseshow" style="height: 100%;" :close-on-click-modal="false"
              @close="closeView">
-  <div id="caseTest">
+  <div id="caseTest" v-loading="loading">
     <h2 style="text-align: left">添加用例及脚本</h2>
     <h4>用例集：<strong style="color: red;">{{setName}}</strong></h4>
     <div style="text-align: right">
@@ -136,29 +136,77 @@
       :direction="'rtl'"
       size="50%"
       >
-      <div style="margin: 20px">
+      <div style="margin: 20px;display: inline">
+        执行进度：
         <el-progress type="circle" :percentage="executedRate" status="success" v-if="executedRate===100"></el-progress>
         <el-progress type="circle" :percentage="executedRate" v-else></el-progress>
-      </div>
-      <div style="margin: 20px">
+        成功率：
         <el-progress type="circle" :percentage="successRate"></el-progress>
       </div>
+      <el-table
+      :data="executedRows"
+      stripe height="500"
+      style="width: 100%;margin: 30px;">
+      <el-table-column
+        prop="index"
+        label="序号"
+        width="80">
+      </el-table-column>
+      <el-table-column
+        prop="caseName"
+        label="用例名称"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="status"
+        label="执行状态">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.status === 1" type="success">成功</el-tag>
+          <el-tag v-else type="danger">失败</el-tag>
+        </template>
+      </el-table-column>
+        <el-table-column
+          prop="logs"
+          label="日志">
+          <template slot-scope="scope">
+            <el-button type="primary" round icon="el-icon-tickets" size="mini" @click="lookLogs(scope.row.logs)">查看</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </el-drawer>
+      <el-dialog
+        title="日志详情"
+        :visible.sync="logView"
+        width="60%"
+        :append-to-body="true">
+        <div v-html="logs" style="">
+
+        </div>
+        <span slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="logView = false">确 定</el-button>
+    </span>
+    </el-dialog>
   </el-dialog>
 </template>
 
 <script>
-    import AddCaseForApi from '@/views/case/AddCaseForApi'
-    import EditCaseForApi from "@/views/case/EditCaseForApi";
-    export default {
+  import AddCaseForApi from '@/views/case/AddCaseForApi'
+  import EditCaseForApi from "@/views/case/EditCaseForApi";
+
+  export default {
         data() {
             return {
+                logs:'',
+                logView:false,
+                executedRows:[],
                 executedRate:0,
                 successRate:0,
                 error:0,
                 drawer:false,
                 path:"ws://129.204.148.24:8080/temo/websocket/123",
+                logpath:"ws://129.204.148.24:8080/temo/websocket/101",
                 socket:"",
+                logSocket:"",
                 setId:'',
                 setName:'',
                 loading:false,
@@ -179,10 +227,10 @@
                 envs:[],
                 rules:{
                     project:[
-                        {required:true,message:'请选择项目',trigger:'blur'},
+                        {required:true,message:'请选择项目',trigger:'change'},
                     ],
                     env:[
-                        {required:true,message:'请选择环境',trigger:'blur'},
+                        {required:true,message:'请选择环境',trigger:'change'},
                     ],
                 },
                 filterMethod(query, item) {
@@ -198,6 +246,7 @@
               this.$store.commit("changeAddcaseForApiShow",true);
             },
             getScripts(){
+                this.loading = true;
                 this.$axios.get('/apis/script/list').then(res=>{
                     res.data.data.forEach(n => {
                         this.scripts.push({
@@ -255,6 +304,7 @@
 
 
                 });
+              this.loading = false;
             },
           getCaseInfo(){
               this.loading=true;
@@ -415,6 +465,7 @@
                   });
                   this.executedRate = 0;
                   this.successRate = 0;
+                  this.executedRows = [];
                   this.drawer = true;
                 }else{
                   this.activeName = "forth";
@@ -439,6 +490,24 @@
                 this.socket.onmessage = this.getMessage;
               }
             },
+            logInit: function(){
+              if(typeof(WebSocket) === "undefined"){
+                alert("您的浏览器不支持socket")
+              }else{
+                // 实例化socket
+                this.logSocket = new WebSocket(this.logpath);
+                // 监听socket连接
+                this.logSocket.onopen = function () {
+                  console.log("logSocket连接成功")
+                };
+                // 监听socket错误信息
+                this.logSocket.onerror = function () {
+                  console.log("logSocket连接错误")
+                };
+                // 监听socket消息
+                this.logSocket.onmessage = this.logOnMessage;
+              }
+            },
             open: function () {
               console.log("socket连接成功")
             },
@@ -457,8 +526,17 @@
             },
             close: function () {
               console.log("socket已经关闭")
+            },
+            logOnMessage: function(msg){
+                let executedRow = JSON.parse(msg.data);
+                console.log(executedRow);
+                this.executedRows.push(executedRow);
+              },
+            lookLogs(logs){
+              this.logs = logs.replace(/\n/g, "<br/>");
+              this.logView = true;
             }
-        },
+            },
 
         created(){
           this.getProjects();
@@ -466,6 +544,7 @@
         },
         mounted(){
           this.init();
+          this.logInit();
         },
         destroyed () {
           // 销毁监听
