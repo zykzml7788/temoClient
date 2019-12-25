@@ -121,7 +121,7 @@
             </el-tooltip>
 
             <div  v-for="save in saves" style="margin-top: 20px">
-              <el-select v-model="save.saveFrom"  placeholder="saveFrom" style="width: 150px;" size="small">
+              <el-select v-model="save.saveFrom"  placeholder="saveFrom" clearable style="width: 150px;" size="small">
                 <el-option label="Response Body" value="1"></el-option>
                 <el-option label="Response Header" value="2"></el-option>
                 <el-option label="Cookie" value="3"></el-option>
@@ -130,7 +130,7 @@
                 placeholder="KEY"
                 v-model="save.key" style="width: 200px" size="small">
               </el-input>
-              <el-select v-model="save.saveBy"  placeholder="saveBy" style="width: 150px;" size="small" @change="clearSave(save)">
+              <el-select v-model="save.saveBy"  placeholder="saveBy" style="width: 150px;" clearable size="small" @change="clearSave(save)">
                 <el-option label="JSONPATH" value="1"></el-option>
                 <el-option label="REGEX" value="2"></el-option>
               </el-select>
@@ -169,7 +169,7 @@
 
             </el-radio-group>
             <div  v-for="assert in asserts" style="margin-top: 20px" v-if="assertType===1">
-              <el-select v-model="assert.assertBy"  placeholder="assertBy" style="width: 150px;" size="small" @change="clearAssert(assert)">
+              <el-select v-model="assert.assertBy"  placeholder="assertBy" clearable style="width: 150px;" size="small" @change="clearAssert(assert)">
                 <el-option label="JSONPATH" value="1"></el-option>
                 <el-option label="REGEX" value="2"></el-option>
               </el-select>
@@ -181,7 +181,7 @@
                 placeholder="REGEX"
                 v-model="assert.regex" style="width: 200px" size="small" v-if="assert.assertBy==='2'">
               </el-input>
-              <el-select v-model="assert.relation"  placeholder="relation" style="width: 150px;" size="small">
+              <el-select v-model="assert.relation"  placeholder="relation" clearable style="width: 150px;" size="small">
                 <el-option label="is" value="1"></el-option>
                 <el-option label="not" value="2"></el-option>
                 <el-option label="contains" value="3"></el-option>
@@ -716,21 +716,21 @@
                 this.api.method = val.method;
                 this.api.url = val.url;
                 this.contentType = parseInt(val.contentType);
-                if (this.contentType === 1){
-                  const body = JSON.parse(val.body);
-                  if (body!==null){
-                      this.formParams = [];
-                      for (const k in body){
-                          this.formParams.push({key:k,value:body[k]});
-                      }
+                if (val.body!==null) {
+                  if (this.contentType === 1){
+                    const body = JSON.parse(val.body);
+                    this.formParams = [];
+                    for (const k in body){
+                      this.formParams.push({key:k,value:body[k]});
+                    }
                   } else if (this.contentType === 2){
-                      const body = JSON.parse(val.body);
-                      this.urlParams = [];
-                      for (const k in body){
-                          this.urlParams.push({key:k,value:body[k]});
-                      }
+                    const body = JSON.parse(val.body);
+                    this.urlParams = [];
+                    for (const k in body){
+                      this.urlParams.push({key:k,value:body[k]});
+                    }
                   } else{
-                      this.json = val.body?val.body:'' ;
+                    this.json = val.body?val.body:'' ;
                   }
                 }
                 if (val.cookies!==null && val.cookies!==''){
