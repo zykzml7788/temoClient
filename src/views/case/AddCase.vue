@@ -137,14 +137,22 @@
       size="50%"
       >
       <div style="margin: 20px;display: inline">
-        <el-card shadow="always" style="width:40%;margin:20px;text-align: center;float: left">
-          <div style="margin-bottom: 20px">执行进度</div>
-          <el-progress type="circle" :percentage="executedRate" status="success" v-if="executedRate===100"></el-progress>
-          <el-progress type="circle" :percentage="executedRate" v-else></el-progress>
+        <el-card shadow="always" style="width:40%;height:25%;margin:20px;text-align: left;float: left">
+          <div style="margin-bottom: 20px"><strong>执行进度</strong></div>
+          <h5>{{executedRate}}%</h5>
+          <el-progress  :percentage="executedRate" :show-text="false" status="success" v-if="executedRate===100"></el-progress>
+          <el-progress  :percentage="executedRate" :show-text="false" v-else></el-progress>
+          <div style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>已执行用例数：{{executeNum}}</span></div>
+          <div style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>用例总数：{{caseNum}}</span></div>
         </el-card>
-        <el-card shadow="always" style="width:40%;margin:20px;text-align: center;float: left">
-          <div style="margin-bottom: 20px">成功率</div>
-          <el-progress type="circle" :percentage="successRate"></el-progress>
+        <el-card shadow="always" style="width:40%;height:25%;margin:20px;text-align: left;float: left">
+          <div style="margin-bottom: 20px"><strong>成功率</strong></div>
+          <h5>{{successRate}}%</h5>
+          <el-progress  :percentage="successRate" :show-text="false" status="success" v-if="successRate===100"></el-progress>
+          <el-progress  :percentage="successRate" :show-text="false" v-else-if="successRate<100 && successRate>49"></el-progress>
+          <el-progress  :percentage="successRate" :show-text="false" status="exception" v-else></el-progress>
+          <div><p style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>成功数：{{success}}</span><span style="margin-left: 60px">失败数：{{error}}</span></p></div>
+          <div style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>用例总数：{{caseNum}}</span></div>
         </el-card>
       </div>
       <el-card shadow="always" style="margin: 20px;float: left;width:100%">
@@ -160,11 +168,12 @@
           <el-table-column
             prop="caseName"
             label="用例名称"
-            width="180">
+            width="500">
           </el-table-column>
           <el-table-column
             prop="status"
-            label="执行状态">
+            label="执行状态"
+            width="100">
             <template slot-scope="scope">
               <el-tag v-if="scope.row.status === 1" type="success">成功</el-tag>
               <el-tag v-else type="danger">失败</el-tag>
@@ -172,7 +181,8 @@
           </el-table-column>
           <el-table-column
             prop="logs"
-            label="日志">
+            label="日志"
+            width="100">
             <template slot-scope="scope">
               <el-button type="primary" round icon="el-icon-tickets" size="mini" @click="lookLogs(scope.row.logs)">查看</el-button>
             </template>
@@ -208,6 +218,9 @@
                 executedRows:[],
                 executedRate:0,
                 successRate:0,
+                caseNum:0,
+                executeNum:0,
+                success:0,
                 error:0,
                 drawer:false,
                 path:"ws://129.204.148.24:8080/temo/websocket/123",
@@ -470,6 +483,10 @@
                   ).catch(err=>{
                     this.$notify({title:'操作失败',type:'error',message:err,position: 'top-left'});
                   });
+                  this.success=0;
+                  this.error=0;
+                  this.executeNum=0;
+                  this.caseNum=0;
                   this.executedRate = 0;
                   this.successRate = 0;
                   this.executedRows = [];
@@ -527,6 +544,9 @@
               this.executedRate = parseFloat(testResult.executedRate);
               this.successRate = parseFloat(testResult.successRate);
               this.error = testResult.error;
+              this.success = testResult.success;
+              this.caseNum = testResult.caseNum;
+              this.executeNum = testResult.executedNum;
             },
             send: function () {
               this.socket.send(params)
