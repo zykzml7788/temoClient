@@ -131,7 +131,7 @@
     </el-tabs>
   </div>
     <el-drawer
-      title="调试结果查看"
+      title="实时执行记录"
       :visible.sync="drawer"
       :direction="'rtl'"
       size="50%"
