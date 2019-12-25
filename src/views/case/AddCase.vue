@@ -137,42 +137,49 @@
       size="50%"
       >
       <div style="margin: 20px;display: inline">
-        执行进度：
-        <el-progress type="circle" :percentage="executedRate" status="success" v-if="executedRate===100"></el-progress>
-        <el-progress type="circle" :percentage="executedRate" v-else></el-progress>
-        成功率：
-        <el-progress type="circle" :percentage="successRate"></el-progress>
+        <el-card shadow="always" style="width:40%;margin:10px;text-align: center;float: left">
+          <div style="margin-bottom: 20px">执行进度</div>
+          <el-progress type="circle" :percentage="executedRate" status="success" v-if="executedRate===100"></el-progress>
+          <el-progress type="circle" :percentage="executedRate" v-else></el-progress>
+        </el-card>
+        <el-card shadow="always" style="width:40%;margin:10px;text-align: center;float: left">
+          <div style="margin-bottom: 20px">成功率</div>
+          <el-progress type="circle" :percentage="successRate"></el-progress>
+        </el-card>
       </div>
-      <el-table
-      :data="executedRows"
-      stripe height="500"
-      style="width: 100%;margin: 30px;">
-      <el-table-column
-        prop="index"
-        label="序号"
-        width="80">
-      </el-table-column>
-      <el-table-column
-        prop="caseName"
-        label="用例名称"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="status"
-        label="执行状态">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.status === 1" type="success">成功</el-tag>
-          <el-tag v-else type="danger">失败</el-tag>
-        </template>
-      </el-table-column>
-        <el-table-column
-          prop="logs"
-          label="日志">
-          <template slot-scope="scope">
-            <el-button type="primary" round icon="el-icon-tickets" size="mini" @click="lookLogs(scope.row.logs)">查看</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-card shadow="always" style="margin: 20px;float: left;width:100%">
+        <el-table
+          :data="executedRows"
+          stripe height="500"
+          style="width: 100%;">
+          <el-table-column
+            prop="index"
+            label="序号"
+            width="80">
+          </el-table-column>
+          <el-table-column
+            prop="caseName"
+            label="用例名称"
+            width="180">
+          </el-table-column>
+          <el-table-column
+            prop="status"
+            label="执行状态">
+            <template slot-scope="scope">
+              <el-tag v-if="scope.row.status === 1" type="success">成功</el-tag>
+              <el-tag v-else type="danger">失败</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="logs"
+            label="日志">
+            <template slot-scope="scope">
+              <el-button type="primary" round icon="el-icon-tickets" size="mini" @click="lookLogs(scope.row.logs)">查看</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-card>
+
     </el-drawer>
       <el-dialog
         title="日志详情"
