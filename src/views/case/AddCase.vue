@@ -168,7 +168,7 @@
           <el-table-column
             prop="caseName"
             label="用例名称"
-            width="500">
+            width="300">
           </el-table-column>
           <el-table-column
             prop="status"
