@@ -6,7 +6,7 @@
     <h4>用例集：<strong style="color: red;">{{setName}}</strong></h4>
     <div style="text-align: right">
       <el-button type="primary" @click="testCaseSet" >调试</el-button>
-      <el-button type="primary" @click="drawer=true" >实时日志</el-button>
+      <el-button type="primary" @click="drawer=true" >实时结果</el-button>
     </div>
 
 
