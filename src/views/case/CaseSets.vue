@@ -78,8 +78,8 @@
         label="是否启用"
         width="200">
         <template slot-scope="scope">
-          <p  v-if="caseSetLists[scope.$index].valid==='0'">禁用</p>
-          <p  v-if="caseSetLists[scope.$index].valid==='1'">启用</p>
+          <el-tag  type="danger" v-if="caseSetLists[scope.$index].valid==='0'">禁用</el-tag>
+          <el-tag type="success"  v-if="caseSetLists[scope.$index].valid==='1'">启用</el-tag>
         </template>
       </el-table-column>
       <el-table-column

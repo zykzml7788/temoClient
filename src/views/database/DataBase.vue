@@ -62,11 +62,6 @@
         width="300">
       </el-table-column>
       <el-table-column
-        prop="pwd"
-        label="密码"
-        width="300">
-      </el-table-column>
-      <el-table-column
         prop="createtime"
         label="创建时间"
         width="300">

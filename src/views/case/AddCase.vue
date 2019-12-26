@@ -1,11 +1,12 @@
 <template>
   <el-dialog :visible.sync="$store.state.addcaseshow" style="height: 100%;" :close-on-click-modal="false"
              @close="closeView">
-  <div id="caseTest" v-loading="loading">
+  <div id="caseTest" v-loading="setName === ''">
     <h2 style="text-align: left">添加用例及脚本</h2>
     <h4>用例集：<strong style="color: red;">{{setName}}</strong></h4>
     <div style="text-align: right">
       <el-button type="primary" @click="testCaseSet" >调试</el-button>
+      <el-button type="primary" @click="drawer=true" >实时日志</el-button>
     </div>
 
 
@@ -229,7 +230,7 @@
                 logSocket:"",
                 setId:'',
                 setName:'',
-                loading:false,
+                loading:true,
                 activeNames: ['setup'],
                 activeName: 'first',
                 scripts: [],
@@ -424,6 +425,7 @@
                 });
             },
             closeView(){
+                this.setName = '';
                 this.$refs['envInfo'].resetFields();
                 this.envs = [];
                 this.envInfo = {
@@ -436,6 +438,7 @@
                 this.tScripts = [];
                 this.scripts = [];
                 this.activeNames = ['setup'];
+                this.clearLog();
                 this.getScripts();
             },
             addSTScript(){
@@ -483,18 +486,21 @@
                   ).catch(err=>{
                     this.$notify({title:'操作失败',type:'error',message:err,position: 'top-left'});
                   });
-                  this.success=0;
-                  this.error=0;
-                  this.executeNum=0;
-                  this.caseNum=0;
-                  this.executedRate = 0;
-                  this.successRate = 0;
-                  this.executedRows = [];
+                  this.clearLog();
                   this.drawer = true;
                 }else{
                   this.activeName = "forth";
                 }
               });
+            },
+            clearLog(){
+              this.success=0;
+              this.error=0;
+              this.executeNum=0;
+              this.caseNum=0;
+              this.executedRate = 0;
+              this.successRate = 0;
+              this.executedRows = [];
             },
             reset(){
                 this.tearDownScripts = [];
