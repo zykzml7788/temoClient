@@ -448,40 +448,37 @@
             let globalCookies = {};
             let saves = [];
             let asserts = [];
-            if (this.activeNameForApi === 'body'){
-                if (this.contentType===1){
-                    for (const index in this.formParams){
-                        if (this.formParams.length===1 && this.formParams[0].key===''){
-                            body = null;
-                            break;
-                        }
-                        const key = this.formParams[index].key;
-                        body[key] = this.formParams[index].value;
+            if (this.contentType===1){
+                for (const index in this.formParams){
+                    if (this.formParams.length===1 && this.formParams[0].key===''){
+                        body = null;
+                        break;
                     }
-                    if (body!==null){
-                        body = JSON.stringify(body);
-                    }
+                    const key = this.formParams[index].key;
+                    body[key] = this.formParams[index].value;
+                }
+                if (body!==null){
+                    body = JSON.stringify(body);
+                }
 
-                }else if (this.contentType===2){
-                    const kvs = [];
-                    body=null;
-                    for (const index in this.urlParams){
-                        if (this.urlParams.length===1 && this.urlParams[0].key===''){
-                            break;
-                        }
-                        const key = this.urlParams[index].key;
-                        const value = this.urlParams[index].value;
-                        kvs.push(key+"="+value);
+            }else if (this.contentType===2){
+                const kvs = [];
+                body=null;
+                for (const index in this.urlParams){
+                    if (this.urlParams.length===1 && this.urlParams[0].key===''){
+                        break;
                     }
-                    if (kvs.length!==0){
-                        url = url+"?"+kvs.join("&");
-                    }
-                }else{
-                    body = this.json;
+                    const key = this.urlParams[index].key;
+                    const value = this.urlParams[index].value;
+                    kvs.push(key+"="+value);
+                }
+                if (kvs.length!==0){
+                    url = url+"?"+kvs.join("&");
                 }
             }else{
-                body = null;
+                body = this.json;
             }
+
             for (const index in this.params){
                 if (this.params.length===1 && this.params[0].key===''){
                     params = null;
