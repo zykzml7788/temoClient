@@ -352,12 +352,15 @@
             let data = new FormData();
             data.append('caseId',row.caseId);
             data.append('move','up');
+            let setName = this.setName;
+            this.setName = "";
             this.$axios.put('/apis/testcase/'+row.caseId+'/order',data).then(res=>{
                 if (res.data.code === 200){
                   this.$store.commit('setCaseSetInfo',res.data.data);
                   this.$notify({title:'操作成功',type:'success',message:res.data.msg});
                   this.getCaseInfo();
                 } else {
+                  this.setName = setName;
                   this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
                 }
 
@@ -370,12 +373,15 @@
             let data = new FormData();
             data.append('caseId',row.caseId);
             data.append('move','down');
+            let setName = this.setName;
+            this.setName = "";
             this.$axios.put('/apis/testcase/'+row.caseId+'/order',data).then(res=>{
                 if (res.data.code === 200){
                   this.$store.commit('setCaseSetInfo',res.data.data);
                   this.$notify({title:'操作成功',type:'success',message:res.data.msg});
                   this.getCaseInfo();
                 } else {
+                  this.setName = setName;
                   this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
                 }
 
