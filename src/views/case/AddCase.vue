@@ -1,20 +1,26 @@
 <template>
   <el-dialog :visible.sync="$store.state.addcaseshow" style="height: 100%;" :close-on-click-modal="false"
-             @close="closeView">
+             @close="closeView" >
+
   <div id="caseTest" v-loading="setName === ''">
-    <h2 style="text-align: left">添加用例及脚本</h2>
-    <h4>用例集：<strong style="color: red;">{{setName}}</strong></h4>
+    <el-card shadow="hover" style="margin-bottom: 30px">
+    <h2 style="text-align: left">添加用例</h2>
+    <h2>用例集：<strong style="color: crimson;">{{setName}}</strong></h2>
     <div style="text-align: right">
-      <el-button type="primary" @click="testCaseSet" >调试</el-button>
-      <el-button type="primary" @click="drawer=true" >实时结果</el-button>
+      <el-button type="primary" @click="testCaseSet" round>调试</el-button>
+      <el-button type="primary" @click="drawer=true" round>实时结果</el-button>
     </div>
+    </el-card>
+
 
 
     <AddCaseForApi @getCaseInfo="getCaseInfo"></AddCaseForApi>
     <EditCaseForApi @getCaseInfo="getCaseInfo"></EditCaseForApi>
+    <el-card shadow="hover">
     <el-tabs v-model="activeName" @tab-click="handleClick">
 
-      <el-tab-pane label="前/后置脚本添加" name="first" >
+      <el-tab-pane label="前/后置脚本添加" name="first" style="text-align: left">
+        <h3>脚本列表</h3>
         <el-collapse v-model="activeNames"  accordion>
           <el-collapse-item title="前置脚本" name="setup">
             <div id="setup_script" style="text-align: left">
@@ -52,7 +58,7 @@
           <el-button type="primary" @click="" style="float: left;margin: 10px;">添加数据库用例</el-button>
           <el-table
             :data="cases"
-            stripe height="400px" :default-sort="{prop: 'sorting',order:'ascending'}" v-loading="loading">
+            stripe height="400px" :default-sort="{prop: 'sorting',order:'ascending'}" v-loading="loading" style="float: left">
             <el-table-column
               prop="sorting"
               label="执行顺序"
@@ -105,7 +111,8 @@
           </el-table>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="执行环境" name="forth">
+      <el-tab-pane label="执行环境" name="forth" style="text-align: left">
+        <h3>调试环境</h3>
         <el-form :model="envInfo"  :rules="rules" ref="envInfo" label-width="100px" class="demo-ruleForm" style="float: left">
           <el-form-item label="项目" prop="project">
             <el-select v-model="envInfo.project" placeholder="请选择项目" @change="getEnvs">
@@ -130,6 +137,7 @@
         </el-form>
       </el-tab-pane>
     </el-tabs>
+    </el-card>
   </div>
     <el-drawer
       title="实时执行记录"
@@ -282,7 +290,7 @@
                             {
                                 exScriptId: n.scriptId,
                                 exScriptType: "0",
-                                stScriptType: "1"
+                                stScriptType: "1",
                             }
                         );
                         this.tdScripts.push(
@@ -296,27 +304,30 @@
                     });
 
                 });
-                this.$axios.get('/apis/testcaseset/list').then(res=>{
-                    res.data.data.forEach(n => {this.scripts.push({
-                        key:n.setId,
-                        label:n.setName,
-                    });
+                this.$axios.get('/apis/testcaseset/list').then((res) => {
+                    res.data.data.forEach((n) => {
+                        this.scripts.push({
+                            key:n.setId,
+                            label:n.setName,
+                            // disabled: n.setId === this.setId
+                        });
                         this.tScripts.push({
                             key:n.setId,
                             label:n.setName,
+                            // disabled: n.setId === this.setId
                         });
                         this.stScripts.push(
                             {
                                 exScriptId: n.setId,
                                 exScriptType: "1",
-                                stScriptType: "1"
+                                stScriptType: "1",
                             }
                         );
                         this.tdScripts.push(
                             {
                                 exScriptId: n.setId,
                                 exScriptType: "1",
-                                stScriptType: "2"
+                                stScriptType: "2",
                             }
                         );
 
