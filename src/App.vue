@@ -4,11 +4,11 @@
       <router-view/>
     </div>
     <el-container v-else style="height: 100%">
-      <el-aside width="210px" class="el-aside" style="height: 100%;padding: 0;margin: 0;background-color: midnightblue;">
+      <el-aside width="210px" class="el-aside" style="height: 100%;padding: 0;margin: 0;background-color: #2c3259;">
         <headers></headers>
       </el-aside>
       <el-main style="height: 100%;padding: 0;">
-        <el-header id="el-header" height="50px" style="background-color: dodgerblue;">
+        <el-header id="el-header" height="50px" style="background-color: #2c3e50;">
           <h5 style="float: right;margin: 20px 10px;color: white;" class="el-icon-setting">测试用户</h5>
           <img src="../static/img/user.jpg" style="height: 30px;width: 30px;float: right;margin-top: 10px" alt="" class="circle">
         </el-header>

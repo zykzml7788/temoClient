@@ -6,7 +6,7 @@
     <el-card shadow="hover" style="margin-bottom: 30px">
     <h2>用例集：<strong style="color: crimson;">{{setName}}</strong></h2>
     <div style="text-align: right">
-      <el-button type="primary" @click="testCaseSet" round>调试</el-button>
+      <el-button type="primary" @click="testCaseSet" round icon="el-icon-caret-right">调试</el-button>
       <el-button type="primary" @click="drawer=true" round>实时结果</el-button>
     </div>
     </el-card>
