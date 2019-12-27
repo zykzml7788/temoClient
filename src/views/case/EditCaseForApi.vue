@@ -710,24 +710,31 @@
                 this.delayTime = val.delayTime;
                 this.jsonAssert = val.jsonAssert;
                 this.api.method = val.method;
-                this.api.url = val.url;
+                this.api.url = val.url.indexOf("?")!==-1?val.url.split("?")[0]:val.url;
                 this.contentType = parseInt(val.contentType);
-                if (val.body!==null) {
-                  if (this.contentType === 1){
+                if (this.contentType === 1){
+                  if (val.body!=null){
                     const body = JSON.parse(val.body);
                     this.formParams = [];
                     for (const k in body){
                       this.formParams.push({key:k,value:body[k]});
                     }
-                  } else if (this.contentType === 2){
-                    const body = JSON.parse(val.body);
-                    this.urlParams = [];
-                    for (const k in body){
-                      this.urlParams.push({key:k,value:body[k]});
-                    }
-                  } else{
-                    this.json = val.body?val.body:'' ;
                   }
+                } else if (this.contentType === 2){
+                  if (val.url.indexOf('?')!==-1){
+                    let kvs = val.url.split("?")[1];
+                    let kvList = kvs.split("&");
+                    this.urlParams = [];
+                    for (const index in kvList) {
+                      const key = kvList[index].split("=")[0];
+                      const value = kvList[index].split("=")[1];
+                      console.log(key);
+                      console.log(value);
+                      this.urlParams.push({key: key, value: value});
+                    }
+                  }
+                } else{
+                  this.json = val.body?val.body:'' ;
                 }
                 if (val.cookies!==null && val.cookies!==''){
                     const cookies = JSON.parse(val.cookies);

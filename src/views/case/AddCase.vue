@@ -493,7 +493,6 @@
                   formData.append('envId',this.envInfo.env);
                   this.$axios.post('/apis/testcaseset/execute/'+this.setId,formData).then(res=>{
                       if (res.data.code === 200){
-                        this.$notify({title:'操作成功',type:'success',message:res.data.msg,position: 'top-left'});
                       } else {
                         this.$notify({title:'操作失败',type:'warning',message:res.data.msg,position: 'top-left'});
                       }

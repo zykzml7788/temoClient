@@ -93,20 +93,20 @@
         width="300">
         <template slot-scope="scope">
           <div style="margin-bottom: 10px;">
-            <el-button
-              @click.native.prevent="addCaseSet(scope.row)"
-              type="primary"
-              size="mini">
-              执行
-            </el-button>
+<!--            <el-button-->
+<!--              @click.native.prevent="addCaseSet(scope.row)"-->
+<!--              type="primary"-->
+<!--              size="mini">-->
+<!--              执行-->
+<!--            </el-button>-->
             <el-button
               @click.native.prevent="addCase(scope.row)"
-              type="success"
+              type="primary"
               size="mini">
               添加用例
             </el-button>
-          </div>
-          <div>
+<!--          </div>-->
+<!--          <div>-->
             <el-button
               @click.native.prevent="updateCaseSet(scope.row)"
               type="warning"
