@@ -33,10 +33,13 @@
         </template>
         <el-menu-item index="3-1">用例集管理</el-menu-item>
       </el-submenu>
-      <el-menu-item index="4">
-        <i class="el-icon-document" style="color:white"></i>
-        <span slot="title">任务管理</span>
-      </el-menu-item>
+      <el-submenu index="4">
+        <template slot="title">
+          <i class="el-icon-document" style="color:white"></i>
+          <span slot="title">任务管理</span>
+        </template>
+        <el-menu-item index="4-1">任务管理</el-menu-item>
+      </el-submenu>
       <el-submenu index="5">
         <template slot="title">
           <i class="el-icon-location" style="color:white"></i>
@@ -96,6 +99,9 @@
             break;
           case '3-1':
             this.$router.push('/case');
+            break;
+          case '4-1':
+            this.$router.push('/task');
             break;
           case '5-1':
             this.$router.push('/database/config');

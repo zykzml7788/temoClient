@@ -6,6 +6,7 @@ import DataBase from '@/views/database/DataBase'
 import Main from '@/views/Main'
 import Script from '@/views/database/Script'
 import Case from '@/views/case/CaseSets'
+import Task from '@/views/task/Task'
 
 Vue.use(Router);
 
@@ -46,6 +47,11 @@ export default new Router({
       path: '/case',
       name: 'Case',
       component: Case
-    }
+    },
+    {
+      path:'/task',
+      name: 'Task',
+      component: Task
+    },
   ]
 })

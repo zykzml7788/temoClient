@@ -103,7 +103,7 @@
               @click.native.prevent="addCase(scope.row)"
               type="primary"
               size="mini">
-              添加用例
+              调试/添加用例
             </el-button>
 <!--          </div>-->
 <!--          <div>-->
