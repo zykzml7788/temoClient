@@ -33,7 +33,7 @@
     <el-table
       :data="taskLists"
       style="width: 100%"
-      max-height="80%"  v-loading="loading" height="600" :default-sort="{prop: 'createTime', order: 'descending'}"
+      max-height="80%"  v-loading="loading" height="800" :default-sort="{prop: 'createTime', order: 'descending'}"
       @selection-change="handleSelectionChange">
       <div slot="empty" style="text-align: left;margin: 30px;" >
         <div>
@@ -130,7 +130,7 @@
               @click.native.prevent=""
               type="warning"
               size="mini">
-              编辑
+              编辑配置
             </el-button>
             <el-button
               @click.native.prevent="deleteTask(scope.row)"

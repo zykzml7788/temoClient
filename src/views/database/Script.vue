@@ -38,7 +38,7 @@
     <el-table
       :data="scriptLists"
       style="width: 100%"
-      max-height="80%"  v-loading="loading" height="650" :default-sort="{prop: 'updatetime', order: 'descending'}">
+      max-height="80%"  v-loading="loading" height="800" :default-sort="{prop: 'updatetime', order: 'descending'}">
       <div slot="empty" style="text-align: left;margin: 30px;" >
         <div>
           <img src="../../../static/img/timo.png" alt="" width="140px" height="140px"/>
