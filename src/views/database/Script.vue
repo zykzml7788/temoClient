@@ -78,14 +78,14 @@
         <template slot-scope="scope">
           <el-button
             @click.native.prevent="updateScript(scope.row)"
-            type="text"
-            size="small">
+            type="warning"
+            size="mini">
             编辑
           </el-button>
           <el-button
             @click.native.prevent="deleteScript(scope.row)"
-            type="text"
-            size="small">
+            type="danger"
+            size="mini">
             移除
           </el-button>
         </template>

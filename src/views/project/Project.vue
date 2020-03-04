@@ -51,7 +51,7 @@
             <el-tag
               :key="env.envName"
               :type="items[scope.row.envs.indexOf(env)%5]"
-              effect="light" style="margin-left: 5px;">
+              effect="light" style="margin-left: 5px;" size="mini">
               {{ env.envName }}
             </el-tag>
           </el-tooltip>
@@ -74,20 +74,20 @@
         <template slot-scope="scope">
           <el-button
             @click.native.prevent="showProjectDetail(scope.row)"
-            type="text"
-            size="small">
+            type="primary"
+            size="mini">
             查看
           </el-button>
           <el-button
             @click.native.prevent="updateProject(scope.row)"
-            type="text"
-            size="small">
+            type="warning"
+            size="mini">
             编辑
           </el-button>
           <el-button
             @click.native.prevent="deleteProject(scope.row)"
-            type="text"
-            size="small">
+            type="danger"
+            size="mini">
             移除
           </el-button>
         </template>

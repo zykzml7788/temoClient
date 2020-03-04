@@ -24,6 +24,7 @@
       <span>
         <el-button type="primary" @click="getTasks(1)">搜索</el-button>
         <el-button type="primary" @click="">新增</el-button>
+        <el-button type="success" @click="">批量执行</el-button>
       </span>
 
 
@@ -32,13 +33,18 @@
     <el-table
       :data="taskLists"
       style="width: 100%"
-      max-height="80%"  v-loading="loading" height="600" :default-sort="{prop: 'createTime', order: 'descending'}">
+      max-height="80%"  v-loading="loading" height="600" :default-sort="{prop: 'createTime', order: 'descending'}"
+      @selection-change="handleSelectionChange">
       <div slot="empty" style="text-align: left;margin: 30px;" >
         <div>
           <img src="../../../static/img/timo.png" alt="" width="140px" height="140px"/>
         </div>
         <p>没有查询到数据呦～</p>
       </div>
+      <el-table-column
+        type="selection"
+        width="55">
+      </el-table-column>
       <el-table-column
         fixed="left"
         prop="taskName"
@@ -48,12 +54,12 @@
       <el-table-column
         prop="taskDesc"
         label="任务描述"
-        width="400" :show-overflow-tooltip="true">
+        width="300" :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
         prop="testSetList"
         label="绑定用例集"
-        width="400" :show-overflow-tooltip="true">
+        width="500" :show-overflow-tooltip="true">
         <template slot-scope="scope" >
           <el-tooltip class="item" effect="light" :content="testset.setName" placement="top-start" v-for="testset in scope.row.testSetList">
             <el-tag
@@ -77,7 +83,7 @@
       </el-table-column>
       <el-table-column
         prop="isTiming"
-        label="是否定时"
+        label="手动/定时"
         width="200">
         <template slot-scope="scope">
           <el-tag  type="primary" v-if="taskLists[scope.$index].isTiming==='0'">定时</el-tag>
@@ -127,7 +133,7 @@
               编辑
             </el-button>
             <el-button
-              @click.native.prevent=""
+              @click.native.prevent="deleteTask(scope.row)"
               type="danger"
               size="mini">
               移除
@@ -161,6 +167,9 @@
 
     name:'Task',
     methods: {
+      handleSelectionChange(val) {
+        this.tasks = val;
+      },
       getTasks(page){
         this.$axios.get('/apis/task/'+page,{params:{taskName:this.search_val,status:this.taskStatus}}).then(res=>{
             this.loading = true;
@@ -177,6 +186,23 @@
           this.$notify({title:'操作失败',type:'error',message:err});
         });
       },
+      deleteTask(row){
+        this.$confirm('确定要删除吗？').then(_=>{
+            this.$axios.delete('/apis/task/'+row.taskId).then(res=>{
+              if (res.data.code===200){
+                this.$notify({title:'操作成功',type:'success',message:res.data.msg});
+              } else {
+                this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
+              }
+              this.page = 1;
+              this.getTasks(1);
+            }).catch(err=>{
+              this.$notify({title:'操作失败',type:'error',message:err});
+            });
+          }
+        );
+
+      },
     },
     data() {
       return {
@@ -191,6 +217,7 @@
           '','success','info','danger','warning'
         ],
         dialogVisible: false,
+        tasks: []
       }
     },
     components:{
