@@ -82,15 +82,6 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="isTiming"
-        label="手动/定时"
-        width="200">
-        <template slot-scope="scope">
-          <el-tag  type="primary" v-if="taskLists[scope.$index].isTiming==='0'">定时</el-tag>
-          <el-tag type="success"  v-if="taskLists[scope.$index].isTiming==='1'">手动</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column
         prop="isParallel"
         label="执行方式"
         width="200">
@@ -106,11 +97,6 @@
       </el-table-column>
       <el-table-column
         prop="createTime"
-        label="预计执行时间"
-        width="300">
-      </el-table-column>
-      <el-table-column
-        prop="createTime"
         label="创建时间"
         width="300">
       </el-table-column>
@@ -121,7 +107,7 @@
         <template slot-scope="scope">
           <div style="margin-bottom: 10px;">
             <el-button
-              @click.native.prevent=""
+              @click.native.prevent="startTask(scope.row.taskId)"
               type="primary"
               size="mini">
               执行任务
@@ -130,7 +116,7 @@
               @click.native.prevent=""
               type="warning"
               size="mini">
-              编辑配置
+              更改配置
             </el-button>
             <el-button
               @click.native.prevent="deleteTask(scope.row)"
@@ -167,12 +153,32 @@
 
     name:'Task',
     methods: {
+      startTask(id){
+        this.$confirm('是否发起任务？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$axios.post('/apis/task/startTask/'+id).then(res=>{
+              if (res.data.code === 200){
+                this.$notify({title:'操作成功',type:'success',message:res.data.msg});
+              } else {
+                this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
+              }
+            }
+
+          ).catch(err=>{
+            this.$notify({title:'操作失败',type:'error',message:err});
+          });
+        });
+      },
       handleSelectionChange(val) {
         this.tasks = val;
       },
       getTasks(page){
+        this.page = 1;
+        this.loading = true;
         this.$axios.get('/apis/task/'+page,{params:{taskName:this.search_val,status:this.taskStatus}}).then(res=>{
-            this.loading = true;
             if (res.data.code === 200){
               this.taskLists = res.data.data.list;
               this.total = res.data.data.total;

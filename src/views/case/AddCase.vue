@@ -156,8 +156,7 @@
         <el-card shadow="always" style="width:40%;height:25%;margin:20px;text-align: left;float: left">
           <div style="margin-bottom: 20px"><strong>成功率</strong></div>
           <h5>{{successRate}}%</h5>
-          <el-progress  :percentage="successRate" :show-text="false" status="success" v-if="successRate===100"></el-progress>
-          <el-progress  :percentage="successRate" :show-text="false" v-else-if="successRate<100 && successRate>49"></el-progress>
+          <el-progress  :percentage="successRate" :show-text="false" status="success" v-if="error===0"></el-progress>
           <el-progress  :percentage="successRate" :show-text="false" status="exception" v-else></el-progress>
           <div><p style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>成功数：{{success}}</span><span style="margin-left: 60px">失败数：{{error}}</span></p></div>
           <div style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>用例总数：{{caseNum}}</span></div>
