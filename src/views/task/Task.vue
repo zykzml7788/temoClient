@@ -72,16 +72,6 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="status"
-        label="状态"
-        width="200">
-        <template slot-scope="scope">
-          <p  v-if="taskLists[scope.$index].status===0">待执行</p>
-          <p  v-if="taskLists[scope.$index].status===1">执行中</p>
-          <p  v-if="taskLists[scope.$index].status===2">执行完毕</p>
-        </template>
-      </el-table-column>
-      <el-table-column
         prop="isParallel"
         label="执行方式"
         width="200">
