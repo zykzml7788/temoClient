@@ -3,7 +3,7 @@
   <div id="case">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>执行记录管理</el-breadcrumb-item>
+      <el-breadcrumb-item>任务管理</el-breadcrumb-item>
       <el-breadcrumb-item>执行记录管理</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="header">
@@ -41,14 +41,13 @@
       </div>
       <el-table-column
         fixed="left"
-        prop="taskResultNum"
-        label="编号"
+        prop="taskName"
+        label="任务名称"
         width="200" :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
-        fixed="left"
-        prop="taskName"
-        label="任务名称"
+        prop="taskResultNum"
+        label="编号"
         width="200" :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
@@ -78,11 +77,6 @@
           <el-tag  type="warning"  v-if="taskLists[scope.$index].status===1">执行中</el-tag>
           <el-tag  type="success" v-if="taskLists[scope.$index].status===2">执行完毕</el-tag>
         </template>
-      </el-table-column>
-      <el-table-column
-        prop="mail"
-        label="邮件提醒"
-        width="300">
       </el-table-column>
       <el-table-column
         prop="person"
@@ -121,7 +115,7 @@
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="total" @current-change="getCaseSet(page)" :current-page.sync="page">
+        :total="total" @current-change="getTaskResults(page)" :current-page.sync="page">
       </el-pagination>
     </el-footer>
 
@@ -164,7 +158,7 @@
                 this.tasks = val;
             },
             getTaskResults(page){
-                this.page = 1;
+                this.page = page;
                 this.loading = true;
                 this.$axios.get('/apis/taskResult/'+page,{params:{taskName:this.search_val,status:this.status}}).then(res=>{
                         if (res.data.code === 200){

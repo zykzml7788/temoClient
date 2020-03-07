@@ -3,7 +3,7 @@
   <div id="case">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>定时任务管理</el-breadcrumb-item>
+      <el-breadcrumb-item>任务管理</el-breadcrumb-item>
       <el-breadcrumb-item>定时任务管理</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="header">
@@ -21,7 +21,7 @@
         </el-select>
       </span>
       <span>
-        <el-button type="primary" @click="getTasks(1)">搜索</el-button>
+        <el-button type="primary" @click="getTimingTasks(1)">搜索</el-button>
         <el-button type="primary" @click="">新增</el-button>
         <el-button type="success" @click="">批量开启</el-button>
         <el-button type="danger" @click="">批量关闭</el-button>
@@ -81,12 +81,21 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="isParallel"
+        prop="isOpen"
         label="开启/关闭"
         width="200">
         <template slot-scope="scope">
-          <el-tag  type="danger" v-if="taskLists[scope.$index].status===0">关闭</el-tag>
-          <el-tag type="success"  v-if="taskLists[scope.$index].status===1">开启</el-tag>
+          <el-tag  type="danger" v-if="taskLists[scope.$index].isOpen===0">关闭</el-tag>
+          <el-tag type="success"  v-if="taskLists[scope.$index].isOpen===1">开启</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="isMail"
+        label="邮件提醒"
+        width="200">
+        <template slot-scope="scope">
+          <el-tag  type="danger" v-if="taskLists[scope.$index].isOpen===0">关闭</el-tag>
+          <el-tag type="success"  v-if="taskLists[scope.$index].isOpen===1">开启</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -100,11 +109,17 @@
         width="300">
         <template slot-scope="scope">
           <div style="margin-bottom: 10px;">
-            <el-button
-              @click.native.prevent="startTask(scope.row.taskId)"
+            <el-button v-if="scope.row.isOpen === 0"
+              @click.native.prevent="openTimingTask(scope.row.taskId)"
               type="primary"
               size="mini">
               开启任务
+            </el-button>
+            <el-button v-if="scope.row.isOpen === 1"
+                       @click.native.prevent="closeTimingTask(scope.row.taskId)"
+                       type="danger"
+                       size="mini">
+              关闭任务
             </el-button>
             <el-button
               @click.native.prevent=""
@@ -147,16 +162,36 @@
 
         name:'Task',
         methods: {
-            startTask(id){
-                this.$confirm('是否发起任务？', '提示', {
+            openTimingTask(id){
+                this.$confirm('是否开启定时任务？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$axios.post('/apis/task/startTask/'+id).then(res=>{
+                    this.$axios.post('/apis/timingTask/start/'+id).then(res=>{
                             if (res.data.code === 200){
                                 this.$notify({title:'操作成功',type:'success',message:res.data.msg});
-                                this.getTasks(1);
+                                this.getTimingTasks(1);
+                            } else {
+                                this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
+                            }
+                        }
+
+                    ).catch(err=>{
+                        this.$notify({title:'操作失败',type:'error',message:err});
+                    });
+                });
+            },
+            closeTimingTask(id){
+                this.$confirm('是否关闭定时任务？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$axios.post('/apis/timingTask/close/'+id).then(res=>{
+                            if (res.data.code === 200){
+                                this.$notify({title:'操作成功',type:'success',message:res.data.msg});
+                                this.getTimingTasks(1);
                             } else {
                                 this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
                             }
@@ -170,10 +205,10 @@
             handleSelectionChange(val) {
                 this.tasks = val;
             },
-            getTasks(page){
-                this.page = 1;
+            getTimingTasks(page){
+                this.page = page;
                 this.loading = true;
-                this.$axios.get('/apis/task/'+page,{params:{taskName:this.search_val,isParallel:this.isParallel}}).then(res=>{
+                this.$axios.get('/apis/timingTask/'+page,{params:{taskName:this.search_val,isParallel:this.isParallel}}).then(res=>{
                         if (res.data.code === 200){
                             this.taskLists = res.data.data.list;
                             this.total = res.data.data.total;
@@ -196,7 +231,7 @@
                                 this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
                             }
                             this.page = 1;
-                            this.getTasks(1);
+                            this.getTimingTasks(1);
                         }).catch(err=>{
                             this.$notify({title:'操作失败',type:'error',message:err});
                         });
@@ -225,7 +260,7 @@
 
         },
         created() {
-            this.getTasks(1);
+            this.getTimingTasks(1);
         }
     }
 

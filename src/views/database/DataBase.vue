@@ -131,8 +131,9 @@
         });
       },
       getDataBasesByName(page){
+          this.page=page;
+          this.loading = true;
         this.$axios.get('/apis/database/'+page+'?filter='+this.search_val).then(res=>{
-            this.loading = true;
             if (res.data.code === 200){
               this.dataBaseLists = res.data.data.list;
               this.total = res.data.data.total;

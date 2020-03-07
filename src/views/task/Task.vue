@@ -3,7 +3,7 @@
   <div id="case">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>普通任务管理</el-breadcrumb-item>
+      <el-breadcrumb-item>任务管理</el-breadcrumb-item>
       <el-breadcrumb-item>普通任务管理</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="header">
@@ -161,7 +161,7 @@
         this.tasks = val;
       },
       getTasks(page){
-        this.page = 1;
+        this.page = page;
         this.loading = true;
         this.$axios.get('/apis/task/'+page,{params:{taskName:this.search_val,isParallel:this.isParallel}}).then(res=>{
             if (res.data.code === 200){

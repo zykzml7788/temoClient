@@ -135,6 +135,7 @@
       getProjectsByName(page){
         this.$axios.get('/apis/project/'+page+'?filter='+this.search_val).then(res=>{
             this.loading = true;
+            this.page = page;
             if (res.data.code === 200){
               this.projectLists = res.data.data.list;
               this.total = res.data.data.total;
