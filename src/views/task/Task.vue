@@ -3,8 +3,8 @@
   <div id="case">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>任务管理</el-breadcrumb-item>
-      <el-breadcrumb-item>任务管理</el-breadcrumb-item>
+      <el-breadcrumb-item>普通任务管理</el-breadcrumb-item>
+      <el-breadcrumb-item>普通任务管理</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="header">
       <span>
@@ -15,10 +15,9 @@
         </el-input>
       </span>
       <span>
-        <el-select v-model="taskStatus"  clearable placeholder="请选择任务状态">
-          <el-option label="待执行" :value="'0'"></el-option>
-          <el-option label="执行中" :value="'1'"></el-option>
-          <el-option label="执行完毕" :value="'2'"></el-option>
+        <el-select v-model="isParallel"  placeholder="请选择执行方式" clearable>
+          <el-option label="串行" :value="0"></el-option>
+          <el-option label="并发" :value="1"></el-option>
         </el-select>
       </span>
       <span>
@@ -79,11 +78,6 @@
           <el-tag  type="primary" v-if="taskLists[scope.$index].isParallel==='0'">串行</el-tag>
           <el-tag type="success"  v-if="taskLists[scope.$index].isParallel==='1'">并发</el-tag>
         </template>
-      </el-table-column>
-      <el-table-column
-        prop="mail"
-        label="邮件通知人"
-        width="300">
       </el-table-column>
       <el-table-column
         prop="createTime"
@@ -169,7 +163,7 @@
       getTasks(page){
         this.page = 1;
         this.loading = true;
-        this.$axios.get('/apis/task/'+page,{params:{taskName:this.search_val,status:this.taskStatus}}).then(res=>{
+        this.$axios.get('/apis/task/'+page,{params:{taskName:this.search_val,isParallel:this.isParallel}}).then(res=>{
             if (res.data.code === 200){
               this.taskLists = res.data.data.list;
               this.total = res.data.data.total;
@@ -208,7 +202,7 @@
         search_val:'',
         projects:[],
         taskLists: [],
-        taskStatus:'',
+          isParallel:'',
         loading: false,
         items: [
           '','success','info','danger','warning'

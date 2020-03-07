@@ -7,6 +7,8 @@ import Main from '@/views/Main'
 import Script from '@/views/database/Script'
 import Case from '@/views/case/CaseSets'
 import Task from '@/views/task/Task'
+import TimingTask from "@/views/task/TimingTask";
+import TaskResult from "@/views/task/TaskResult";
 
 Vue.use(Router);
 
@@ -52,6 +54,16 @@ export default new Router({
       path:'/task',
       name: 'Task',
       component: Task
+    },
+    {
+      path:'/timingTask',
+      name: 'TimingTask',
+      component: TimingTask
+    },
+    {
+      path:'/taskResult',
+      name: 'TaskResult',
+      component: TaskResult
     },
   ]
 })

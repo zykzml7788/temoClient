@@ -105,6 +105,12 @@
           case '4-1':
             this.$router.push('/task');
             break;
+          case '4-2':
+              this.$router.push('/timingTask');
+              break;
+          case '4-3':
+              this.$router.push('/taskResult');
+              break;
           case '5-1':
             this.$router.push('/database/config');
             break;
