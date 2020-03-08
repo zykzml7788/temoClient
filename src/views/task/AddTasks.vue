@@ -9,7 +9,7 @@
         <el-input placeholder="请输入任务描述" v-model="form.taskDesc" autocomplete="off" type="textarea"
                   :autosize="{ minRows: 3, maxRows: 5}"></el-input>
       </el-form-item>
-      <el-form-item label="执行方式" :label-width="80" prop="isParallel" style="text-align: left">
+      <el-form-item label="执行方式" :label-width="formLabelWidth" prop="isParallel" style="text-align: left">
         <el-select v-model="form.isParallel" placeholder="请选择执行方式">
           <el-option
             v-for="item in options"
