@@ -13,7 +13,7 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="addEnv">确 定</el-button>
+      <el-button type="primary" @click="addEnv">添 加</el-button>
       <el-button @click="closeAddEnv">取 消</el-button>
     </div>
   </el-dialog>

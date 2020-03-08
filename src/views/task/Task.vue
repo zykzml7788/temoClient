@@ -22,17 +22,18 @@
       </span>
       <span>
         <el-button type="primary" @click="getTasks(1)">搜索</el-button>
-        <el-button type="primary" @click="">新增</el-button>
+        <el-button type="primary" @click="openAddTask">新增</el-button>
         <el-button type="success" @click="">批量执行</el-button>
       </span>
 
-
     </div>
+
+    <AddTasks @getTasks="getTasks(1)"></AddTasks>
 
     <el-table
       :data="taskLists"
       style="width: 100%"
-      max-height="80%"  v-loading="loading" height="800" :default-sort="{prop: 'createTime', order: 'descending'}"
+      max-height="80%"  v-loading="loading" height="800" :default-sort="{prop: 'updateTime', order: 'descending'}"
       @selection-change="handleSelectionChange">
       <div slot="empty" style="text-align: left;margin: 30px;" >
         <div>
@@ -75,13 +76,18 @@
         label="执行方式"
         width="200">
         <template slot-scope="scope">
-          <el-tag  type="primary" v-if="taskLists[scope.$index].isParallel==='0'">串行</el-tag>
-          <el-tag type="success"  v-if="taskLists[scope.$index].isParallel==='1'">并发</el-tag>
+          <el-tag  type="primary" v-if="scope.row.isParallel==='0'">串行</el-tag>
+          <el-tag type="success"  v-if="scope.row.isParallel==='1'">并发</el-tag>
         </template>
       </el-table-column>
       <el-table-column
         prop="createTime"
         label="创建时间"
+        width="300">
+      </el-table-column>
+      <el-table-column
+        prop="updateTime"
+        label="修改时间"
         width="300">
       </el-table-column>
       <el-table-column
@@ -118,7 +124,7 @@
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="total" @current-change="getCaseSet(page)" :current-page.sync="page">
+        :total="total" @current-change="getTasks(page)" :current-page.sync="page">
       </el-pagination>
     </el-footer>
 
@@ -128,7 +134,7 @@
 </template>
 
 <script>
-  import AddCase from '@/views/case/AddCase'
+  import AddTasks from '@/views/task/AddTasks'
   import EditCaseSet from '@/views/case/EditCaseSet'
   import AddCaseSet from '@/views/case/AddCaseSet'
 
@@ -137,6 +143,9 @@
 
     name:'Task',
     methods: {
+      openAddTask(){
+         this.$store.commit('changeAddTaskShow',true);
+      } ,
       startTask(id){
         this.$confirm('是否发起任务？', '提示', {
           confirmButtonText: '确定',
@@ -212,7 +221,7 @@
       }
     },
     components:{
-
+        AddTasks
     },
     created() {
       this.getTasks(1);

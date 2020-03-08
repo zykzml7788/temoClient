@@ -18,6 +18,7 @@ const state = {
   editcasesetshow:false,
   addcaseforapishow: false,
   editcaseforapishow: false,
+  addtaskshow:false,
   envList:[],
   envDetail:{
     id:'',
@@ -81,6 +82,9 @@ const mutations = {
   },
   changeEditcaseForApiShow(state,bol){
     state.editcaseforapishow = bol;
+  },
+  changeAddTaskShow(state,bol){
+    state.addtaskshow = bol;
   },
   appendEnv(state,env){
     state.envList.push(env);

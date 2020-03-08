@@ -69,17 +69,17 @@
         label="状态"
         width="200">
         <template slot-scope="scope">
-          <p  v-if="caseSetLists[scope.$index].setStatus==='0'">待完成</p>
-          <p  v-if="caseSetLists[scope.$index].setStatus==='1'">待维护</p>
-          <p  v-if="caseSetLists[scope.$index].setStatus==='2'">已完成</p>
+          <p  v-if="scope.row.setStatus==='0'">待完成</p>
+          <p  v-if="scope.row.setStatus==='1'">待维护</p>
+          <p  v-if="scope.row.setStatus==='2'">已完成</p>
         </template>
       </el-table-column>
       <el-table-column
         label="是否启用"
         width="200">
         <template slot-scope="scope">
-          <el-tag  type="danger" v-if="caseSetLists[scope.$index].valid==='0'">禁用</el-tag>
-          <el-tag type="success"  v-if="caseSetLists[scope.$index].valid==='1'">启用</el-tag>
+          <el-tag  type="danger" v-if="scope.row.valid==='0'">禁用</el-tag>
+          <el-tag type="success"  v-if="scope.row.valid==='1'">启用</el-tag>
         </template>
       </el-table-column>
       <el-table-column
