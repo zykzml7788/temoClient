@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新增任务" :visible.sync="$store.state.addtaskshow" style="height: 100%;" :close-on-click-modal="false" :modal="false"
+  <el-dialog title="新增任务" :visible.sync="$store.state.addtaskshow" style="height: 100%;" :close-on-click-modal="false" :append-to-body="true"
              @close="closeAddTaskView">
     <el-form :model="form" :rules="rules" ref="form">
       <el-form-item label="任务名称" :label-width="formLabelWidth" prop="taskName">
@@ -22,7 +22,7 @@
       <el-form-item label="轮询次数" :label-width="formLabelWidth" prop="times" >
         <el-input placeholder="请输入轮询次数" v-model.number="form.times" autocomplete="off"></el-input>
       </el-form-item>
-      <el-dialog title="添加用例集" :visible.sync="addTestSetShow" :modal-append-to-body="false" :modal="true" style="text-align: left" @close="closeAddTestSetShow">
+      <el-dialog title="添加用例集" :visible.sync="addTestSetShow" :append-to-body="true" style="text-align: left" @close="closeAddTestSetShow">
         <el-form :model="form2" :rules="rules2" ref="form2">
           <el-form-item label="用例集" :label-width="formLabelWidth" prop="set">
             <el-select v-model="form2.set" placeholder="请选择用例集" filterable  @change="getEnvsOfSet"  value-key="setId">
@@ -50,13 +50,15 @@
           <el-button @click="closeAddTestSetShow">取 消</el-button>
         </div>
       </el-dialog>
+
       <div style="text-align: left">
         <el-button type="primary" @click="showAddTestSet" >添加用例集</el-button>
         <el-divider content-position="left">用例集列表</el-divider>
+        <el-card shadow="hover">
         <el-table
           :data="testSets"
           stripe
-          style="width: 100%">
+          style="width: 100%" height="300">
           <el-table-column
             prop="index"
             label="序号"
@@ -82,6 +84,7 @@
             </template>
           </el-table-column>
         </el-table>
+        </el-card>
       </div>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -204,6 +207,7 @@
                 this.addTestSetShow = true;
             },
             getEnvsOfSet(){
+                this.envOptions = [];
                 this.$axios.get('/apis/testcaseset/'+this.form2.set.setId+'/env').then(res=>{
                         if (res.data.code === 200){
                             res.data.data.forEach((n) =>{

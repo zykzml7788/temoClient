@@ -29,6 +29,7 @@
     </div>
 
     <AddTasks @getTasks="getTasks(1)"></AddTasks>
+    <EditTask @getTasks="getTasks(1)"></EditTask>
 
     <el-table
       :data="taskLists"
@@ -103,7 +104,7 @@
               执行任务
             </el-button>
             <el-button
-              @click.native.prevent=""
+              @click.native.prevent="openEditTask(scope.row.taskId)"
               type="warning"
               size="mini">
               更改配置
@@ -135,8 +136,7 @@
 
 <script>
   import AddTasks from '@/views/task/AddTasks'
-  import EditCaseSet from '@/views/case/EditCaseSet'
-  import AddCaseSet from '@/views/case/AddCaseSet'
+  import EditTask from '@/views/task/EditTask'
 
 
   export default {
@@ -145,6 +145,12 @@
     methods: {
       openAddTask(){
          this.$store.commit('changeAddTaskShow',true);
+      } ,
+      openEditTask(id){
+          this.$store.commit('changeEditTaskShow',true);
+          this.$axios.get('/apis/task/'+id+'/info').then(res=>{
+              this.$store.commit('setTaskDetail',res.data.data);
+          });
       } ,
       startTask(id){
         this.$confirm('是否发起任务？', '提示', {
@@ -221,7 +227,7 @@
       }
     },
     components:{
-        AddTasks
+        AddTasks,EditTask
     },
     created() {
       this.getTasks(1);

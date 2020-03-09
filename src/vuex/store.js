@@ -19,6 +19,7 @@ const state = {
   addcaseforapishow: false,
   editcaseforapishow: false,
   addtaskshow:false,
+  edittaskshow:false,
   envList:[],
   envDetail:{
     id:'',
@@ -36,7 +37,8 @@ const state = {
   scriptDetail:{},
   caseSetDetail:{},
   caseSetInfo:{},
-  caseInfo:{}
+  caseInfo:{},
+  taskDetail:{}
 };
 
 const mutations = {
@@ -85,6 +87,9 @@ const mutations = {
   },
   changeAddTaskShow(state,bol){
     state.addtaskshow = bol;
+  },
+  changeEditTaskShow(state,bol){
+    state.edittaskshow = bol;
   },
   appendEnv(state,env){
     state.envList.push(env);
@@ -141,6 +146,9 @@ const mutations = {
   },
   setCaseInfo(state,param){
     state.caseInfo = param;
+  },
+  setTaskDetail(state,param){
+    state.taskDetail = param;
   }
 };
 const getters = {
