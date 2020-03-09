@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="添加环境" :visible.sync="$store.state.addenvshow" :modal-append-to-body="false" @close="closeAddEnv" :modal="false" width="30%"
+  <el-dialog title="添加环境" :visible.sync="$store.state.addenvshow" :append-to-body="true" @close="closeAddEnv"  width="30%"
              :close-on-click-modal="false">
     <el-form :model="form" :rules="rules" ref="form">
       <el-form-item label="环境名称" prop="envName">

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新增项目" :visible.sync="$store.state.addprojectshow" style="height: 100%;" :close-on-click-modal="false"
+  <el-dialog title="新增项目" :visible.sync="$store.state.addprojectshow" style="height: 100%;" :close-on-click-modal="false" :append-to-body="true"
   @close="closeAddProjectView">
     <addenv></addenv>
     <editenv></editenv>

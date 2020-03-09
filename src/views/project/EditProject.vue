@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="编辑项目" :visible.sync="$store.state.editprojectshow" style="height: 100%;" :close-on-click-modal="false"
+  <el-dialog title="编辑项目" :visible.sync="$store.state.editprojectshow" style="height: 100%;" :close-on-click-modal="false" :append-to-body="true"
              @close="closeAddProjectView">
     <addenv></addenv>
     <editenv></editenv>
@@ -40,10 +40,10 @@
         <el-table-column
           fixed="right"
           label="操作"
-          width="120">
+          width="200">
           <template slot-scope="scope">
-            <el-button @click="showEditEnv(scope.$index,scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="delEnv(scope.$index)" type="text" size="small">移除</el-button>
+            <el-button @click="showEditEnv(scope.$index,scope.row)" type="warning" size="mini">编辑</el-button>
+            <el-button @click="delEnv(scope.$index)" type="danger" size="mini">移除</el-button>
           </template>
         </el-table-column>
       </el-table>
