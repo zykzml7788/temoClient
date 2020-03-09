@@ -576,7 +576,6 @@
             },
             logOnMessage: function(msg){
                 let executedRow = JSON.parse(msg.data);
-                console.log(executedRow);
                 this.executedRows.push(executedRow);
               },
             lookLogs(logs){

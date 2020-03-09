@@ -24,8 +24,6 @@
       <span>
         <el-button type="primary" @click="getTaskResults(1)">搜索</el-button>
       </span>
-
-
     </div>
 
     <el-table
@@ -73,9 +71,9 @@
         label="执行状态"
         width="200">
         <template slot-scope="scope">
-          <el-tag  v-if="taskLists[scope.$index].status===0">等待执行</el-tag>
-          <el-tag  type="warning"  v-if="taskLists[scope.$index].status===1">执行中</el-tag>
-          <el-tag  type="success" v-if="taskLists[scope.$index].status===2">执行完毕</el-tag>
+          <el-tag  v-if="scope.row.status===0">等待执行</el-tag>
+          <el-tag  type="warning"  v-if="scope.row.status===1">执行中</el-tag>
+          <el-tag  type="success" v-if="scope.row.status===2">执行完毕</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -100,7 +98,7 @@
         <template slot-scope="scope">
           <div style="margin-bottom: 10px;">
             <el-button
-              @click.native.prevent=""
+              @click.native.prevent="lookDetail(scope.row.taskResultId)"
               type="primary"
               size="mini">
               查看详情
@@ -110,6 +108,103 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <el-dialog title="任务执行详情" :visible.sync="setResultShow" @close="closeTaskDetail">
+      <el-table :data="setResults"    stripe  height="500"  v-loading="sloading">
+        <el-table-column label="序号" type="index" width="50"></el-table-column>
+        <el-table-column property="setName" label="用例集名称" width="200"></el-table-column>
+        <el-table-column property="successNum" label="成功数"></el-table-column>
+        <el-table-column property="totalNum" label="执行总数"></el-table-column>
+        <el-table-column property="status" label="状态">
+          <template slot-scope="scope">
+            <el-tag  type="danger"  v-if="scope.row.status===0">失败</el-tag>
+            <el-tag  type="success" v-if="scope.row.status===1">成功</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              @click.native.prevent="lookCaseDetail(scope.$index)"
+              type="primary"
+              size="mini">
+              查看详情
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+    <el-drawer
+      title="用例执行记录"
+      :visible.sync="drawer"
+      :direction="'rtl'"
+      size="50%"
+    >
+<!--      <div style="margin: 20px;display: inline">-->
+<!--        <el-card shadow="always" style="width:40%;height:25%;margin:20px;text-align: left;float: left">-->
+<!--          <div style="margin-bottom: 20px"><strong>执行进度</strong></div>-->
+<!--          <h5>{{executedRate}}%</h5>-->
+<!--          <el-progress  :percentage="executedRate" :show-text="false" status="success" v-if="executedRate===100"></el-progress>-->
+<!--          <el-progress  :percentage="executedRate" :show-text="false" v-else></el-progress>-->
+<!--          <div style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>已执行用例数：{{executeNum}}</span></div>-->
+<!--          <div style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>用例总数：{{caseNum}}</span></div>-->
+<!--        </el-card>-->
+<!--        <el-card shadow="always" style="width:40%;height:25%;margin:20px;text-align: left;float: left">-->
+<!--          <div style="margin-bottom: 20px"><strong>成功率</strong></div>-->
+<!--          <h5>{{successRate}}%</h5>-->
+<!--          <el-progress  :percentage="successRate" :show-text="false" status="success" v-if="error===0"></el-progress>-->
+<!--          <el-progress  :percentage="successRate" :show-text="false" status="exception" v-else></el-progress>-->
+<!--          <div><p style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>成功数：{{success}}</span><span style="margin-left: 60px">失败数：{{error}}</span></p></div>-->
+<!--          <div style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>用例总数：{{caseNum}}</span></div>-->
+<!--        </el-card>-->
+<!--      </div>-->
+      <el-card shadow="always" style="margin: 20px;float: left;width:100%">
+        <el-table
+          :data="executedRows"
+          stripe height="800"
+          style="width: 100%;">
+          <el-table-column
+            prop="index"
+            label="序号"
+            width="80">
+          </el-table-column>
+          <el-table-column
+            prop="caseName"
+            label="用例名称"
+            width="400">
+          </el-table-column>
+          <el-table-column
+            prop="status"
+            label="执行状态"
+            width="200">
+            <template slot-scope="scope">
+              <el-tag v-if="scope.row.status === 1" type="success">成功</el-tag>
+              <el-tag v-else type="danger">失败</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="logs"
+            label="日志"
+            width="200">
+            <template slot-scope="scope">
+              <el-button type="primary" round icon="el-icon-tickets" size="mini" @click="lookLogs(scope.row.logs)">查看</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-card>
+
+    </el-drawer>
+    <el-dialog
+      title="日志详情"
+      :visible.sync="logView"
+      width="60%"
+      :append-to-body="true">
+      <div v-html="logs" style="">
+
+      </div>
+      <span slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="logView = false">确 定</el-button>
+    </span>
+    </el-dialog>
 
     <el-footer id="footer">
       <el-pagination
@@ -132,27 +227,35 @@
 
     export default {
 
-        name:'Task',
+        name:'TaskResult',
         methods: {
-            startTask(id){
-                this.$confirm('是否发起任务？', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    this.$axios.post('/apis/task/startTask/'+id).then(res=>{
-                            if (res.data.code === 200){
-                                this.$notify({title:'操作成功',type:'success',message:res.data.msg});
-                                this.getTaskResults(1);
-                            } else {
-                                this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
-                            }
+            lookDetail(id){
+                this.setResultShow = true;
+                this.sloading = true;
+                this.$axios.get('/apis/taskResult/'+id+'/detail').then(res=>{
+                        if (res.data.code === 200){
+                            this.setResults = res.data.data;
+                        } else {
+                            this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
                         }
+                    this.sloading = false;
+                    }
 
-                    ).catch(err=>{
-                        this.$notify({title:'操作失败',type:'error',message:err});
-                    });
+                ).catch(err=>{
+                    this.$notify({title:'操作失败',type:'error',message:err});
                 });
+            },
+            lookCaseDetail(index){
+                this.drawer = true;
+                this.executedRows = JSON.parse(this.setResults[index].caseResults);
+            },
+            lookLogs(logs){
+                this.logs = logs.replace(/\n/g, "<br/>");
+                this.logView = true;
+            },
+            closeTaskDetail(){
+                this.setResults = [];
+                this.setResultShow = false;
             },
             handleSelectionChange(val) {
                 this.tasks = val;
@@ -174,23 +277,6 @@
                     this.$notify({title:'操作失败',type:'error',message:err});
                 });
             },
-            deleteTask(row){
-                this.$confirm('确定要删除吗？').then(_=>{
-                        this.$axios.delete('/apis/task/'+row.taskId).then(res=>{
-                            if (res.data.code===200){
-                                this.$notify({title:'操作成功',type:'success',message:res.data.msg});
-                            } else {
-                                this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
-                            }
-                            this.page = 1;
-                            this.getTaskResults(1);
-                        }).catch(err=>{
-                            this.$notify({title:'操作失败',type:'error',message:err});
-                        });
-                    }
-                );
-
-            },
         },
         data() {
             return {
@@ -205,7 +291,14 @@
                     '','success','info','danger','warning'
                 ],
                 dialogVisible: false,
-                tasks: []
+                tasks: [],
+                setResultShow:false,
+                setResults:[],
+                sloading: false,
+                drawer: false,
+                logView: false,
+                logs: '',
+                executedRows: []
             }
         },
         components:{
