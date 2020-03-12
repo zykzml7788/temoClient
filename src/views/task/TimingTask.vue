@@ -9,7 +9,7 @@
     <div class="header">
       <span>
         <el-input
-          placeholder="请输入任务名称"
+          placeholder="请输入定时任务名称"
           prefix-icon="el-icon-search"
           v-model="search_val">
         </el-input>
@@ -22,13 +22,14 @@
       </span>
       <span>
         <el-button type="primary" @click="getTimingTasks(1)">搜索</el-button>
-        <el-button type="primary" @click="">新增</el-button>
+        <el-button type="primary" @click="openAddTask">新增</el-button>
         <el-button type="success" @click="">批量开启</el-button>
         <el-button type="danger" @click="">批量关闭</el-button>
       </span>
-
-
     </div>
+
+    <AddTimingTasks @getTimingTasks="getTimingTasks(1)"></AddTimingTasks>
+    <EditTimingTasks @getTimingTasks="getTimingTasks(1)"></EditTimingTasks>
 
     <el-table
       :data="taskLists"
@@ -48,12 +49,12 @@
       <el-table-column
         fixed="left"
         prop="taskName"
-        label="任务名称"
+        label="定时任务名称"
         width="200" :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
         prop="taskDesc"
-        label="任务描述"
+        label="定时任务描述"
         width="300" :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column
@@ -76,8 +77,8 @@
         label="执行方式"
         width="200">
         <template slot-scope="scope">
-          <el-tag  type="primary" v-if="taskLists[scope.$index].isParallel==='0'">串行</el-tag>
-          <el-tag type="success"  v-if="taskLists[scope.$index].isParallel==='1'">并发</el-tag>
+          <el-tag  type="primary" v-if="scope.row.isParallel==='0'">串行</el-tag>
+          <el-tag type="success"  v-if="scope.row.isParallel==='1'">并发</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -85,8 +86,8 @@
         label="开启/关闭"
         width="200">
         <template slot-scope="scope">
-          <el-tag  type="danger" v-if="taskLists[scope.$index].isOpen===0">关闭</el-tag>
-          <el-tag type="success"  v-if="taskLists[scope.$index].isOpen===1">开启</el-tag>
+          <el-tag  type="danger" v-if="scope.row.isOpen===0">关闭</el-tag>
+          <el-tag type="success"  v-if="scope.row.isOpen===1">开启</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -94,12 +95,17 @@
         label="邮件提醒"
         width="200">
         <template slot-scope="scope">
-          <el-tag  type="danger" v-if="taskLists[scope.$index].isOpen===0">关闭</el-tag>
-          <el-tag type="success"  v-if="taskLists[scope.$index].isOpen===1">开启</el-tag>
+          <el-tag  type="danger" v-if="scope.row.isMail===0">关闭</el-tag>
+          <el-tag type="success"  v-if="scope.row.isMail===1">开启</el-tag>
         </template>
       </el-table-column>
       <el-table-column
         prop="createTime"
+        label="创建时间"
+        width="300">
+      </el-table-column>
+      <el-table-column
+        prop="updateTime"
         label="创建时间"
         width="300">
       </el-table-column>
@@ -122,7 +128,7 @@
               关闭任务
             </el-button>
             <el-button
-              @click.native.prevent=""
+              @click.native.prevent="openEditTask(scope.row.taskId)"
               type="warning"
               size="mini">
               更改配置
@@ -153,15 +159,22 @@
 </template>
 
 <script>
-    import AddCase from '@/views/case/AddCase'
-    import EditCaseSet from '@/views/case/EditCaseSet'
-    import AddCaseSet from '@/views/case/AddCaseSet'
-
+    import AddTimingTasks from '@/views/task/AddTimingTasks'
+    import EditTimingTasks from '@/views/task/EditTimingTask'
 
     export default {
 
         name:'Task',
         methods: {
+            openAddTask(){
+                this.$store.commit('changeAddTimingTaskShow',true);
+            } ,
+            openEditTask(id){
+                this.$store.commit('changeEditTimingTaskShow',true);
+                this.$axios.get('/apis/timingTask/'+id+'/info').then(res=>{
+                    this.$store.commit('setTimingTaskDetail',res.data.data);
+                });
+            } ,
             openTimingTask(id){
                 this.$confirm('是否开启定时任务？', '提示', {
                     confirmButtonText: '确定',
@@ -257,7 +270,7 @@
             }
         },
         components:{
-
+            AddTimingTasks,EditTimingTasks
         },
         created() {
             this.getTimingTasks(1);

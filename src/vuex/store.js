@@ -20,6 +20,8 @@ const state = {
   editcaseforapishow: false,
   addtaskshow:false,
   edittaskshow:false,
+  addtimingtaskshow:false,
+  edittimingtaskshow:false,
   envList:[],
   envDetail:{
     id:'',
@@ -38,7 +40,8 @@ const state = {
   caseSetDetail:{},
   caseSetInfo:{},
   caseInfo:{},
-  taskDetail:{}
+  taskDetail:{},
+  timingTaskDetail:{}
 };
 
 const mutations = {
@@ -90,6 +93,12 @@ const mutations = {
   },
   changeEditTaskShow(state,bol){
     state.edittaskshow = bol;
+  },
+  changeAddTimingTaskShow(state,bol){
+    state.addtimingtaskshow = bol;
+  },
+  changeEditTimingTaskShow(state,bol){
+    state.edittimingtaskshow = bol;
   },
   appendEnv(state,env){
     state.envList.push(env);
@@ -149,6 +158,9 @@ const mutations = {
   },
   setTaskDetail(state,param){
     state.taskDetail = param;
+  },
+  setTimingTaskDetail(state,param){
+    state.timingTaskDetail = param;
   }
 };
 const getters = {
