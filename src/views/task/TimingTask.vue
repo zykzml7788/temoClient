@@ -23,8 +23,8 @@
       <span>
         <el-button type="primary" @click="getTimingTasks(1)">搜索</el-button>
         <el-button type="primary" @click="openAddTask">新增</el-button>
-        <el-button type="success" @click="">批量开启</el-button>
-        <el-button type="danger" @click="">批量关闭</el-button>
+        <el-button type="success" @click="openTimingTasks">批量开启</el-button>
+        <el-button type="danger"  @click="closeTimingTasks">批量关闭</el-button>
       </span>
     </div>
 
@@ -214,6 +214,50 @@
                         this.$notify({title:'操作失败',type:'error',message:err});
                     });
                 });
+            },
+            openTimingTasks(){
+              const taskIds = [];
+              this.tasks.forEach((n)=>{taskIds.push(n.taskId)});
+              this.$confirm('是否要批量开启定时任务？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                this.$axios.post('/apis/timingTask/startTasks/',taskIds).then(res=>{
+                    if (res.data.code === 200){
+                      this.$notify({title:'操作成功',type:'success',message:res.data.msg});
+                      this.getTimingTasks(1);
+                    } else {
+                      this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
+                    }
+                  }
+
+                ).catch(err=>{
+                  this.$notify({title:'操作失败',type:'error',message:err});
+                });
+              });
+            },
+            closeTimingTasks(){
+              const taskIds = [];
+              this.tasks.forEach((n)=>{taskIds.push(n.taskId)});
+              this.$confirm('是否要批量关闭定时任务？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                this.$axios.post('/apis/timingTask/closeTasks/',taskIds).then(res=>{
+                    if (res.data.code === 200){
+                      this.$notify({title:'操作成功',type:'success',message:res.data.msg});
+                      this.getTimingTasks(1);
+                    } else {
+                      this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
+                    }
+                  }
+
+                ).catch(err=>{
+                  this.$notify({title:'操作失败',type:'error',message:err});
+                });
+              });
             },
             handleSelectionChange(val) {
                 this.tasks = val;

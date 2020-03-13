@@ -23,7 +23,7 @@
       <span>
         <el-button type="primary" @click="getTasks(1)">搜索</el-button>
         <el-button type="primary" @click="openAddTask">新增</el-button>
-        <el-button type="success" @click="">批量执行</el-button>
+        <el-button type="success" @click="startTasks">批量执行</el-button>
       </span>
 
     </div>
@@ -159,6 +159,28 @@
           type: 'warning'
         }).then(() => {
           this.$axios.post('/apis/task/startTask/'+id).then(res=>{
+              if (res.data.code === 200){
+                this.$notify({title:'操作成功',type:'success',message:res.data.msg});
+                this.getTasks(1);
+              } else {
+                this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
+              }
+            }
+
+          ).catch(err=>{
+            this.$notify({title:'操作失败',type:'error',message:err});
+          });
+        });
+      },
+      startTasks(){
+        const taskIds = [];
+        this.tasks.forEach((n)=>{taskIds.push(n.taskId)});
+        this.$confirm('是否要批量发起任务？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$axios.post('/apis/task/startTasks/',taskIds).then(res=>{
               if (res.data.code === 200){
                 this.$notify({title:'操作成功',type:'success',message:res.data.msg});
                 this.getTasks(1);

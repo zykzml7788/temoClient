@@ -137,26 +137,8 @@
       title="用例执行记录"
       :visible.sync="drawer"
       :direction="'rtl'"
-      size="50%"
+      size="60%"
     >
-<!--      <div style="margin: 20px;display: inline">-->
-<!--        <el-card shadow="always" style="width:40%;height:25%;margin:20px;text-align: left;float: left">-->
-<!--          <div style="margin-bottom: 20px"><strong>执行进度</strong></div>-->
-<!--          <h5>{{executedRate}}%</h5>-->
-<!--          <el-progress  :percentage="executedRate" :show-text="false" status="success" v-if="executedRate===100"></el-progress>-->
-<!--          <el-progress  :percentage="executedRate" :show-text="false" v-else></el-progress>-->
-<!--          <div style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>已执行用例数：{{executeNum}}</span></div>-->
-<!--          <div style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>用例总数：{{caseNum}}</span></div>-->
-<!--        </el-card>-->
-<!--        <el-card shadow="always" style="width:40%;height:25%;margin:20px;text-align: left;float: left">-->
-<!--          <div style="margin-bottom: 20px"><strong>成功率</strong></div>-->
-<!--          <h5>{{successRate}}%</h5>-->
-<!--          <el-progress  :percentage="successRate" :show-text="false" status="success" v-if="error===0"></el-progress>-->
-<!--          <el-progress  :percentage="successRate" :show-text="false" status="exception" v-else></el-progress>-->
-<!--          <div><p style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>成功数：{{success}}</span><span style="margin-left: 60px">失败数：{{error}}</span></p></div>-->
-<!--          <div style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>用例总数：{{caseNum}}</span></div>-->
-<!--        </el-card>-->
-<!--      </div>-->
       <el-card shadow="always" style="margin: 20px;float: left;width:100%">
         <el-table
           :data="executedRows"

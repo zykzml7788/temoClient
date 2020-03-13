@@ -64,7 +64,7 @@
          label="年">
        </el-table-column>
      </el-table>
-    <span style="color: #E6A23C; font-size: 12px;">corn从左到右（用空格隔开）：秒 分 小时 月份中的日期 月份 星期中的日期 年份</span>
+    <span style="color: #E6A23C; font-size: 12px;">cron从左到右（用空格隔开）：秒 分 小时 月份中的日期 月份 星期中的日期 年份</span>
   </div>
 </template>
 

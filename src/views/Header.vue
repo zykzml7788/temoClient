@@ -35,20 +35,20 @@
       </el-submenu>
       <el-submenu index="4">
         <template slot="title">
-          <i class="el-icon-document" style="color:white"></i>
-          <span slot="title">任务管理</span>
-        </template>
-        <el-menu-item index="4-1">普通任务管理</el-menu-item>
-        <el-menu-item index="4-2">定时任务管理</el-menu-item>
-        <el-menu-item index="4-3">执行记录管理</el-menu-item>
-      </el-submenu>
-      <el-submenu index="5">
-        <template slot="title">
           <i class="el-icon-location" style="color:white"></i>
           <span slot="title">数据库管理</span>
         </template>
-        <el-menu-item index="5-1">数据源管理</el-menu-item>
-        <el-menu-item index="5-2">脚本管理</el-menu-item>
+        <el-menu-item index="4-1">数据源管理</el-menu-item>
+        <el-menu-item index="4-2">脚本管理</el-menu-item>
+      </el-submenu>
+      <el-submenu index="5">
+        <template slot="title">
+          <i class="el-icon-document" style="color:white"></i>
+          <span slot="title">任务管理</span>
+        </template>
+        <el-menu-item index="5-1">普通任务管理</el-menu-item>
+        <el-menu-item index="5-2">定时任务管理</el-menu-item>
+        <el-menu-item index="5-3">执行记录管理</el-menu-item>
       </el-submenu>
       <el-submenu index="6">
         <template slot="title">
@@ -103,19 +103,19 @@
             this.$router.push('/case');
             break;
           case '4-1':
-            this.$router.push('/task');
-            break;
-          case '4-2':
-              this.$router.push('/timingTask');
-              break;
-          case '4-3':
-              this.$router.push('/taskResult');
-              break;
-          case '5-1':
             this.$router.push('/database/config');
             break;
-          case '5-2':
+          case '4-2':
             this.$router.push('/database/script');
+            break;
+          case '5-1':
+            this.$router.push('/task');
+            break;
+          case '5-2':
+            this.$router.push('/timingTask');
+            break;
+          case '5-3':
+            this.$router.push('/taskResult');
             break;
         }
       },
