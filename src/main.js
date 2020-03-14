@@ -21,7 +21,8 @@ Vue.use(JsonViewer);
 
 Vue.prototype.$axios=axios;
 axios.defaults.timeout = 10000;
-// axios.defaults.baseURL = 'http://129.204.148.24:8888';
+axios.defaults.baseURL = 'http://39.105.34.24:8888';
+Vue.prototype.$websockerUrl = "ws://39.105.34.24:8080/temo/websocket/";
 
 
 /* eslint-disable no-new */
