@@ -6,13 +6,13 @@
 <!--    </div>-->
     <div style="height: 80px; margin: 20px" >
       <h2 style="color: white">Teemo</h2>
-      <p style="font-weight: normal;font-size: small;color: #eaeaea">AutoTest For Api</p>
+      <p style="font-weight: normal;font-size: smaller;color: #eaeaea">AutoTest For Api</p>
     </div>
-    <div id="user" style="margin: 20px">
-      <div style="display: inline-block;width: 20%;height: 100%"><img src="../../static/img/user.jpg" style="width:  100%;height: 100%" alt="" class="circle"></div>
-      <div style="display: inline-block;">
-        <div><strong class="el-icon-user-solid" style="color: white">test</strong></div>
-        <el-button size="mini" type="danger" @click="logout"><i class="el-icon-switch-button" style="color:red;"></i>注销</el-button>
+    <div id="user"  style="margin: 10px;background-color: #2c3259">
+      <div style="display: inline-block;width: 20%;height: 100%;margin-left: 20px"><img src="../../static/img/user.jpg" style="width:  55px;height: 55px" alt="" class="circle"></div>
+      <div style="display: inline-block;margin: 15px">
+        <div><strong class="el-icon-user-solid" style="color: white;margin-left: 5px;font-size: smaller"> 在线</strong></div>
+        <el-button size="mini" type="danger" @click="logout" icon="el-icon-switch-button" style="margin: 15px 0 0 20px" circle></el-button>
       </div>
     </div>
 
