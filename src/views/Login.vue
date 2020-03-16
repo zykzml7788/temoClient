@@ -7,7 +7,7 @@
              label-position="left"
              label-width="0px"
              class="demo-ruleForm login-page">
-      <h3 class="title" style="color:white">系统登录</h3>
+      <h3 class="title" style="color:white">Teemo Login</h3>
       <el-form-item prop="userName">
         <el-input type="text"
                   v-model="loginInfo.userName"
@@ -24,10 +24,10 @@
       </el-form-item>
       <el-checkbox
       v-model="checked"
-      class="rememberme" style="color: white;float: left;margin:5px 0  10px 0;">记住密码</el-checkbox>
+      class="rememberme" style="color: white;float: left;margin:5px 0  10px 0;">Remember Me</el-checkbox>
 
       <el-form-item style="width:100%;">
-        <el-button type="primary" style="width:100%;" @click="handleSubmit" :loading="logining">登录</el-button>
+        <el-button type="primary" style="width:100%;" @click="handleSubmit" :loading="logining">Login</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -73,7 +73,7 @@
     padding-top: 180px ;
   }
   .login-page {
-    opacity:0.85;
+    opacity:0.70;
     background-color: dimgray;
     -webkit-border-radius: 5px;
     border-radius: 5px;

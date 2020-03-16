@@ -1,6 +1,6 @@
 <template>
 
-    <div id="app" v-if="this.$route.path==='/'" style="height: 100%;margin:0;background-image: url('../static/img/loginbgp.jpeg'); background-repeat: repeat;">
+    <div id="app" v-if="this.$route.path==='/'" style="background-size:100%;height:100%;margin:0;background-image: url('../static/img/loginbpg.jpg'); background-repeat: repeat;">
       <router-view/>
     </div>
     <el-container v-else style="height: 100%">
