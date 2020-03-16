@@ -12,7 +12,7 @@
       <div style="display: inline-block;width: 20%;height: 100%"><img src="../../static/img/user.jpg" style="width:  100%;height: 100%" alt="" class="circle"></div>
       <div style="display: inline-block;">
         <div><strong class="el-icon-user-solid" style="color: white">test</strong></div>
-        <i class="el-icon-switch-button" style="color:red;"><strong style="font-size: small">注销</strong></i>
+        <el-button size="mini" type="danger" @click="logout"><i class="el-icon-switch-button" style="color:red;"></i>注销</el-button>
       </div>
     </div>
 
@@ -121,6 +121,21 @@
       },
       closeConfirm(data,val){
         this.dialog = data;
+      },
+      logout(){
+
+        this.$confirm('是否要注销？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+            this.$axios.post('/apis/logout').then(res => {
+              if (res.data.success === true) {
+                localStorage.removeItem('userInfo');
+                this.$router.push({path:'/'});
+              }
+            });
+        });
       }
     },
     components:{

@@ -21,9 +21,30 @@ Vue.use(JsonViewer);
 
 Vue.prototype.$axios=axios;
 axios.defaults.timeout = 10000;
-axios.defaults.baseURL = 'http://39.105.34.24:8888';
+// axios.defaults.baseURL = 'http://39.105.34.24:8888';
 Vue.prototype.$websockerUrl = "ws://39.105.34.24:8080/temo/websocket/";
 
+
+// 全局导航钩子
+router.beforeEach((to, from, next) => {
+  // 判断该路由是否需要登录权限
+  if (to.meta.requireAuth) {
+    // console.log(isEmptyObject(store.state.user))
+    console.log(localStorage.getItem("userInfo"));
+    if(localStorage.getItem("userInfo")!==null) {
+      next();
+    }
+    else {
+      next({
+        path: '/',
+        query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
+      })
+    }
+  }
+  else {
+    next();
+  }
+});
 
 /* eslint-disable no-new */
 new Vue({
