@@ -94,7 +94,7 @@
       handleSelect(key) {
         switch (key) {
           case '1':
-            this.$router.push('/');
+            this.$router.push('/main');
             break;
           case '2':
             this.$router.push('/project');
