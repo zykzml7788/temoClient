@@ -1,6 +1,6 @@
 <template>
 
-    <div id="app" v-if="this.$route.path==='/'" style="background-size:100%;height:100%;margin:0;background-image: url('../static/img/login.jpg'); background-repeat: repeat;">
+    <div id="app" v-if="this.$route.path==='/'"  :style="{backgroundImage: 'url('+ this.login +')'}" class="main">
       <router-view/>
     </div>
     <el-container v-else style="height: 100%">
@@ -13,7 +13,6 @@
             <router-view/>
           </div>
         </div>
-
       </el-main>
     </el-container>
 </template>
@@ -24,7 +23,12 @@
     name: 'App',
     components:{
       Headers
-    }
+    },
+      data(){
+        return{
+            login:require('../static/img/login.jpg')
+          }
+      }
   }
 </script>
 
@@ -35,6 +39,11 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+
+.main{
+  background-size: 100%;
+  height: 100%;
 }
 
   #el-header {
