@@ -9,10 +9,22 @@
       <p style="font-weight: normal;font-size: smaller;color: #eaeaea">AutoTest For Api</p>
     </div>
     <div id="user"  style="margin: 10px;background-color: #2c3259">
-      <div style="display: inline-block;width: 20%;height: 100%;margin-left: 20px"><img src="../../static/img/user.jpg" style="width:  55px;height: 55px" alt="" class="circle"></div>
+      <div style="display: inline-block;width: 20%;height: 100%;margin-left: 20px">
+        <el-tooltip class="item" effect="dark" :content="userName" placement="top-start">
+        <img src="../../static/img/user.jpg" style="width:  55px;height: 55px" alt="" class="circle">
+        </el-tooltip>
+      </div>
       <div style="display: inline-block;margin: 15px">
-        <div><strong class="el-icon-user-solid" style="color: white;margin-left: 5px;font-size: smaller"> 在线</strong></div>
-        <el-button size="mini" type="danger" @click="logout" icon="el-icon-switch-button" style="margin: 15px 0 0 20px" circle></el-button>
+        <div>
+          <el-tooltip class="item" effect="dark" :content="userName" placement="top-start">
+          <strong class="el-icon-user-solid" style="color: white;margin-left: 5px;font-size: smaller">
+            在线
+          </strong>
+          </el-tooltip>
+        </div>
+        <el-tooltip class="item" effect="dark" content="注销一下～" placement="top-start">
+            <el-button size="mini" type="danger" @click="logout" icon="el-icon-switch-button" style="margin: 15px 0 0 20px" circle></el-button>
+        </el-tooltip>
       </div>
     </div>
 
@@ -87,7 +99,8 @@
         activeIndex: '1',
         activeIndex2: '1',
         msg:'你确定要注销吗?',
-        dialog: false
+        dialog: false,
+        userName:JSON.parse(localStorage.getItem('userInfo')).userName
       }
     },
     methods:{

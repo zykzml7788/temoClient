@@ -55,7 +55,7 @@
           if (valid) {
             this.$axios.post('/apis/login', this.loginInfo).then(res => {
               if (res.data.success === true) {
-                localStorage.setItem('userInfo', JSON.stringify(this.loginInfo));
+                localStorage.setItem('userInfo', JSON.stringify(res.data.data));
                 this.$router.push({path:'/main'});
               } else {
                 this.$alert(res.data.msg,'登入失败');
