@@ -9,7 +9,7 @@
       </el-aside>
       <el-main style="height: 100%;padding: 0;">
         <div style="background-color: ghostwhite;padding: 20px;">
-          <div id="app" style="background-color: white;padding: 20px">
+          <div id="app" style="background-color: white;padding: 20px;height:100%;">
             <router-view/>
           </div>
         </div>

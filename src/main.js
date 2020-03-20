@@ -22,6 +22,7 @@ Vue.use(JsonViewer);
 Vue.prototype.$axios=axios;
 axios.defaults.timeout = 10000;
 axios.defaults.baseURL = 'http://39.105.34.24:8888';
+axios.defaults.withCredentials = true;
 Vue.prototype.$websockerUrl = "ws://39.105.34.24:8080/temo/websocket/";
 
 
@@ -29,8 +30,6 @@ Vue.prototype.$websockerUrl = "ws://39.105.34.24:8080/temo/websocket/";
 router.beforeEach((to, from, next) => {
   // 判断该路由是否需要登录权限
   if (to.meta.requireAuth) {
-    // console.log(isEmptyObject(store.state.user))
-    console.log(localStorage.getItem("userInfo"));
     if(localStorage.getItem("userInfo")!==null) {
       next();
     }
@@ -43,6 +42,19 @@ router.beforeEach((to, from, next) => {
   }
   else {
     next();
+  }
+});
+
+// 添加响应拦截器http respones
+axios.interceptors.response.use(function (response) {
+    return response;
+}, function (error) {
+  if (error.toString().indexOf("403")!==-1) {
+    Vue.prototype.$alert('你的token已失效，请重新登入','超时提醒').then(()=>{
+      router.push("/");
+      localStorage.removeItem("userInfo");
+    });
+
   }
 });
 
