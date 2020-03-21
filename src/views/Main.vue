@@ -5,37 +5,37 @@
       <el-breadcrumb-item>/</el-breadcrumb-item>
     </el-breadcrumb>
     <div>
-      <el-card shadow="hover" class="card">
+      <el-card shadow="hover" class="card" :v-loading="autoRunning.autoRunningLoading">
         <div slot="header" class="chead">
           <span>自动化已运行</span>
           <el-tag effect="dark" class="tag" size="mini">持续</el-tag>
         </div>
-        <span class="content" style="color: deepskyblue"> 0 天 0 小时 0 分钟</span>
-        <div class="bottom"><span>正在执行任务 10 个</span></div>
+        <span class="content" style="color: deepskyblue"> {{autoRunning.days}} 天 {{autoRunning.hours}} 小时 {{autoRunning.minutes}} 分钟</span>
+        <div class="bottom"><span>正在执行任务 {{autoRunning.tasks}} 个</span></div>
       </el-card>
-      <el-card shadow="hover" class="card">
+      <el-card shadow="hover" class="card" :v-loading="todayRunning.todayRunningLoading">
         <div slot="header" class="chead">
           <span>今日执行情况</span>
           <el-tag effect="dark" class="tag" size="mini" type="warning">运行</el-tag>
         </div>
-        <span  class="content" style="color: #ffcd32">已执行用例 300 条</span>
-        <div class="bottom"><span>成功率 90% </span></div>
+        <span  class="content" style="color: #ffcd32">已执行用例 {{todayRunning.executeCaseTodayNum}} 条</span>
+        <div class="bottom"><span>成功率 {{todayRunning.successRate}}% </span></div>
       </el-card>
-      <el-card shadow="hover" class="card">
+      <el-card shadow="hover" class="card" :v-loading="caseRepertory.caseRepertoryLoading">
         <div slot="header" class="chead">
           <span>用例库</span>
           <el-tag effect="dark" class="tag" size="mini" type="danger">库存</el-tag>
         </div>
-        <span  class="content" style="color: #ff4d51;">用例集库存 100 条</span>
-        <div class="bottom"><span>包含用例 1000 条</span></div>
+        <span  class="content" style="color: #ff4d51;">用例集库存 {{caseRepertory.setNum}} 条</span>
+        <div class="bottom"><span>包含用例 {{caseRepertory.caseNum}} 条</span></div>
       </el-card>
-      <el-card shadow="hover" class="card">
+      <el-card shadow="hover" class="card" :v-loading="taskRepertory.taskRepertoryLoading">
         <div slot="header" class="chead">
           <span>任务库</span>
           <el-tag effect="dark" class="tag" size="mini" type="success">库存</el-tag>
         </div>
-        <span  class="content" style="color: #13ce66">普通任务 20 个</span>
-        <div class="bottom"><span>已开启定时任务  10 个</span></div>
+        <span  class="content" style="color: #13ce66">普通任务 {{taskRepertory.taskNum}} 个</span>
+        <div class="bottom"><span>已开启定时任务 {{taskRepertory.timingTaskNum}} 个</span></div>
       </el-card>
     </div>
     <div>
@@ -71,6 +71,28 @@
               roseType: 'radius'
             };
             return {
+              autoRunning: {
+                 days:'',
+                 hours:'',
+                 minutes:'',
+                 tasks:'',
+                autoRunningLoading:'',
+              } ,
+              todayRunning:{
+                  executeCaseTodayNum:'',
+                  successRate:'',
+                  todayRunningLoading:''
+              } ,
+              caseRepertory:{
+                  setNum:'',
+                  caseNum:'',
+                  caseRepertoryLoading:''
+              },
+              taskRepertory:{
+                  taskNum:'',
+                  timingTaskNum:'',
+                  taskRepertoryLoading:''
+              },
               caseHistory: {
                 columns: ['日期', '成功用例', '成功率', '失败用例'],
                 rows: [
@@ -86,16 +108,13 @@
               todayCase: {
                 columns: ['用例类别', '数量'],
                 rows: [
-                  { '用例类别': '成功用例数', '数量': 1393 },
-                  { '用例类别': '失败用例数', '数量': 3530 }
+
                 ]
               },
               todayTask: {
-                columns: ['任务情况', '访问用户'],
+                columns: ['任务情况', '数量'],
                 rows: [
-                  { '任务情况': '执行中', '访问用户': 1393 },
-                  { '任务情况': '执行完毕', '访问用户': 3530 },
-                  { '任务情况': '待执行', '访问用户': 2923 },
+
                 ]
               },
               chartData: {
@@ -105,6 +124,94 @@
             }
         },
         methods:{
+          getAutoRunning(){
+              this.autoRunning.autoRunningLoading = true;
+              this.$axios.get('/apis/dataStatistics/executeInfoNow').then(res=> {
+                      if (res.data.code === 200) {
+                          this.autoRunning.days = res.data.data.executeTime.day;
+                          this.autoRunning.hours = res.data.data.executeTime.hour;
+                          this.autoRunning.minutes = res.data.data.executeTime.minute;
+                          this.autoRunning.tasks = res.data.data.executeTaskNumNow;
+                      } else {
+                          this.$notify({title: '操作失败', type: 'warning', message: res.data.msg});
+                      }
+                  }
+              ).catch(err=>{
+                  this.$notify({title:'操作失败',type:'error',message:err});
+              });
+              this.autoRunning.autoRunningLoading = false;
+          },
+          getTodayRunning(){
+              this.todayRunning.todayRunningLoading = true;
+              this.$axios.get('/apis/dataStatistics/todayInfo').then(res=> {
+                      if (res.data.code === 200) {
+                          this.todayRunning.executeCaseTodayNum = res.data.data.executeCaseTodayNum;
+                          this.todayRunning.successRate = parseFloat(res.data.data.successRate)*100;
+                      } else {
+                          this.$notify({title: '操作失败', type: 'warning', message: res.data.msg});
+                      }
+                  }
+              ).catch(err=>{
+                  this.$notify({title:'操作失败',type:'error',message:err});
+              });
+              this.todayRunning.todayRunningLoading = false;
+          },
+          getTodayCaseInfo(){
+              this.$axios.get('/apis/dataStatistics/todayCaseInfo').then(res=> {
+                      if (res.data.code === 200) {
+                          this.todayCase.rows.push({ '用例类别': '成功用例数', '数量': res.data.data.successNum })
+                          this.todayCase.rows.push({ '用例类别': '失败用例数', '数量': res.data.data.falseNum })
+                      } else {
+                          this.$notify({title: '操作失败', type: 'warning', message: res.data.msg});
+                      }
+                  }
+              ).catch(err=>{
+                  this.$notify({title:'操作失败',type:'error',message:err});
+              });
+          },
+            getTodayTASKInfo(){
+                this.$axios.get('/apis/dataStatistics/taskExecuteInfo').then(res=> {
+                        if (res.data.code === 200) {
+                            this.todayTask.rows.push({ '任务情况': '执行中', '数量': res.data.data.taskIsStartNum })
+                            this.todayTask.rows.push({ '任务情况': '执行完毕', '数量': res.data.data.taskIsEndNum })
+                        } else {
+                            this.$notify({title: '操作失败', type: 'warning', message: res.data.msg});
+                        }
+                    }
+                ).catch(err=>{
+                    this.$notify({title:'操作失败',type:'error',message:err});
+                });
+            },
+          getCaseRepertory(){
+              this.caseRepertory.caseRepertoryLoading = true;
+              this.$axios.get('/apis/dataStatistics/setInfo').then(res=> {
+                      if (res.data.code === 200) {
+                          this.caseRepertory.setNum = res.data.data.testCaseSetNum;
+                          this.caseRepertory.caseNum = res.data.data.testCaseNum;
+                      } else {
+                          this.$notify({title: '操作失败', type: 'warning', message: res.data.msg});
+                      }
+                  }
+              ).catch(err=>{
+                  this.$notify({title:'操作失败',type:'error',message:err});
+              });
+              this.caseRepertory.caseRepertoryLoading = false;
+          } ,
+            getTaskRepertory(){
+                this.taskRepertory.taskRepertoryLoading = true;
+                this.$axios.get('/apis/dataStatistics/taskInfo').then(res=> {
+                        if (res.data.code === 200) {
+                            this.taskRepertory.taskNum = res.data.data.taskNum;
+                            this.taskRepertory.timingTaskNum = res.data.data.taskIsTimingNum;
+                        } else {
+                            this.$notify({title: '操作失败', type: 'warning', message: res.data.msg});
+                        }
+                    }
+                ).catch(err=>{
+                    this.$notify({title:'操作失败',type:'error',message:err});
+                });
+                this.taskRepertory.taskRepertoryLoading = false;
+            } ,
           getRows(){
             return [{
               'word': '用例集',
@@ -348,6 +455,14 @@
               }
             ]
           }
+        },
+        created() {
+            this.getAutoRunning();
+            this.getTodayRunning();
+            this.getCaseRepertory();
+            this.getTaskRepertory();
+            this.getTodayCaseInfo();
+            this.getTodayTASKInfo();
         }
     }
 </script>

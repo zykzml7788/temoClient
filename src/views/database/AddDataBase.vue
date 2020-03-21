@@ -1,7 +1,7 @@
 <template>
   <el-dialog title="新增数据源配置" :visible.sync="$store.state.adddatabaseshow" style="height: 100%;" :close-on-click-modal="false"
   @close="closeAddDatabaseView">
-    <el-form :model="form" :rules="rules" ref="form">
+    <el-form :model="form" :rules="rules" ref="form" v-loading="loading">
       <el-form-item label="数据源名" :label-width="formLabelWidth" prop="dbName">
         <el-input placeholder="请输入数据源名" v-model="form.dbName" autocomplete="off"></el-input>
       </el-form-item>
@@ -22,7 +22,8 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="addDataBase">确 定</el-button>
+      <el-button type="primary" @click="addDataBase">保 存</el-button>
+      <el-button type="success" @click="testConnect">Test Connect</el-button>
       <el-button @click="closeAddDatabaseView">取 消</el-button>
     </div>
   </el-dialog>
@@ -67,6 +68,7 @@
           pwd:''
         },
         formLabelWidth: '80px',
+          loading:false
       };
     },
     methods:{
@@ -100,6 +102,35 @@
           }
         });
       },
+        testConnect(){
+            this.$refs['form'].validate(bol=>{
+                if (bol){
+                    this.loading = true;
+                    this.$axios.post('/apis/database/testConnect',this.form).then(res=>{
+                        this.loading = false;
+                        if (res.data.code === 200){
+                            this.$notify({
+                                title:'操作成功',
+                                type:'success',
+                                message:res.data.msg
+                            });
+                        }else {
+                            this.$notify({
+                                title:'操作失败',
+                                type:'error',
+                                message:res.data.msg
+                            });
+                        }
+                    }).catch(err=>{
+                        this.$notify({
+                            title:'失败',
+                            type:'error',
+                            message:err
+                        });
+                    });
+                }
+            });
+        },
       closeAddDatabaseView(){
         this.$refs['form'].resetFields();
         this.$store.commit('changeAddDataBaseShow',false);

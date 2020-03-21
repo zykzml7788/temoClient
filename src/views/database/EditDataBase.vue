@@ -1,7 +1,7 @@
 <template>
   <el-dialog title="编辑数据源配置" :visible.sync="$store.state.editdatabaseshow" style="height: 100%;" :close-on-click-modal="false"
              @close="closeEditDatabaseView">
-    <el-form :model="form" :rules="rules" ref="form">
+    <el-form :model="form" :rules="rules" ref="form" v-loading="loading">
       <el-form-item label="数据源名" :label-width="formLabelWidth" prop="dbName">
         <el-input placeholder="请输入数据源名" v-model="form.dbName" autocomplete="off"></el-input>
       </el-form-item>
@@ -22,7 +22,8 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="editDataBase">确 定</el-button>
+      <el-button type="primary" @click="editDataBase">保 存</el-button>
+      <el-button type="success" @click="testConnect">Test Connect</el-button>
       <el-button @click="closeEditDatabaseView">取 消</el-button>
     </div>
   </el-dialog>
@@ -60,6 +61,7 @@
                 dialogFormVisible: false,
                 form: {},
                 formLabelWidth: '80px',
+                loading:false
             };
         },
         methods:{
@@ -91,6 +93,44 @@
                             });
                         });
 
+                    }
+                });
+            },
+            testConnect(){
+                const database = {
+                    "dbId": this.form.dbId,
+                    "dbName": this.form.dbName,
+                    "dbLibraryName": this.form.dbLibraryName,
+                    "host": this.form.host,
+                    "port": this.form.port,
+                    "user": this.form.user,
+                    "pwd": this.form.pwd
+                };
+                this.$refs['form'].validate(bol=>{
+                    if (bol){
+                        this.loading = true;
+                        this.$axios.post('/apis/database/testConnect',database).then(res=>{
+                            this.loading = false;
+                            if (res.data.code === 200){
+                                this.$notify({
+                                    title:'操作成功',
+                                    type:'success',
+                                    message:res.data.msg
+                                });
+                            }else {
+                                this.$notify({
+                                    title:'操作失败',
+                                    type:'error',
+                                    message:res.data.msg
+                                });
+                            }
+                        }).catch(err=>{
+                            this.$notify({
+                                title:'失败',
+                                type:'error',
+                                message:err
+                            });
+                        });
                     }
                 });
             },
