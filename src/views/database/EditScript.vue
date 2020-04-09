@@ -17,15 +17,30 @@
       </el-form-item>
       <el-form-item
         v-for="(sql, index) in sqls"
-        :label="'sql' + (index+1)"
+        :label="'sql'"
       >
-        <span><el-input v-model="sql.value" style="width: 70%;"></el-input></span>
+        <span>
+          <el-input v-model="sql.script" style="width: 70%;"></el-input>
+          <span>
+            <el-tooltip content="脚本作为前置的时候，选择保存参数可以供其他用例使用参数，ps:必须使用Select查询才生效，会把Select后面跟上的相关字段作为参数的key,如 select name from project，保存参数的key即为name，value为查询出来的第一条的name对应的value" placement="top">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+            保存参数
+          </span>
+          <el-switch
+            class="switchStyle"
+            v-model="sql.saveParam"
+            active-color="#13ce66"
+            inactive-color="#ff4949">
+          </el-switch>
+        </span>
+
         <span v-if="index!==0"><el-button @click.prevent="removeSql(sql)">删除</el-button></span>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="editScript">保 存</el-button>
-      <el-button type="primary" @click="testScript">调 试</el-button>
+      <el-button type="success" @click="testScript">调 试</el-button>
       <el-button @click="addSql">新增sql</el-button>
       <el-button @click="closeEditScriptView">取 消</el-button>
     </div>
@@ -78,16 +93,11 @@
                 });
             },
             editScript(){
-              const sqlValue = [];
-              const sqls = this.sqls;
-              for (let index in sqls){
-                sqlValue.push(sqls[index].value);
-              }
                 const script = {
                     "dbId": this.form.dbId,
                     "scriptId": this.form.scriptId,
                     "scriptName": this.form.scriptName,
-                    "sqlScript": sqlValue.join("$")
+                    "sqlScript": JSON.stringify(this.sqls)
                 };
                 this.$refs['form'].validate(bol=>{
                     if (bol){
@@ -119,16 +129,11 @@
                 });
             },
             testScript(){
-                const sqlValue = [];
-                const sqls = this.sqls;
-                for (let index in sqls){
-                    sqlValue.push(sqls[index].value);
-                }
 
                 const script = {
                     "dbId": this.form.dbId,
                     "scriptName": this.form.scriptName,
-                    "sqlScript": sqlValue.join("$")
+                    "sqlScript": JSON.stringify(this.sqls)
                 };
                 this.$refs['form'].validate(bol=>{
                     if (bol){
@@ -175,8 +180,8 @@
             },
             addSql() {
                 this.sqls.push({
-                    value: '',
-                    key: Date.now()
+                    script: '',
+                    saveParam: false
                 });
             },
 
@@ -190,10 +195,7 @@
                 this.form.sqlScript = this.$store.state.scriptDetail.sqlScript;
                 this.form.dbId = this.$store.state.scriptDetail.dbId;
                 this.form.scriptName = this.$store.state.scriptDetail.scriptName;
-                let sqls = this.$store.state.scriptDetail.sqlScript.split("$");
-                for (let index in sqls){
-                    this.sqls.push({"key":Date.now(),"value":sqls[index]})
-                }
+                this.sqls = JSON.parse(this.$store.state.scriptDetail.sqlScript);
             }
         },
         components:{
@@ -203,4 +205,6 @@
             this.getDataBases();
         }
     };
+
 </script>
+

@@ -71,13 +71,14 @@
 <style scoped>
   .login-container {
     padding-top: 180px ;
+    text-align: center;
   }
   .login-page {
-    opacity:0.70;
+    opacity:0.75;
     background-color: dimgray;
     -webkit-border-radius: 5px;
     border-radius: 5px;
-    margin: 0px auto;
+    margin: 0 auto;
     width: 350px;
     padding: 35px 35px 15px;
     border: 1px solid #eaeaea;

@@ -1,6 +1,6 @@
 <template>
-  <el-dialog :visible.sync="$store.state.addcaseshow" style="height: 100%;" :close-on-click-modal="false"
-             @close="closeView" >
+  <el-dialog :visible.sync="$store.state.addcaseshow" style="height: 100%"  :close-on-click-modal="false"
+             @close="closeView" customClass="width:80%">
 
   <div id="caseTest" v-loading="setName === ''">
     <el-card shadow="hover" style="margin-bottom: 30px">

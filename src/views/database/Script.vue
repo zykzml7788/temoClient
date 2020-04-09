@@ -55,6 +55,15 @@
         prop="sqlScript"
         label="脚本内容"
         width="300" :show-overflow-tooltip="true">
+        <template slot-scope="scope" >
+          <el-tooltip class="item" effect="light" :content="script.script" placement="top-start" v-for="script in JSON.parse(scope.row.sqlScript)">
+            <el-tag
+              :type="items[(JSON.parse(scope.row.sqlScript).indexOf(script))%5]"
+              effect="light" style="margin-left: 5px;" size="mini">
+              sql
+            </el-tag>
+          </el-tooltip>
+        </template>
       </el-table-column>
       <el-table-column
         prop="db.dbName"
