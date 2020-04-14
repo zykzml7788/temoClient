@@ -43,7 +43,9 @@
           <i class="el-icon-location" style="color:white"></i>
           <span slot="title">用例管理</span>
         </template>
-        <el-menu-item index="3-1">用例集管理</el-menu-item>
+        <el-menu-item index="3-1">功能脑图管理</el-menu-item>
+        <el-menu-item index="3-2">功能用例管理</el-menu-item>
+        <el-menu-item index="3-3">自动化用例集管理</el-menu-item>
       </el-submenu>
       <el-submenu index="4">
         <template slot="title">
@@ -113,7 +115,13 @@
             this.$router.push('/project');
             break;
           case '3-1':
-            this.$router.push('/case');
+              this.$router.push('/mind');
+              break;
+          case '3-2':
+              this.$router.push('/case');
+              break;
+          case '3-3':
+            this.$router.push('/autocase');
             break;
           case '4-1':
             this.$router.push('/database/config');

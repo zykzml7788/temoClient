@@ -5,10 +5,13 @@ import Project from '@/views/project/Project'
 import DataBase from '@/views/database/DataBase'
 import Main from '@/views/Main'
 import Script from '@/views/database/Script'
-import Case from '@/views/case/CaseSets'
+import Mind from '@/views/case/FunctionMind'
+import Case from '@/views/case/FunctionCase'
+import AutoCase from '@/views/case/CaseSets'
 import Task from '@/views/task/Task'
 import TimingTask from "@/views/task/TimingTask";
 import TaskResult from "@/views/task/TaskResult";
+
 
 Vue.use(Router);
 
@@ -53,9 +56,25 @@ export default new Router({
       },
     },
     {
+      path: '/mind',
+      name: 'Mind',
+      component: Mind,
+      meta: {
+        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+      },
+    },
+    {
       path: '/case',
       name: 'Case',
       component: Case,
+      meta: {
+        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+      },
+    },
+    {
+      path: '/autoCase',
+      name: 'Case',
+      component: AutoCase,
       meta: {
         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       },

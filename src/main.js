@@ -9,6 +9,11 @@ import axios from 'axios'
 import store from './vuex/store'
 import VCharts from 'v-charts'
 import JsonViewer from 'vue-json-viewer'
+import kityminder from 'vue-kityminder-gg'
+
+
+
+
 
 Vue.config.productionTip = false;
 
@@ -18,6 +23,7 @@ Vue.use(VCharts);
 Vue.use(ElementUI);
 // Import JsonViewer as a Vue.js plugin
 Vue.use(JsonViewer);
+Vue.use(kityminder)
 
 Vue.prototype.$axios=axios;
 axios.defaults.timeout = 10000;
