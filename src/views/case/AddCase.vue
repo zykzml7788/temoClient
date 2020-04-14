@@ -30,6 +30,10 @@
                 v-model="setUpScripts"
                 :data="scripts"  :titles="['脚本列表','前置脚本列表']">
               </el-transfer>
+              <div style="text-align: left">
+                <el-button type="primary" round style="margin-top: 20px" @click="saveSetupScript">保存</el-button>
+                <el-button type="danger" round style="margin-top: 20px" @click="resetSetUp">重置</el-button>
+              </div>
             </div>
           </el-collapse-item>
           <el-collapse-item title="后置脚本" name="teardown">
@@ -42,12 +46,12 @@
                 :data="tScripts"  :titles="['脚本列表','后置脚本列表']">
               </el-transfer>
             </div>
+            <div style="text-align: left">
+              <el-button type="primary" round style="margin-top: 20px" @click="saveteardownScript">保存</el-button>
+              <el-button type="danger" round style="margin-top: 20px" @click="resetTearDown">重置</el-button>
+            </div>
           </el-collapse-item>
         </el-collapse>
-        <div style="text-align: left">
-          <el-button type="primary" round style="margin-top: 20px" @click="addSTScript">保存</el-button>
-          <el-button type="danger" round style="margin-top: 20px" @click="reset">重置</el-button>
-        </div>
 
       </el-tab-pane>
       <el-tab-pane label="用例列表" name="third">
@@ -278,24 +282,22 @@
                     res.data.data.forEach(n => {
                         this.scripts.push({
                             key:n.scriptId,
-                            label:n.scriptName,
+                            label:n.scriptName+"(DB)",
                         });
                         this.tScripts.push({
                             key:n.scriptId,
-                            label:n.scriptName,
+                            label:n.scriptName+"(DB)",
                         });
                         this.stScripts.push(
                             {
-                                exScriptId: n.scriptId,
-                                exScriptType: "0",
-                                stScriptType: "1",
+                                scriptId: n.scriptId,
+                                scriptType: 'DB'
                             }
                         );
                         this.tdScripts.push(
                             {
-                                exScriptId: n.scriptId,
-                                exScriptType: "0",
-                                stScriptType: "2"
+                                scriptId: n.scriptId,
+                                scriptType: 'DB'
                             }
                         );
 
@@ -306,30 +308,26 @@
                     res.data.data.forEach((n) => {
                         this.scripts.push({
                             key:n.setId,
-                            label:n.setName,
+                            label:n.setName+"(SET)",
                             // disabled: n.setId === this.setId
                         });
                         this.tScripts.push({
                             key:n.setId,
-                            label:n.setName,
+                            label:n.setName+"(SET)",
                             // disabled: n.setId === this.setId
                         });
                         this.stScripts.push(
                             {
-                                exScriptId: n.setId,
-                                exScriptType: "1",
-                                stScriptType: "1",
+                                scriptId: n.setId,
+                                scriptType: 'SET'
                             }
                         );
                         this.tdScripts.push(
                             {
-                                exScriptId: n.setId,
-                                exScriptType: "1",
-                                stScriptType: "2",
+                                scriptId: n.setId,
+                                scriptType: 'SET'
                             }
                         );
-
-
                     });
 
 
@@ -452,28 +450,49 @@
                 this.tearDownScripts = [];
                 this.tScripts = [];
                 this.scripts = [];
+                this.stScripts = [];
+                this.tdScripts = [];
                 this.activeNames = ['setup'];
                 this.clearLog();
                 this.getScripts();
             },
-            addSTScript(){
-                let body = {
-                    setId: this.setId,
-                    stScriptRequests:  []
-                };
-                this.setUpScripts.forEach(n => {
-                   const script = this.stScripts.filter(m => m.exScriptId === n)[0];
-                   script.sorting = this.setUpScripts.indexOf(n);
-                   script.setId = this.setId;
-                   body.stScriptRequests.push(script);
+            saveSetupScript(){
+                let body = [];
+                console.log(this.stScripts);
+                for (const i in this.setUpScripts){
+                    for (const j in this.stScripts){
+                        if (this.setUpScripts[i] === this.stScripts[j].scriptId){
+                            console.log(this.stScripts[j].scriptId);
+                            body.push(this.stScripts[j]);
+                        }
+                    }
+                }
+                let formData = new FormData();
+                formData.append("setupScript",JSON.stringify(body));
+                this.$axios.put('/apis/testcaseset/setup/'+this.setId,formData).then(res=>{
+                        if (res.data.code === 200){
+                            this.$notify({title:'操作成功',type:'success',message:res.data.msg});
+                        } else {
+                            this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
+                        }
+
+                    }
+                ).catch(err=>{
+                    this.$notify({title:'操作失败',type:'error',message:err});
                 });
-                this.tearDownScripts.forEach(n => {
-                    const script = this.tdScripts.filter(m => m.exScriptId === n)[0];
-                    script.sorting = this.tearDownScripts.indexOf(n);
-                    script.setId = this.setId;
-                    body.stScriptRequests.push(script);
-                });
-                this.$axios.post('/apis/testcaseset/stScript',body).then(res=>{
+            },
+            saveteardownScript(){
+                let body = [];
+                for (const i in this.tearDownScripts){
+                    for (const j in this.tdScripts){
+                        if (this.tearDownScripts[i] === this.tdScripts[j].scriptId){
+                            body.push(this.tdScripts[j]);
+                        }
+                    }
+                }
+                let formData = new FormData();
+                formData.append("teardownScript",JSON.stringify(body));
+                this.$axios.put('/apis/testcaseset/teardown/'+this.setId,formData).then(res=>{
                         if (res.data.code === 200){
                             this.$notify({title:'操作成功',type:'success',message:res.data.msg});
                         } else {
@@ -516,9 +535,11 @@
               this.successRate = 0;
               this.executedRows = [];
             },
-            reset(){
-                this.tearDownScripts = [];
+            resetSetUp(){
                 this.setUpScripts = [];
+            },
+            resetTearDown(){
+                this.tearDownScripts = [];
             },
             init: function () {
               if(typeof(WebSocket) === "undefined"){
@@ -593,7 +614,7 @@
           this.logInit();
         },
         destroyed () {
-          // 销毁监听
+          // 销毁监听d
           this.socket.onclose = this.close;
         },
         computed: {
@@ -607,18 +628,15 @@
             this.setId = val.setId;
             this.setName = val.setName;
             this.cases = val.testCase;
-            for (const index in val.stScript){
-                if (val.stScript[index].stScriptType === "1"){
-                    this.setUpScripts.push(
-                        val.stScript[index].exScriptId
-                    );
-                    // this.scripts.splice(this.scripts.indexOf(this.scripts.filter(n => n.key === val.stScript[index].stScriptId)[0]),1);
-                }else{
-                    this.tearDownScripts.push(
-                        val.stScript[index].exScriptId
-                    );
-                    // this.tScripts.splice(this.scripts.indexOf(this.scripts.filter(n => n.key === val.stScript[index].stScriptId)[0]),1);
-                }
+            if (val.setupScript!==null){
+                JSON.parse(val.setupScript).forEach(n=>{
+                    this.setUpScripts.push(n.scriptId);
+                });
+            }
+            if (val.teardownScript!==null){
+                JSON.parse(val.teardownScript).forEach(n=>{
+                    this.tearDownScripts.push(n.scriptId);
+                });
             }
           }
         }
