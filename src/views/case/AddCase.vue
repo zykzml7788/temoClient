@@ -146,10 +146,10 @@
       title="实时执行记录"
       :visible.sync="drawer"
       :direction="'rtl'"
-      size="50%"
+      size="60%"
       >
-      <div style="margin: 20px;display: inline">
-        <el-card shadow="always" style="width:40%;height:25%;margin:20px;text-align: left;float: left">
+      <div style="margin: 10px;display: inline">
+        <el-card shadow="always" style="width:45%;height:25%;margin:10px;text-align: left;float: left">
           <div style="margin-bottom: 20px"><strong>执行进度</strong></div>
           <h5>{{executedRate}}%</h5>
           <el-progress  :percentage="executedRate" :show-text="false" status="success" v-if="executedRate===100"></el-progress>
@@ -157,7 +157,7 @@
           <div style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>已执行用例数：{{executeNum}}</span></div>
           <div style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>用例总数：{{caseNum}}</span></div>
         </el-card>
-        <el-card shadow="always" style="width:40%;height:25%;margin:20px;text-align: left;float: left">
+        <el-card shadow="always" style="width:45%;height:25%;margin:10px;text-align: left;float: left">
           <div style="margin-bottom: 20px"><strong>成功率</strong></div>
           <h5>{{successRate}}%</h5>
           <el-progress  :percentage="successRate" :show-text="false" status="success" v-if="error===0"></el-progress>
@@ -166,10 +166,18 @@
           <div style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>用例总数：{{caseNum}}</span></div>
         </el-card>
       </div>
-      <el-card shadow="always" style="margin: 20px;float: left;width:100%">
+      <div style="height: auto">
+      <el-card shadow="always" style="margin: 10px;width:100%;">
+        <h4>前置脚本</h4>
+        <el-steps :space="200" :active="1" finish-status="success">
+          <el-step title="脚本1"></el-step>
+          <el-step title="脚本2"></el-step>
+          <el-step title="脚本3"></el-step>
+        </el-steps>
+        <h4>测试步骤</h4>
         <el-table
           :data="executedRows"
-          stripe height="500"
+          stripe height="300"
           style="width: 100%;">
           <el-table-column
             prop="index"
@@ -179,12 +187,12 @@
           <el-table-column
             prop="caseName"
             label="用例名称"
-            width="300">
+            width="400">
           </el-table-column>
           <el-table-column
             prop="status"
             label="执行状态"
-            width="100">
+            width="150">
             <template slot-scope="scope">
               <el-tag v-if="scope.row.status === 1" type="success">成功</el-tag>
               <el-tag v-else type="danger">失败</el-tag>
@@ -200,7 +208,7 @@
           </el-table-column>
         </el-table>
       </el-card>
-
+      </div>
     </el-drawer>
       <el-dialog
         title="日志详情"
