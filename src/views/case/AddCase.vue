@@ -242,8 +242,7 @@
                 success:0,
                 error:0,
                 drawer:false,
-                path:this.$websockerUrl+"123",
-                logpath:this.$websockerUrl+"101",
+                path:this.$websockerUrl+JSON.parse(localStorage.getItem("userInfo")).userId,
                 socket:"",
                 logSocket:"",
                 setId:'',
@@ -563,24 +562,6 @@
                 this.socket.onmessage = this.getMessage;
               }
             },
-            logInit: function(){
-              if(typeof(WebSocket) === "undefined"){
-                alert("您的浏览器不支持socket")
-              }else{
-                // 实例化socket
-                this.logSocket = new WebSocket(this.logpath);
-                // 监听socket连接
-                this.logSocket.onopen = function () {
-                  console.log("logSocket连接成功")
-                };
-                // 监听socket错误信息
-                this.logSocket.onerror = function () {
-                  console.log("logSocket连接错误")
-                };
-                // 监听socket消息
-                this.logSocket.onmessage = this.logOnMessage;
-              }
-            },
             open: function () {
               console.log("socket连接成功")
             },
@@ -589,13 +570,23 @@
             },
             getMessage: function (msg) {
               console.log(msg.data);
-              let testResult = JSON.parse(msg.data);
-              this.executedRate = parseFloat(testResult.executedRate);
-              this.successRate = parseFloat(testResult.successRate);
-              this.error = testResult.error;
-              this.success = testResult.success;
-              this.caseNum = testResult.caseNum;
-              this.executeNum = testResult.executedNum;
+              let message = JSON.parse(msg.data);
+              if (message.type === "executedRow"){
+                  this.executedRows.push(message);
+              }
+              if (message.type === "testResult"){
+                  this.executedRate = parseFloat(message.executedRate);
+                  this.successRate = parseFloat(message.successRate);
+                  this.error = message.error;
+                  this.success = message.success;
+                  this.caseNum = message.caseNum;
+                  this.executeNum = message.executedNum;
+              }
+              if (message.type === "setUpResult"){
+
+              }
+
+
             },
             send: function () {
               this.socket.send(params)
@@ -603,10 +594,6 @@
             close: function () {
               console.log("socket已经关闭")
             },
-            logOnMessage: function(msg){
-                let executedRow = JSON.parse(msg.data);
-                this.executedRows.push(executedRow);
-              },
             lookLogs(logs){
               this.logs = logs.replace(/\n/g, "<br/>");
               this.logView = true;
@@ -619,7 +606,6 @@
         },
         mounted(){
           this.init();
-          this.logInit();
         },
         destroyed () {
           // 销毁监听d

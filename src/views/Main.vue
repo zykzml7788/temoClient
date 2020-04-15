@@ -19,7 +19,7 @@
           <el-tag effect="dark" class="tag" size="mini" type="warning">运行</el-tag>
         </div>
         <span  class="content" style="color: #ffcd32">已执行用例 {{todayRunning.executeCaseTodayNum}} 条</span>
-        <div class="bottom"><span>成功率 {{todayRunning.successRate}}% </span></div>
+        <div class="bottom"><span>成功率 {{parseFloat(todayRunning.successRate).toFixed(2)}}% </span></div>
       </el-card>
       <el-card shadow="hover" class="card" :v-loading="caseRepertory.caseRepertoryLoading">
         <div slot="header" class="chead">
