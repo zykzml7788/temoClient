@@ -42,7 +42,7 @@
           label="操作"
           width="200">
           <template slot-scope="scope">
-            <el-button @click="showEditEnv(scope.$index,scope.row)" type="warning" size="mini">编辑</el-button>
+            <el-button @click="showEditEnv(scope.$index,scope.row)"  size="mini">编辑</el-button>
             <el-button @click="delEnv(scope.$index)" type="danger" size="mini">移除</el-button>
           </template>
         </el-table-column>

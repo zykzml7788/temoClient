@@ -78,7 +78,6 @@
         <template slot-scope="scope">
           <el-button
             @click.native.prevent="updateDataBase(scope.row)"
-            type="warning"
             size="mini">
             编辑
           </el-button>

@@ -1,8 +1,8 @@
 <template>
-  <el-dialog :visible.sync="$store.state.addcaseshow" style="height: 100%"  :close-on-click-modal="false"
-             @close="closeView" customClass="width:80%">
+  <el-dialog :visible.sync="$store.state.addcaseshow" style="height: 100%" :close-on-click-modal="false"
+             @close="closeView" width="80%">
 
-  <div id="caseTest" v-loading="setName === ''">
+  <div id="caseTest" v-loading="setName === ''" >
     <el-card shadow="hover" style="margin-bottom: 30px">
     <h2>用例集：<strong style="color: crimson;">{{setName}}</strong></h2>
     <div style="text-align: right">
@@ -61,7 +61,7 @@
           <el-button type="primary" @click="" style="float: left;margin: 10px;">添加数据库用例</el-button>
           <el-table
             :data="cases"
-            stripe height="400px" :default-sort="{prop: 'sorting',order:'ascending'}" v-loading="loading" style="float: left">
+            stripe height="500px" :default-sort="{prop: 'sorting',order:'ascending'}" v-loading="loading" style="float: left">
             <el-table-column
               prop="sorting"
               label="执行顺序"
@@ -70,7 +70,7 @@
             <el-table-column
               prop="caseDesc"
               label="用例名称"
-              width="180">
+              width="450">
             </el-table-column>
             <el-table-column
               prop="caseType"
@@ -83,7 +83,7 @@
             <el-table-column
               fixed="right"
               label="操作"
-              width="300">
+              width="400">
               <template slot-scope="scope">
                 <el-button
                   @click.native.prevent="upCase(scope.row)"
@@ -98,8 +98,13 @@
                   下移
                 </el-button>
                 <el-button
-                  @click.native.prevent="updateCase(scope.row)"
+                  @click.native.prevent="copyTestCase(scope.row)"
                   type="warning"
+                  size="mini">
+                  复制
+                </el-button>
+                <el-button
+                  @click.native.prevent="updateCase(scope.row)"
                   size="mini">
                   编辑
                 </el-button>
@@ -403,6 +408,21 @@
             ).catch(err=>{
               this.$notify({title:'操作失败',type:'error',message:err});
             });
+          },
+          copyTestCase(row){
+            this.$confirm('确定要复制吗？').then(_=>{
+                this.$axios.post('/apis/testcase/copyTestCase/'+row.caseId).then(res=>{
+                  if (res.data.code===200){
+                    this.$notify({title:'操作成功',type:'success',message:res.data.msg});
+                  } else {
+                    this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
+                  }
+                  this.getCaseInfo();
+                }).catch(err=>{
+                  this.$notify({title:'操作失败',type:'error',message:err});
+                });
+              }
+            );
           },
           deleteTestCase(row){
             this.$confirm('确定要删除吗？').then(_=>{

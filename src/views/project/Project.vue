@@ -80,7 +80,6 @@
           </el-button>
           <el-button
             @click.native.prevent="updateProject(scope.row)"
-            type="warning"
             size="mini">
             编辑
           </el-button>

@@ -90,7 +90,7 @@
       <el-table-column
         fixed="right"
         label="操作"
-        width="300">
+        width="400">
         <template slot-scope="scope">
           <div style="margin-bottom: 10px;">
 <!--            <el-button-->
@@ -106,10 +106,15 @@
               调试/添加用例
             </el-button>
 <!--          </div>-->
+            <el-button
+              @click.native.prevent="copyCaseSet(scope.row)"
+              type="warning"
+              size="mini">
+              复制
+            </el-button>
 <!--          <div>-->
             <el-button
               @click.native.prevent="updateCaseSet(scope.row)"
-              type="warning"
               size="mini">
               编辑
             </el-button>
@@ -190,6 +195,23 @@
           this.$store.commit('setCaseSetDetail',res.data.data);
           this.$store.commit('changeEditCaseSetShow',true);
         });
+      },
+      copyCaseSet(row){
+        this.$confirm('确定要复制吗？').then(_=>{
+            this.$axios.post('/apis/testcaseset/copySet/'+row.setId).then(res=>{
+              if (res.data.code===200){
+                this.$notify({title:'操作成功',type:'success',message:res.data.msg});
+              } else {
+                this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
+              }
+              this.page = 1;
+              this.getCaseSet(1);
+            }).catch(err=>{
+              this.$notify({title:'操作失败',type:'error',message:err});
+            });
+          }
+        );
+
       },
       deleteCaseSet(row){
         this.$confirm('确定要删除吗？').then(_=>{

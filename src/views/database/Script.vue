@@ -87,7 +87,6 @@
         <template slot-scope="scope">
           <el-button
             @click.native.prevent="updateScript(scope.row)"
-            type="warning"
             size="mini">
             编辑
           </el-button>
