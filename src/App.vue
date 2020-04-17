@@ -13,7 +13,11 @@
             <router-view/>
           </div>
         </div>
+        <div style="text-align: right">
+          <h5 style="margin-right: 20px">备案/许可证编号:<a href="http://www.beian.miit.gov.cn/">浙ICP备20012551号</a></h5>
+        </div>
       </el-main>
+
     </el-container>
 </template>
 
