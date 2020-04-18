@@ -201,7 +201,8 @@
               label="操作"
               width="100">
               <template slot-scope="scope">
-                <el-button type="primary" icon="el-icon-s-claim" round size="mini" @click="fixScript(scope.row)">fix</el-button>
+                <el-button type="primary" icon="el-icon-s-claim" round size="mini" @click="fixScript(scope.row)" v-if="! scope.row.success">fix</el-button>
+                <el-button type="success" icon="el-icon-check" circle size="mini" v-else></el-button>
               </template>
             </el-table-column>
           </el-table>
