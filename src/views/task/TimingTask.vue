@@ -129,7 +129,6 @@
             </el-button>
             <el-button
               @click.native.prevent="openEditTask(scope.row.taskId)"
-              type="warning"
               size="mini">
               更改配置
             </el-button>

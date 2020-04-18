@@ -1,10 +1,10 @@
 <template>
-  <el-dialog :visible.sync="$store.state.addcaseshow" style="height: 100%" :close-on-click-modal="false"
-             @close="closeView" width="80%">
+  <el-dialog :visible.sync="$store.state.addcaseshow" style="height: 100%;" :close-on-click-modal="scrollLock"
+             @close="closeView" width="80%" :lock-scroll="scrollLock">
 
-  <div id="caseTest" v-loading="setName === ''" >
+  <div id="caseTest" v-loading="setName === ''">
     <el-card shadow="hover" style="margin-bottom: 30px">
-    <h2>用例集：<strong style="color: crimson;">{{setName}}</strong></h2>
+    <h3><strong style="color: #dd6161;">{{setName}}</strong></h3>
     <div style="text-align: right">
       <el-button type="primary" @click="testCaseSet" round icon="el-icon-caret-right">调试</el-button>
       <el-button type="primary" @click="drawer=true" round>实时结果</el-button>
@@ -70,7 +70,17 @@
             <el-table-column
               prop="caseDesc"
               label="用例名称"
-              width="450">
+              width="300">
+            </el-table-column>
+            <el-table-column
+              prop="method"
+              label="Method"
+              width="100">
+            </el-table-column>
+            <el-table-column
+              prop="url"
+              label="URL"
+              width="300">
             </el-table-column>
             <el-table-column
               prop="caseType"
@@ -119,11 +129,11 @@
           </el-table>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="执行环境" name="forth" style="text-align: left">
+      <el-tab-pane label="调试环境" name="forth" style="text-align: left">
         <h3>调试环境</h3>
         <el-form :model="envInfo"  :rules="rules" ref="envInfo" label-width="100px" class="demo-ruleForm" style="float: left">
           <el-form-item label="项目" prop="project">
-            <el-select v-model="envInfo.project" placeholder="请选择项目" @change="getEnvs">
+            <el-select v-model="envInfo.project" placeholder="请选择项目" @change="getEnvs" disabled>
               <el-option
                 v-for="item in projects"
                 :key="item.pid"
@@ -267,6 +277,7 @@
         data() {
             return {
                 logs:'',
+                scrollLock:false,
                 logView:false,
                 setUpResult:[],
                 executedRows:[],
@@ -482,7 +493,7 @@
             },
             getEnvs(){
                 this.envInfo.env = '';
-                this.$axios.get('/apis/project/env/?projectId='+this.envInfo.project).then(res=>{
+                this.$axios.get('/apis/project/env?projectId='+this.envInfo.project).then(res=>{
                         if (res.data.code === 200){
                             this.envs = res.data.data;
                         } else {
@@ -678,6 +689,8 @@
           '$store.state.caseSetInfo': function (val) {
             this.setId = val.setId;
             this.setName = val.setName;
+            this.envInfo.project = val.projectId;
+            this.getEnvs();
             this.cases = val.testCase;
             if (val.setupScript!==null){
                 JSON.parse(val.setupScript).forEach(n=>{
