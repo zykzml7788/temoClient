@@ -151,10 +151,10 @@
       title="实时执行记录"
       :visible.sync="drawer"
       :direction="'rtl'"
-      size="60%"
+      size="80%"
       >
       <div style="margin: 10px;display: inline">
-        <el-card shadow="always" style="width:45%;height:25%;margin:10px;text-align: left;float: left">
+        <el-card shadow="always" style="width:45%;height:30%;margin:10px;text-align: left;float: left">
           <div style="margin-bottom: 20px"><strong>执行进度</strong></div>
           <h5>{{executedRate}}%</h5>
           <el-progress  :percentage="executedRate" :show-text="false" status="success" v-if="executedRate===100"></el-progress>
@@ -162,7 +162,7 @@
           <div style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>已执行用例数：{{executeNum}}</span></div>
           <div style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>用例总数：{{caseNum}}</span></div>
         </el-card>
-        <el-card shadow="always" style="width:45%;height:25%;margin:10px;text-align: left;float: left">
+        <el-card shadow="always" style="width:45%;height:30%;margin:10px;text-align: left;float: left">
           <div style="margin-bottom: 20px"><strong>成功率</strong></div>
           <h5>{{successRate}}%</h5>
           <el-progress  :percentage="successRate" :show-text="false" status="success" v-if="error===0"></el-progress>
@@ -171,48 +171,76 @@
           <div style="font-size: 8px;font-weight: bold;margin-top: 20px;"><span>用例总数：{{caseNum}}</span></div>
         </el-card>
       </div>
-      <div style="height: auto">
-      <el-card shadow="always" style="margin: 10px;width:100%;">
-        <h4>前置脚本</h4>
-        <el-steps :space="200" :active="1" finish-status="success">
-          <el-step title="脚本1"></el-step>
-          <el-step title="脚本2"></el-step>
-          <el-step title="脚本3"></el-step>
-        </el-steps>
-        <h4>测试步骤</h4>
-        <el-table
-          :data="executedRows"
-          stripe height="300"
-          style="width: 100%;">
-          <el-table-column
-            prop="index"
-            label="序号"
-            width="80">
-          </el-table-column>
-          <el-table-column
-            prop="caseName"
-            label="用例名称"
-            width="400">
-          </el-table-column>
-          <el-table-column
-            prop="status"
-            label="执行状态"
-            width="150">
-            <template slot-scope="scope">
-              <el-tag v-if="scope.row.status === 1" type="success">成功</el-tag>
-              <el-tag v-else type="danger">失败</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="logs"
-            label="日志"
-            width="100">
-            <template slot-scope="scope">
-              <el-button type="primary" round icon="el-icon-tickets" size="mini" @click="lookLogs(scope.row.logs)">查看</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-card>
+      <div style="height: auto;display: inline">
+        <el-card shadow="always" style="margin: 10px;width:45%;float: left">
+          <h4>前置脚本</h4>
+          <el-table
+            :data="setUpResult"
+            stripe height="300"
+            style="width: 100%;">
+            <el-table-column
+              type="index"
+              width="50"
+              label="序号">
+            </el-table-column>
+            <el-table-column
+              prop="scriptName"
+              label="脚本名称"
+              width="200">
+            </el-table-column>
+            <el-table-column
+              prop="success"
+              label="状态"
+              width="100">
+              <template slot-scope="scope">
+                <el-tag v-if="scope.row.success" type="success">成功</el-tag>
+                <el-tag v-else type="danger">失败</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="操作"
+              width="100">
+              <template slot-scope="scope">
+                <el-button type="primary" icon="el-icon-s-claim" round size="mini" @click="fixScript(scope.row)">fix</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-card>
+        <el-card shadow="always" style="margin: 10px;width:45%;float: left">
+          <h4>测试步骤</h4>
+          <el-table
+            :data="executedRows"
+            stripe height="300"
+            style="width: 100%;">
+            <el-table-column
+              prop="index"
+              label="序号"
+              width="60">
+            </el-table-column>
+            <el-table-column
+              prop="caseName"
+              label="用例名称"
+              width="200">
+            </el-table-column>
+            <el-table-column
+              prop="status"
+              label="执行状态"
+              width="100">
+              <template slot-scope="scope">
+                <el-tag v-if="scope.row.status === 1" type="success">成功</el-tag>
+                <el-tag v-else type="danger">失败</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="logs"
+              label="日志"
+              width="100">
+              <template slot-scope="scope">
+                <el-button type="primary" round icon="el-icon-tickets" size="mini" @click="lookLogs(scope.row.logs)">detail</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-card>
       </div>
     </el-drawer>
       <el-dialog
@@ -239,6 +267,7 @@
             return {
                 logs:'',
                 logView:false,
+                setUpResult:[],
                 executedRows:[],
                 executedRate:0,
                 successRate:0,
@@ -553,6 +582,12 @@
                 }
               });
             },
+            fixScript(row){
+              this.drawer = false;
+              this.closeView();
+              this.$store.commit('changeAddCaseShow',false);
+              this.$emit("addCase",row.scriptId);
+            },
             clearLog(){
               this.success=0;
               this.error=0;
@@ -560,6 +595,7 @@
               this.caseNum=0;
               this.executedRate = 0;
               this.successRate = 0;
+              this.setUpResult = [];
               this.executedRows = [];
             },
             resetSetUp(){
@@ -603,7 +639,7 @@
                   this.executeNum = message.executedNum;
               }
               if (message.type === "setUpResult"){
-
+                  this.setUpResult.push(message);
               }
 
 

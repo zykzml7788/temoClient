@@ -39,7 +39,7 @@
 
     </div>
 
-    <AddCase @getCaseSet="getCaseSet(1)"></AddCase>
+    <AddCase @getCaseSet="getCaseSet(1)" @addCase="addCase"></AddCase>
     <AddCaseSet @getCaseSet="getCaseSet(1)"></AddCaseSet>
     <EditCaseSet @getCaseSet="getCaseSet(1)"></EditCaseSet>
 
@@ -100,7 +100,7 @@
 <!--              执行-->
 <!--            </el-button>-->
             <el-button
-              @click.native.prevent="addCase(scope.row)"
+              @click.native.prevent="addCase(scope.row.setId)"
               type="primary"
               size="mini">
               调试/添加用例
@@ -175,8 +175,9 @@
       addCaseSet(){
         this.$store.commit('changeAddCaseSetShow',true);
       },
-      addCase(row){
-        this.$axios.get('/apis/testcaseset/'+row.setId+'/info').then(res=>{
+      addCase(id){
+        this.$store.commit('changeAddCaseShow',true);
+        this.$axios.get('/apis/testcaseset/'+id+'/info').then(res=>{
             this.loading = true;
             if (res.data.code === 200){
               this.$store.commit('setCaseSetInfo',res.data.data);
@@ -188,12 +189,11 @@
         ).catch(err=>{
           this.$notify({title:'操作失败',type:'error',message:err});
         });
-        this.$store.commit('changeAddCaseShow',true);
       },
       updateCaseSet(row){
+        this.$store.commit('changeEditCaseSetShow',true);
         this.$axios.get('/apis/testcaseset/'+row.setId+'/info').then(res=>{
           this.$store.commit('setCaseSetDetail',res.data.data);
-          this.$store.commit('changeEditCaseSetShow',true);
         });
       },
       copyCaseSet(row){

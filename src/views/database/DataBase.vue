@@ -150,9 +150,9 @@
         this.$store.commit('changeAddDataBaseShow',true);
       },
       updateDataBase(row){
+        this.$store.commit('changeEditDataBaseShow',true);
         this.$axios.get('/apis/database/'+row.dbId+'/info').then(res=>{
             this.$store.commit('setDatabaseDetail',res.data.data);
-            this.$store.commit('changeEditDataBaseShow',true);
         });
       },
       deleteDatabase(row){

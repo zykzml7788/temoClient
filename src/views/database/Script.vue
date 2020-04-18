@@ -156,9 +156,9 @@
                 this.$store.commit('changeAddScriptShow',true);
             },
             updateScript(row){
+                this.$store.commit('changeEditScriptShow',true);
                 this.$axios.get('/apis/script/'+row.scriptId+'/info').then(res=>{
                     this.$store.commit('setScriptDetail',res.data.data);
-                    this.$store.commit('changeEditScriptShow',true);
                 });
             },
             deleteScript(row){

@@ -159,10 +159,10 @@
         });
       },
       updateProject(row){
+        this.$store.commit('changeEditProjectShow',true);
         this.$axios.get('/apis/project/'+row.pid+'/info').then(res=>{
           this.$store.commit('setProjectDetail',res.data.data);
           this.$store.commit('setEnvList',res.data.data.envs);
-          this.$store.commit('changeEditProjectShow',true);
         });
       },
       deleteProject(row){
