@@ -11,6 +11,7 @@ import AutoCase from '@/views/case/CaseSets'
 import Task from '@/views/task/Task'
 import TimingTask from "@/views/task/TimingTask";
 import TaskResult from "@/views/task/TaskResult";
+import ApiUtil from '@/views/util/ApiUtil'
 
 
 Vue.use(Router);
@@ -99,6 +100,14 @@ export default new Router({
       path:'/taskResult',
       name: 'TaskResult',
       component: TaskResult,
+      meta: {
+        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+      },
+    },
+    {
+      path:'/apiUtil',
+      name: 'ApiUtil',
+      component: ApiUtil,
       meta: {
         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       },
