@@ -138,6 +138,9 @@
           case '5-3':
             this.$router.push('/taskResult');
             break;
+          case '7':
+            this.$router.push('/apiUtil');
+            break;
         }
       },
       closeConfirm(data,val){
