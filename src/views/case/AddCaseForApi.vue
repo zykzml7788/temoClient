@@ -213,8 +213,24 @@
             <el-input v-model="delayTime"></el-input>
           </el-form-item>
         </el-tab-pane>
-        <el-tab-pane label="全局Cookie & Header注入" name="cookieAndHeader">
+        <el-tab-pane label="全局属性注入" name="cookieAndHeader">
           <el-tabs type="border-card">
+            <el-tab-pane label="Global Variables">
+              <h5>Global Variables</h5>
+              <div class="demo-input-suffix" v-for="globalVariable in globalVariables" style="margin-bottom: 10px">
+                <el-input
+                  placeholder="KEY"
+                  v-model="globalVariable.key" style="width: 200px" size="small">
+                </el-input>
+                -
+                <el-input
+                  placeholder="VALUE"
+                  v-model="globalVariable.value" style="width: 200px" size="small">
+                </el-input>
+                <el-button type="primary" round icon="el-icon-circle-plus-outline" size="small" style="margin-left: 30px" @click="addGlobalVariableKv">ADD</el-button>
+                <el-button type="danger" round icon="el-icon-remove-outline" size="small" v-if="globalVariables.length!==1"  @click="delGlobalVariableKv(globalVariable)">DELETE</el-button>
+              </div>
+            </el-tab-pane>
             <el-tab-pane label="Global Headers">
               <h5>Global Headers</h5>
               <div class="demo-input-suffix" v-for="globalHeader in globalHeaders" style="margin-bottom: 10px">
@@ -228,7 +244,7 @@
                   v-model="globalHeader.value" style="width: 200px" size="small">
                 </el-input>
                 <el-button type="primary" round icon="el-icon-circle-plus-outline" size="small" style="margin-left: 30px" @click="addGlobalHeaderKv">ADD</el-button>
-                <el-button type="danger" round icon="el-icon-remove-outline" size="small" v-if="globalHeaders.length!==1"  @click="delGlobalHeaderKv(param)">DELETE</el-button>
+                <el-button type="danger" round icon="el-icon-remove-outline" size="small" v-if="globalHeaders.length!==1"  @click="delGlobalHeaderKv(globalHeader)">DELETE</el-button>
               </div>
             </el-tab-pane>
             <el-tab-pane label="Global Cookies">
@@ -244,7 +260,7 @@
                   v-model="globalCookie.value" style="width: 200px" size="small">
                 </el-input>
                 <el-button type="primary" round icon="el-icon-circle-plus-outline" size="small" style="margin-left: 30px" @click="addGlobalCookieKv">ADD</el-button>
-                <el-button type="danger" round icon="el-icon-remove-outline" size="small" v-if="globalCookies.length!==1"  @click="delGlobalCookieKv(param)">DELETE</el-button>
+                <el-button type="danger" round icon="el-icon-remove-outline" size="small" v-if="globalCookies.length!==1"  @click="delGlobalCookieKv(globalCookie)">DELETE</el-button>
               </div>
             </el-tab-pane>
           </el-tabs>
@@ -297,6 +313,12 @@
               {
                   key: '',
                   value: ''
+              }
+          ],
+          globalVariables:[
+              {
+                key: '',
+                value: ''
               }
           ],
           globalHeaders:[
@@ -394,6 +416,12 @@
         delCookieKv(param){
             this.cookies.splice(this.cookies.indexOf(param),1)
         },
+        addGlobalVariableKv(){
+            this.globalVariables.push({key:'',value:''})
+        },
+        delGlobalVariableKv(param){
+          this.globalVariables.splice(this.globalVariables.indexOf(param),1)
+        },
         addGlobalCookieKv(){
             this.globalCookies.push({key:'',value:''})
         },
@@ -444,6 +472,7 @@
             let params = {};
             let headers = {};
             let cookies = {};
+            let globalVariables = {};
             let globalHeaders = {};
             let globalCookies = {};
             let saves = [];
@@ -514,6 +543,17 @@
             if (cookies!=null){
                 cookies = JSON.stringify(cookies);
             }
+            for (const index in this.globalVariables){
+              if (this.globalVariables.length===1 && this.globalVariables[0].key===''){
+                globalVariables = null;
+                break;
+              }
+              const key = this.globalVariables[index].key;
+              globalVariables[key] = this.globalVariables[index].value;
+            }
+            if (globalVariables!==null){
+              globalVariables = JSON.stringify(globalVariables);
+            }
             for (const index in this.globalHeaders){
                 if (this.globalHeaders.length===1 && this.globalHeaders[0].key===''){
                     globalHeaders = null;
@@ -574,6 +614,7 @@
                 caseType: 1,
                 cookies: cookies,
                 delayTime: this.delayTime,
+                globalVariables:globalVariables,
                 globalCookies:globalCookies,
                 globalHeaders:globalHeaders,
                 header:headers,
@@ -642,6 +683,12 @@
               value: ''
             }
           ];
+          this.globalVariables=[
+            {
+              key: '',
+              value: ''
+            }
+          ];
           this.globalHeaders=[
             {
               key: '',
@@ -675,11 +722,11 @@
           this.jsonAssert='';
           this.caseInfo.caseDesc='';
           this.activeName='apiInfo';
-            this.activeNameForApi= 'params';
-            this.contentType=1;
-            this.assertType=1;
-            this.$refs['caseInfo'].resetFields();
-            this.$store.commit('changeAddcaseForApiShow',false);
+          this.activeNameForApi= 'params';
+          this.contentType=1;
+          this.assertType=1;
+          this.$refs['caseInfo'].resetFields();
+          this.$store.commit('changeAddcaseForApiShow',false);
         }
     },
     computed: {

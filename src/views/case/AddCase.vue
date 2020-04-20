@@ -63,9 +63,21 @@
             :data="cases"
             stripe height="500px" :default-sort="{prop: 'sorting',order:'ascending'}" v-loading="loading" style="float: left">
             <el-table-column
-              prop="sorting"
-              label="执行顺序"
-              width="80">
+              type="index"
+              width="50"
+              label="序号">
+            </el-table-column>
+            <el-table-column
+              prop="isRun"
+              width="80"
+              label="是否执行">
+              <template slot-scope="scope">
+                <el-switch
+                  v-model="cases[scope.$index].isRun === 1"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949" @change="changeRun(cases[scope.$index].caseId,cases[scope.$index].isRun)">
+                </el-switch>
+              </template>
             </el-table-column>
             <el-table-column
               prop="caseDesc"
@@ -391,7 +403,20 @@
               this.loading=true;
               this.$axios.get('/apis/testcaseset/'+this.setId+'/info').then(res=>{
                 if (res.data.code === 200){
-                  this.$store.commit('setCaseSetInfo',res.data.data);
+                  this.setId = res.data.data.setId;
+                  this.setName = res.data.data.setName;
+                  this.envInfo.project = res.data.data.projectId;
+                  this.cases = res.data.data.testCase;
+                  if (res.data.data.setupScript!==null){
+                    JSON.parse(res.data.data.setupScript).forEach(n=>{
+                      this.setUpScripts.push(n.scriptId);
+                    });
+                  }
+                  if (res.data.data.teardownScript!==null){
+                    JSON.parse(res.data.data.teardownScript).forEach(n=>{
+                      this.tearDownScripts.push(n.scriptId);
+                    });
+                  }
                 } else {
                   this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
                 }
@@ -412,18 +437,13 @@
             let data = new FormData();
             data.append('caseId',row.caseId);
             data.append('move','up');
-            let setName = this.setName;
-            this.setName = "";
             this.$axios.put('/apis/testcase/'+row.caseId+'/order',data).then(res=>{
                 if (res.data.code === 200){
-                  this.$store.commit('setCaseSetInfo',res.data.data);
                   this.$notify({title:'操作成功',type:'success',message:res.data.msg});
-                  this.getCaseInfo();
                 } else {
-                  this.setName = setName;
                   this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
                 }
-
+              this.getCaseInfo();
               }
             ).catch(err=>{
               this.$notify({title:'操作失败',type:'error',message:err});
@@ -433,17 +453,14 @@
             let data = new FormData();
             data.append('caseId',row.caseId);
             data.append('move','down');
-            let setName = this.setName;
-            this.setName = "";
             this.$axios.put('/apis/testcase/'+row.caseId+'/order',data).then(res=>{
                 if (res.data.code === 200){
-                  this.$store.commit('setCaseSetInfo',res.data.data);
                   this.$notify({title:'操作成功',type:'success',message:res.data.msg});
-                  this.getCaseInfo();
+
                 } else {
-                  this.setName = setName;
                   this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
                 }
+              this.getCaseInfo();
 
               }
             ).catch(err=>{
@@ -665,6 +682,19 @@
             lookLogs(logs){
               this.logs = logs.replace(/\n/g, "<br/>");
               this.logView = true;
+            },
+            changeRun(caseId,status){
+              this.$axios.put('/apis/testcase/'+caseId+'/isRun/'+(status===1?0:1)).then(res=>{
+                  if (res.data.code === 200){
+                    this.$notify({title:'操作成功',type:'success',message:res.data.msg});
+                  } else {
+                    this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
+                  }
+                  this.getCaseInfo();
+                }
+              ).catch(err=>{
+                this.$notify({title:'操作失败',type:'error',message:err});
+              });
             }
             },
 
