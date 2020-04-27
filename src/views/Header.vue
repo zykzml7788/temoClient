@@ -91,7 +91,7 @@
 </template>
 
 <script>
-  import Comfirm from '@/common/Confirm'
+  import Comfirm from '@/common/component/Confirm'
   export default {
 
     name: 'headers',

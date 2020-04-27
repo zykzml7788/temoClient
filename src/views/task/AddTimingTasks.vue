@@ -116,7 +116,7 @@
 </template>
 
 <script>
-    import Cron from '@/common/cron.vue'
+    import Cron from '@/common/component/cron.vue'
 
     export default {
         data() {

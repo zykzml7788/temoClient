@@ -63,8 +63,8 @@
       </el-tab-pane>
       <el-tab-pane label="Body" name="body" v-if="api.method!=='GET'">
         <el-radio-group v-model="contentType">
-          <el-radio :label="1">form-data</el-radio>
-          <el-radio :label="2">x-www-form-urlencoded</el-radio>
+          <el-radio :label="1">x-www-form-urlencoded</el-radio>
+          <el-radio :label="2">form-data</el-radio>
           <el-radio :label="3">json</el-radio>
         </el-radio-group>
         <div class="demo-input-suffix" v-for="formParam in formParams" style="margin-top: 20px" v-if="contentType===1">
@@ -94,17 +94,22 @@
           <el-button type="danger" round icon="el-icon-remove-outline" size="small" v-if="urlParams.length!==1"  @click="delUrlParamKv(urlParam)">DELETE</el-button>
         </div>
         <div class="demo-input-suffix"  style="margin-top: 20px" v-if="contentType===3">
-          <el-input type="textarea" v-model="json" :rows="20" style="width: 50%"></el-input>
+          <Code :mime="'python'"  v-model="json"></Code>
           <json-viewer
             :value="this.jsonFormatObject"
             :expand-depth=5
             copyable
             boxed
-            sort style="height:auto;width: 400px;float: right"></json-viewer>
+            sort style="height:auto;width:100%;float: right"></json-viewer>
         </div>
       </el-tab-pane>
     </el-tabs>
     <h5>Response</h5>
+    <div style="text-align: right;font-size: small">
+      <span style="margin-right: 30px">status: <strong v-if="statusCode===200" style="color: #5daf34">{{statusCode}}</strong>
+      <strong v-else style="color: #dd6161">{{statusCode}}</strong>
+      </span>
+    </div>
     <el-tabs v-model="activeNameForResponse"  type="border-card" style="margin-top: 15px">
       <el-tab-pane label="Body" name="body">
         <el-radio-group v-model="resContentType">
@@ -113,46 +118,44 @@
         </el-radio-group>
 
         <div class="demo-input-suffix"  style="margin-top: 20px" v-if="resContentType===1">
-          <el-input type="textarea" v-model="json" :rows="20" style="width: 50%"></el-input>
+          <Code :mime="'python'"  v-model="resJson" :readOnly="true"></Code>
           <json-viewer
             :value="this.resJsonFormatObject"
             :expand-depth=5
             copyable
             boxed
-            sort style="height:auto;width: 400px;float: right"></json-viewer>
+            sort style="height:auto;width:100%;float: right"></json-viewer>
         </div>
 
         <div class="demo-input-suffix"  style="margin-top: 20px" v-if="resContentType===2">
-          <el-input type="textarea" v-model="raw" :rows="20" style="width: 100%"></el-input>
+          <Code :mime="'python'"  v-model="raw" :readOnly="true"></Code>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="Headers" name="headers" v-for="header in resHeaders">
-        <el-input
-          placeholder="KEY"
-          v-model="header.key" style="width: 200px" size="small">
-        </el-input>
-        -
-        <el-input
-          placeholder="VALUE"
-          v-model="header.value" style="width: 200px" size="small">
-        </el-input>
+      <el-tab-pane label="Headers" name="headers">
+        <Code :mime="'python'"  v-model="resHeaders" :readOnly="true"></Code>
+        <json-viewer
+          :value="this.resHeaderFormatObject"
+          :expand-depth=5
+          copyable
+          boxed
+          sort style="height:auto;width:100%;float: right"></json-viewer>
       </el-tab-pane>
-      <el-tab-pane label="Cookies" name="cookies" v-for="cookie in resCookies">
-        <el-input
-          placeholder="KEY"
-          v-model="cookie.key" style="width: 200px" size="small">
-        </el-input>
-        -
-        <el-input
-          placeholder="VALUE"
-          v-model="cookie.value" style="width: 200px" size="small">
-        </el-input>
+      <el-tab-pane label="Cookies" name="cookies">
+        <Code :mime="'python'"  v-model="resCookies" :readOnly="true"></Code>
+        <json-viewer
+          :value="this.resCookieFormatObject"
+          :expand-depth=5
+          copyable
+          boxed
+          sort style="height:auto;width:100%;float: right"></json-viewer>
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script>
+
+  import Code from '@/common/component/codeView/Code.vue'
 
   export default {
     name:'ApiUtil',
@@ -161,7 +164,7 @@
         activeNameForRequest: 'params',
         activeNameForResponse: 'body',
         contentType:1,
-        assertType:1,
+        raw:'',
         methodOptions: [{
           value: 'GET',
           label: 'GET'
@@ -224,18 +227,9 @@
         json:'',
         resJson:'',
         resContentType:1,
-        resHeaders:[
-          {
-            key: '',
-            value: ''
-          }
-        ],
-        resCookies:[
-          {
-            key: '',
-            value: ''
-          }
-        ]
+        resHeaders:'',
+        resCookies:'',
+        statusCode:''
       }
     },
     methods:{
@@ -269,24 +263,125 @@
       delCookieKv(param){
         this.cookies.splice(this.cookies.indexOf(param),1)
       },
+
       sendRequest(){
-        if (this.api.method === 'GET'){
-          this.$axios.get(this.api.url).then(res=>{
-            try {
-              this.resJson = JSON.parse(res.data);
-            }catch (e) {
-              this.raw = res.data;
+        let body = {};
+        let params = {};
+        let headers = {};
+        let cookies = {};
+        this.resJson = {};
+        this.statusCode = "";
+        this.raw = "";
+        if (this.contentType===1){
+          for (const index in this.formParams){
+            if (this.formParams.length===1 && this.formParams[0].key===''){
+              body = {};
+              break;
             }
-          }).catch({
+            const key = this.formParams[index].key;
+            body[key] = this.formParams[index].value;
+          }
+          body = JSON.stringify(body);
 
-          });
-        } else if (this.api.method === 'POST'){
-
-        } else if (this.api.method === 'PUT'){
-
-        } else{
+        }else if (this.contentType===2){
+          for (const index in this.urlParams){
+            if (this.urlParams.length===1 && this.urlParams[0].key===''){
+              break;
+            }
+            const key = this.urlParams[index].key;
+            const value = this.urlParams[index].value;
+            body[key] = value;
+          }
+          body = JSON.stringify(body);
+        }else{
+          if (this.json === ''){
+            body = '{}';
+          } else{
+            body = this.json;
+          }
 
         }
+
+        for (const index in this.params){
+          if (this.params.length===1 && this.params[0].key===''){
+            params = {};
+            break;
+          }
+          const key = this.params[index].key;
+          params[key] = this.params[index].value;
+        }
+        if (params!==null){
+          params = JSON.stringify(params);
+        }
+
+        for (const index in this.headers){
+          if (this.headers.length===1 && this.headers[0].key===''){
+            headers = {};
+            break;
+          }
+          const key = this.headers[index].key;
+          headers[key] = this.headers[index].value;
+        }
+        if (headers!==null){
+          headers = JSON.stringify(headers);
+        }
+
+        for (const index in this.cookies){
+          if (this.cookies.length===1 && this.cookies[0].key===''){
+            cookies = {};
+            break;
+          }
+          const key = this.cookies[index].key;
+          cookies[key] = this.cookies[index].value;
+        }
+        if (cookies!=null){
+          cookies = JSON.stringify(cookies);
+        }
+          let data = {
+            body: body,
+            contentType: this.contentType,
+            cookie: cookies,
+            header: headers,
+            method: this.api.method,
+            param: params,
+            url: this.api.url
+          };
+          this.$axios.post("/apis/testUtil/testApi",data).then(res=>{
+            if (res.data.code === 200){
+              this.$notify({
+                title: '成功',
+                type:'success',
+                message:res.data.msg
+              });
+              try {
+                JSON.parse(res.data.data.responseBody);
+                this.resJson = res.data.data.responseBody;
+                this.resContentType = 1;
+              }catch (e) {
+                this.raw = res.data.data.responseBody;
+                this.resContentType = 2;
+              }
+              this.resCookies = res.data.data.responseCookie;
+              this.resHeaders = res.data.data.responseHeader;
+              this.statusCode = res.data.data.status;
+            } else {
+              this.$notify({
+                title: '失败',
+                type:'warning',
+                message:res.data.msg
+              });
+              this.resContentType = 2;
+              this.raw = res.data.data;
+            }
+
+
+          }).catch(err=>{
+            this.$notify({
+              title: '成功',
+              type:'error',
+              message:err
+            });
+          });
       }
     },
     computed:{
@@ -314,6 +409,35 @@
           return {};
         }
       },
+      resHeaderFormatObject(){
+        if (this.resJson!==''){
+          try{
+            return JSON.parse(this.resHeaders);
+          }catch (e) {
+            return {"msg":"JSON格式化错误！"+e}
+          }
+
+        }else{
+          return {};
+        }
+      },
+      resCookieFormatObject(){
+        if (this.resJson!==''){
+          try{
+            return JSON.parse(this.resCookies);
+          }catch (e) {
+            return {"msg":"JSON格式化错误！"+e}
+          }
+
+        }else{
+          return {};
+        }
+      }
+    },
+    components:{
+      Code
     }
   }
 </script>
+
+

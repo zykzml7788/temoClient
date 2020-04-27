@@ -103,13 +103,13 @@
                   <el-button type="danger" round icon="el-icon-remove-outline" size="small" v-if="urlParams.length!==1"  @click="delUrlParamKv(urlParam)">DELETE</el-button>
                 </div>
                 <div class="demo-input-suffix"  style="margin-top: 20px" v-if="contentType===3">
-                  <el-input type="textarea" v-model="json" :rows="20" style="width: 50%"></el-input>
+                  <Code :mime="'application/json'"  v-model="json"></Code>
                   <json-viewer
                     :value="this.jsonFormatObject"
                     :expand-depth=5
                     copyable
                     boxed
-                    sort style="height:auto;width: 400px;float: right"></json-viewer>
+                    sort style="height:auto;width:100%;float: right"></json-viewer>
                 </div>
               </el-tab-pane>
             </el-tabs>
@@ -277,6 +277,7 @@
 
 <script>
 
+    import Code from '@/common/component/codeView/Code.vue'
 
     export default {
         data() {
@@ -858,6 +859,7 @@
         },
 
         components:{
+          Code
         }
     };
 </script>
