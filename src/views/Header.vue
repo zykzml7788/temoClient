@@ -11,13 +11,13 @@
     <div id="user"  style="margin: 10px;background-color: #2c3259">
       <div style="display: inline-block;width: 20%;height: 100%;margin-left: 20px">
         <el-tooltip class="item" effect="dark" :content="userName" placement="top-start">
-        <img src="../../static/img/user.jpg" style="width:  55px;height: 55px" alt="" class="circle">
+        <img src="../../static/img/timo.png" style="width:  55px;height: 55px" alt="" class="circle">
         </el-tooltip>
       </div>
       <div style="display: inline-block;margin: 15px">
         <div>
           <el-tooltip class="item" effect="dark" :content="userName" placement="top-start">
-          <strong class="el-icon-user-solid" style="color: white;margin-left: 5px;font-size: smaller">
+          <strong class="el-icon-user-solid" style="color: white;margin-left: 5px;font-size: smaller" >
             在线
           </strong>
           </el-tooltip>
@@ -44,7 +44,7 @@
           <span slot="title">用例管理</span>
         </template>
         <el-menu-item index="3-1">功能脑图管理</el-menu-item>
-        <el-menu-item index="3-2">功能用例管理</el-menu-item>
+<!--        <el-menu-item index="3-2">功能用例管理</el-menu-item>-->
         <el-menu-item index="3-3">自动化用例集管理</el-menu-item>
       </el-submenu>
       <el-submenu index="4">
@@ -64,14 +64,14 @@
         <el-menu-item index="5-2">定时任务管理</el-menu-item>
         <el-menu-item index="5-3">执行记录管理</el-menu-item>
       </el-submenu>
-      <el-submenu index="6">
-        <template slot="title">
-          <i class="el-icon-location" style="color:white"></i>
-          <span slot="title">用户管理</span>
-        </template>
-        <el-menu-item index="6-1">用户管理</el-menu-item>
-        <el-menu-item index="6-2">角色管理</el-menu-item>
-      </el-submenu>
+<!--      <el-submenu index="6">-->
+<!--        <template slot="title">-->
+<!--          <i class="el-icon-location" style="color:white"></i>-->
+<!--          <span slot="title">用户管理</span>-->
+<!--        </template>-->
+<!--        <el-menu-item index="6-1">用户管理</el-menu-item>-->
+<!--        <el-menu-item index="6-2">角色管理</el-menu-item>-->
+<!--      </el-submenu>-->
       <el-menu-item index="7">
         <i class="el-icon-document" style="color:white"></i>
         <span slot="title">调试工具</span>

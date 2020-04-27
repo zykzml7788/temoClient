@@ -29,6 +29,7 @@ export default new Router({
       name: 'main',
       component: Main,
       meta: {
+        tabname: '主页',
         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       }
     },
@@ -37,6 +38,7 @@ export default new Router({
       name: 'project',
       component: Project,
       meta: {
+        tabname: '项目管理',
         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       },
     },
@@ -45,6 +47,7 @@ export default new Router({
       name: 'database',
       component: DataBase,
       meta: {
+        tabname: '数据源管理',
         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       },
     },
@@ -53,6 +56,7 @@ export default new Router({
       name: 'script',
       component: Script,
       meta: {
+        tabname: '脚本管理',
         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       },
     },
@@ -61,22 +65,24 @@ export default new Router({
       name: 'Mind',
       component: Mind,
       meta: {
+        tabname: '脑图管理',
         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       },
     },
-    {
-      path: '/case',
-      name: 'Case',
-      component: Case,
-      meta: {
-        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-      },
-    },
+    // {
+    //   path: '/case',
+    //   name: 'Case',
+    //   component: Case,
+    //   meta: {
+    //     requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+    //   },
+    // },
     {
       path: '/autoCase',
       name: 'Case',
       component: AutoCase,
       meta: {
+        tabname: '自动化用例集管理',
         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       },
     },
@@ -85,6 +91,7 @@ export default new Router({
       name: 'Task',
       component: Task,
       meta: {
+        tabname: '普通任务管理',
         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       },
     },
@@ -93,6 +100,7 @@ export default new Router({
       name: 'TimingTask',
       component: TimingTask,
       meta: {
+        tabname: '定时任务管理',
         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       },
     },
@@ -101,6 +109,7 @@ export default new Router({
       name: 'TaskResult',
       component: TaskResult,
       meta: {
+        tabname: '执行记录',
         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       },
     },
@@ -109,6 +118,7 @@ export default new Router({
       name: 'ApiUtil',
       component: ApiUtil,
       meta: {
+        tabname: 'TeemoPost',
         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       },
     },

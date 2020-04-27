@@ -17,6 +17,8 @@
   import "codemirror/theme/eclipse.css";
   import "codemirror/lib/codemirror.css";
   import "codemirror/addon/hint/show-hint.css";
+  require("codemirror/addon/display/autorefresh.js");
+  require("codemirror/addon/display/placeholder.js");
   require("codemirror/addon/edit/matchbrackets");
   require("codemirror/addon/selection/active-line");
   require("codemirror/mode/sql/sql");
@@ -27,6 +29,7 @@
   require("codemirror/mode/sql/sql.js");
   require("codemirror/mode/yaml/yaml.js");
   require("codemirror/mode/xml/xml.js");
+
 
 
   export default {
@@ -56,7 +59,8 @@
           lineWrapping: true, //代码折叠
           foldGutter: true,
           autoCloseBrackets: true,
-          autoRefresh: true
+          autoRefresh: true,
+          placeholder:'请输入...'
         }
       }
     },
@@ -83,9 +87,6 @@
       value: {
         handler(val,oldVal){
           this.curCode=val;
-          setTimeout(()=>{
-            this.editor.codemirror.refresh();
-          },1);
         },
         immediate:true
       }

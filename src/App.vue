@@ -7,10 +7,14 @@
       <el-aside width="210px" class="el-aside" style="height: 100%;padding: 0;margin: 0;background-color: #2c3259;">
         <headers></headers>
       </el-aside>
+
       <el-main style="height: 100%;padding: 0;">
+        <worktab></worktab>
         <div style="background-color: ghostwhite;padding: 20px;">
           <div id="app" style="background-color: white;padding: 20px;height:100%;">
-            <router-view/>
+            <keep-alive :exclude="closingPage">
+              <router-view/>
+            </keep-alive>
           </div>
         </div>
         <div style="text-align: right">
@@ -23,16 +27,23 @@
 
 <script>
   import Headers from '@/views/Header'
+  import Worktab from '@/common/component/tabs/worktab.vue'
+
   export default {
     name: 'App',
     components:{
-      Headers
+      Headers,Worktab
     },
       data(){
         return{
             login:require('../static/img/login.jpg')
           }
+      },
+    computed:{
+      closingPage () {
+        return this.$store.state.closingPage
       }
+    },
   }
 </script>
 

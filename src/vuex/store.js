@@ -41,7 +41,22 @@ const state = {
   caseSetInfo:{},
   caseInfo:{},
   taskDetail:{},
-  timingTaskDetail:{}
+  timingTaskDetail:{},
+  worktab: {
+    list: [
+      {
+        name: 'main',
+        tabname: '主页',
+        path: '/main'
+      }
+    ],
+    current: {
+      name: 'main',
+      tabname: '主页',
+      path: '/main'
+    }
+  },
+  closingPage: ''
 };
 
 const mutations = {
@@ -161,6 +176,32 @@ const mutations = {
   },
   setTimingTaskDetail(state,param){
     state.timingTaskDetail = param;
+  },
+  worktabRemove (state, p) {
+    // 关闭标签
+    let ind = state.worktab.list.findIndex(s => s.name === p)
+    if (ind > -1) {
+      // 清理 keep alive - start
+      state.closingPage = state.worktab.list[ind].name
+      // 清理 keep alive - end
+      state.worktab.list.splice(ind, 1)
+    }
+    if (p === state.worktab.current.name) {
+      // 是当前页，返回上一页
+      router.back()
+    }
+  },
+  worktabRoute (state, p) {
+    let ind = state.worktab.list.findIndex(s => s.name === p.to.name)
+    if (ind > -1) {
+      // 标签已存在
+      state.worktab.current = state.worktab.list[ind]
+    } else {
+      // 标签不存在，现在新建
+      state.worktab.list.push(p.to);
+      state.worktab.current = p.to
+    }
+    state.closingPage = ''
   }
 };
 const getters = {
@@ -174,10 +215,19 @@ const getters = {
     return state.caseSetInfo;
   }
 };
+const actions = {
+  worktabRemove ({commit}, p) {
+    commit('worktabRemove', p)
+  },
+  worktabRoute ({commit}, p) {
+    commit('worktabRoute', p)
+  }
+};
 
 
 export default new Vuex.Store({
   state,
   mutations,
-  getters
+  getters,
+  actions
 })
