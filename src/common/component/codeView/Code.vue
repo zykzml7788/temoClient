@@ -83,7 +83,6 @@
       value: {
         handler(val,oldVal){
           this.curCode=val;
-          this.editor.codemirror.setValue(val);
           setTimeout(()=>{
             this.editor.codemirror.refresh();
           },1);
