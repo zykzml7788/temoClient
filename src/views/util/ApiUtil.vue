@@ -1,6 +1,6 @@
 <template>
   <div style="text-align: left">
-    <h3>接口调试工具</h3>
+    <div style="margin-bottom: 30px"><img src="../../../static/img/postTeemo.png" style="width: 30px;height: 30px;border-radius:50%;float: right"><h3 style="display: inline">TeemoPost</h3></div>
     <el-input placeholder="Enter Request URL" v-model="api.url">
       <el-select v-model="api.method" slot="prepend" placeholder="Request Method" style="width: 150px;">
         <el-option label="GET" value="GET"></el-option>
@@ -106,7 +106,7 @@
     </el-tabs>
     <h5>Response</h5>
     <div style="text-align: right;font-size: small">
-      <span style="margin-right: 30px">status: <strong v-if="statusCode===200" style="color: #5daf34">{{statusCode}}</strong>
+      <span style="margin-right: 30px">Status: <strong v-if="statusCode===200" style="color: #5daf34">{{statusCode}}</strong>
       <strong v-else style="color: #dd6161">{{statusCode}}</strong>
       </span>
     </div>
