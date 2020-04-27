@@ -45,6 +45,18 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requireAuth) {
     if(localStorage.getItem("userInfo")!==null) {
       next();
+      store.dispatch('worktabRoute', {
+        to: {
+          name: to.name ? to.name : '',
+          tabname: (to.meta && to.meta.tabname) ? to.meta.tabname : '',
+          path: to.path
+        },
+        from: {
+          name: from.name ? from.name : '',
+          tabname: (from.meta && from.meta.tabname) ? from.meta.tabname : '',
+          path: from.path
+        }
+      })
     }
     else {
       next({
