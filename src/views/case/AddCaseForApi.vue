@@ -155,16 +155,16 @@
           <br>
           <el-radio-group v-model="assertType">
             <el-radio :label="1">
+              Assert Point
               <el-tooltip content="断言点添加" placement="top">
                 <i class="el-icon-question"></i>
               </el-tooltip>
-              Assert Point
             </el-radio>
             <el-radio :label="2">
+              JSON Assert
               <el-tooltip content="JSON断言添加，只会比对JSON中存在的字段是否一致" placement="top">
                 <i class="el-icon-question"></i>
               </el-tooltip>
-              JSON Assert
             </el-radio>
 
           </el-radio-group>
@@ -206,7 +206,7 @@
             <el-button type="primary" round icon="el-icon-circle-plus-outline" size="small" style="margin-left: 10px" @click="addAssertKv">ADD</el-button>
             <el-button type="danger" round icon="el-icon-remove-outline" size="small" v-if="asserts.length!==1"  @click="delAssertKv(assert)">DELETE</el-button>
           </div>
-          <div><el-input type="textarea" v-model="jsonAssert" :rows="20" style="margin-top: 20px" v-if="assertType===2"></el-input></div>
+          <div v-if="assertType===2" style="margin-top: 30px"><Code v-model="jsonAssert" :mime="'application/json'"></Code></div>
         </el-tab-pane>
         <el-tab-pane label="延迟时间" name="delayTime">
           <el-form-item label="延迟时间(s)">
