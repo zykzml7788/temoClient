@@ -150,17 +150,7 @@ const mutations = {
     };
   },
   setDatabaseDetail(state,database){
-    state.databaseDetail = {
-      "dbId": database.dbId,
-      "dbName": database.dbName,
-      "host": database.host,
-      "port": database.port,
-      "user": database.user,
-      "pwd": database.pwd,
-      "dbLibraryName": database.dbLibraryName,
-      "updatetime": database.updatetime,
-      "createtime": database.createtime
-    };
+    state.databaseDetail = database;
   },
   setScriptDetail(state,script){
     state.scriptDetail = script;

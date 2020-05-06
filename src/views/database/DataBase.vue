@@ -11,8 +11,18 @@
         <el-input
           placeholder="请输入数据源名称"
           prefix-icon="el-icon-search"
-          v-model="search_val">
+          v-model="search_dbName">
         </el-input>
+      </span>
+      <span>
+        <el-select v-model="search_dbType" placeholder="请选择类型" style="float: left" clearable="true">
+          <el-option
+            v-for="item in dbOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
       </span>
       <span>
         <el-button type="primary" @click="getDataBasesByName(1)">搜索</el-button>
@@ -45,6 +55,19 @@
         prop="dbLibraryName"
         label="数据库"
         width="200" :show-overflow-tooltip="true">
+      </el-table-column>
+      <el-table-column
+        prop="host"
+        label="类型"
+        width="100">
+        <template slot-scope="scope">
+          <el-tag effect="light" v-if="scope.row.dbType==='100'">
+            mysql
+          </el-tag>
+          <el-tag effect="light" v-else type="warning">
+            redis
+          </el-tag>
+        </template>
       </el-table-column>
       <el-table-column
         prop="host"
@@ -132,7 +155,7 @@
       getDataBasesByName(page){
           this.page=page;
           this.loading = true;
-        this.$axios.get('/apis/database/'+page+'?filter='+this.search_val).then(res=>{
+        this.$axios.get('/apis/database/'+page+'?dbName='+this.search_dbName+"&dbType="+this.search_dbType).then(res=>{
             if (res.data.code === 200){
               this.dataBaseLists = res.data.data.list;
               this.total = res.data.data.total;
@@ -177,11 +200,22 @@
       return {
         page:1,
         total: 0,
-        search_val:'',
+        search_dbName:'',
+        search_dbType:'',
         dataBaseLists: [],
         loading: true,
         items: [
           '','success','info','danger','warning'
+        ],
+        dbOptions:[
+          {
+            value: '100',
+            label: 'Mysql'
+          },
+          {
+            value: '200',
+            label: 'Redis'
+          },
         ],
         dialogVisible: false,
         options: [

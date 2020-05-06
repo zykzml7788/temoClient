@@ -2,7 +2,17 @@
   <el-dialog title="新增数据源配置" :visible.sync="$store.state.adddatabaseshow" style="height: 100%;" :close-on-click-modal="false"
   @close="closeAddDatabaseView">
     <el-form :model="form" :rules="rules" ref="form" v-loading="loading">
-      <el-form-item label="数据源名" :label-width="formLabelWidth" prop="dbName">
+      <el-form-item label="类型" :label-width="formLabelWidth" prop="dbType">
+        <el-select v-model="form.dbType" placeholder="请选择" style="float: left">
+          <el-option
+            v-for="item in dbOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="数据源名" :label-width="formLabelWidth" prop="dbType">
         <el-input placeholder="请输入数据源名" v-model="form.dbName" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="数据库" :label-width="formLabelWidth" prop="dbLibraryName">
@@ -36,6 +46,9 @@
     data() {
       return {
         rules:{
+          dbType:[
+            {required:true,message:'请输入数据源类型',trigger:'blur'},
+          ],
           dbName:[
             {required:true,message:'请输入数据源名称',trigger:'blur'},
           ],
@@ -60,6 +73,7 @@
         dialogTableVisible: false,
         dialogFormVisible: false,
         form: {
+          dbType:'100',
           dbName:'',
           dbLibraryName:'',
           host:'',
@@ -67,23 +81,25 @@
           user:'',
           pwd:''
         },
+        dbOptions:[
+          {
+            value: '100',
+            label: 'Mysql'
+          },
+          {
+            value: '200',
+            label: 'Redis'
+          },
+        ],
         formLabelWidth: '80px',
           loading:false
       };
     },
     methods:{
       addDataBase(){
-        const database = {
-              "dbName": this.form.dbName,
-              "dbLibraryName": this.form.dbLibraryName,
-              "host": this.form.host,
-              "port": this.form.port,
-              "user": this.form.user,
-              "pwd": this.form.pwd
-            };
         this.$refs['form'].validate(bol=>{
           if (bol){
-            this.$axios.post('/apis/database/',database).then(res=>{
+            this.$axios.post('/apis/database/',this.form).then(res=>{
               this.$notify({
                 title: '成功',
                 type:'success',

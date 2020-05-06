@@ -2,6 +2,16 @@
   <el-dialog title="编辑数据源配置" :visible.sync="$store.state.editdatabaseshow" style="height: 100%;" :close-on-click-modal="false"
              @close="closeEditDatabaseView">
     <el-form :model="form" :rules="rules" ref="form" v-loading="loading">
+      <el-form-item label="类型" :label-width="formLabelWidth" prop="dbType">
+        <el-select v-model="form.dbType" placeholder="请选择" style="float: left">
+          <el-option
+            v-for="item in dbOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="数据源名" :label-width="formLabelWidth" prop="dbName">
         <el-input placeholder="请输入数据源名" v-model="form.dbName" autocomplete="off"></el-input>
       </el-form-item>
@@ -36,6 +46,9 @@
         data() {
             return {
                 rules:{
+                    dbType:[
+                      {required:true,message:'请输入数据源类型',trigger:'blur'},
+                    ],
                     dbName:[
                         {required:true,message:'请输入数据源名称',trigger:'blur'},
                     ],
@@ -60,6 +73,16 @@
                 dialogTableVisible: false,
                 dialogFormVisible: false,
                 form: {},
+                dbOptions:[
+                  {
+                    value: '100',
+                    label: 'Mysql'
+                  },
+                  {
+                    value: '200',
+                    label: 'Redis'
+                  },
+                ],
                 formLabelWidth: '80px',
                 loading:false
             };
@@ -67,6 +90,7 @@
         methods:{
             editDataBase(){
                 const database = {
+                    "dbType": this.form.dbType,
                     "dbId": this.form.dbId,
                     "dbName": this.form.dbName,
                     "dbLibraryName": this.form.dbLibraryName,
@@ -97,19 +121,10 @@
                 });
             },
             testConnect(){
-                const database = {
-                    "dbId": this.form.dbId,
-                    "dbName": this.form.dbName,
-                    "dbLibraryName": this.form.dbLibraryName,
-                    "host": this.form.host,
-                    "port": this.form.port,
-                    "user": this.form.user,
-                    "pwd": this.form.pwd
-                };
                 this.$refs['form'].validate(bol=>{
                     if (bol){
                         this.loading = true;
-                        this.$axios.post('/apis/database/testConnect',database).then(res=>{
+                        this.$axios.post('/apis/database/testConnect',this.form).then(res=>{
                             this.loading = false;
                             if (res.data.code === 200){
                                 this.$notify({
