@@ -15,33 +15,12 @@
       <el-form-item label="脚本名称" :label-width="formLabelWidth" prop="scriptName">
         <el-input placeholder="请输入脚本名称" v-model="form.scriptName" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item
-        v-for="(sql, index) in sqls"
-        :label="'sql'"
-      >
-        <span>
-          <el-input v-model="sql.script" style="width: 70%;"></el-input>
-          <span>
-            <el-tooltip content="脚本作为前置的时候，选择保存参数可以供其他用例使用参数，ps:必须使用Select查询才生效，会把Select后面跟上的相关字段作为参数的key,如 select name from project，保存参数的key即为name，value为查询出来的第一条的name对应的value" placement="top">
-              <i class="el-icon-question"></i>
-            </el-tooltip>
-            保存参数
-          </span>
-          <el-switch
-            class="switchStyle"
-            v-model="sql.saveParam"
-            active-color="#13ce66"
-            inactive-color="#ff4949">
-          </el-switch>
-        </span>
 
-        <span v-if="index!==0"><el-button @click.prevent="removeSql(sql)">删除</el-button></span>
-      </el-form-item>
+      <Code :mime="'sql'"  v-model="sqls"></Code>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="editScript">保 存</el-button>
       <el-button type="success" @click="testScript">调 试</el-button>
-      <el-button @click="addSql">新增sql</el-button>
       <el-button @click="closeEditScriptView">取 消</el-button>
     </div>
   </el-dialog>
@@ -49,6 +28,7 @@
 
 <script>
 
+    import Code from '@/common/component/codeView/Code.vue'
 
     export default {
         data() {
@@ -69,7 +49,7 @@
                 dialogTableVisible: false,
                 dialogFormVisible: false,
                 dbOptions:[],
-                sqls: [],
+                sqls: '',
                 form: {
                     scriptId:'',
                     scriptName:'',
@@ -93,11 +73,22 @@
                 });
             },
             editScript(){
+                let sqls = [];
+                this.sqls.replace(/\n/g,"").split(";").forEach(n=>{
+                  if (n!==''){
+                    sqls.push(
+                      {
+                        script: n.replace(/(^\s+)|(\s+$)/g,""),
+                        saveParam: true
+                      }
+                    )
+                  }
+                });
                 const script = {
                     "dbId": this.form.dbId,
                     "scriptId": this.form.scriptId,
                     "scriptName": this.form.scriptName,
-                    "sqlScript": JSON.stringify(this.sqls)
+                    "sqlScript": JSON.stringify(sqls)
                 };
                 this.$refs['form'].validate(bol=>{
                     if (bol){
@@ -129,11 +120,21 @@
                 });
             },
             testScript(){
-
+                let sqls = [];
+                this.sqls.replace(/\n/g,"").split(";").forEach(n=>{
+                  if (n!==''){
+                    sqls.push(
+                      {
+                        script: n.replace(/(^\s+)|(\s+$)/g,""),
+                        saveParam: true
+                      }
+                    )
+                  }
+                });
                 const script = {
                     "dbId": this.form.dbId,
                     "scriptName": this.form.scriptName,
-                    "sqlScript": JSON.stringify(this.sqls)
+                    "sqlScript": JSON.stringify(sqls)
                 };
                 this.$refs['form'].validate(bol=>{
                     if (bol){
@@ -169,21 +170,8 @@
                     scriptName:'',
                     dbId:''
                 };
-                this.sqls = [];
-            },
-            removeSql(item) {
-                const index = this.sqls.indexOf(item);
-                if (index !== -1) {
-                    this.sqls.splice(index, 1);
-                    console.log(this.sqls);
-                }
-            },
-            addSql() {
-                this.sqls.push({
-                    script: '',
-                    saveParam: false
-                });
-            },
+                this.sqls = '';
+            }
 
 
         },
@@ -195,11 +183,17 @@
                 this.form.sqlScript = this.$store.state.scriptDetail.sqlScript;
                 this.form.dbId = this.$store.state.scriptDetail.dbId;
                 this.form.scriptName = this.$store.state.scriptDetail.scriptName;
-                this.sqls = JSON.parse(this.$store.state.scriptDetail.sqlScript);
+                let sql;
+                sql = JSON.parse(this.$store.state.scriptDetail.sqlScript);
+                sql.forEach(n=>{
+                  if (n.script!==''){
+                    this.sqls += n.script+";\n";
+                  }
+                });
             }
         },
         components:{
-
+          Code
         },
         created() {
             this.getDataBases();
