@@ -12,6 +12,7 @@ import Task from '@/views/task/Task'
 import TimingTask from "@/views/task/TimingTask";
 import TaskResult from "@/views/task/TaskResult";
 import ApiUtil from '@/views/util/ApiUtil'
+import DingTalk from '@/views/config/DingTalk'
 
 
 Vue.use(Router);
@@ -119,6 +120,15 @@ export default new Router({
       component: ApiUtil,
       meta: {
         tabname: 'TeemoPost',
+        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+      },
+    },
+    {
+      path:'/dingTalk',
+      name: 'dingTalk',
+      component: DingTalk,
+      meta: {
+        tabname: '钉钉通知',
         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       },
     },

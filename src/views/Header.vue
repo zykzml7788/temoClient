@@ -76,11 +76,15 @@
         <i class="el-icon-document" style="color:white"></i>
         <span slot="title">调试工具</span>
       </el-menu-item>
-      <el-menu-item index="6">
-        <i class="el-icon-document" style="color:white"></i>
-        <span slot="title">函数助手</span>
-      </el-menu-item>
-      <el-menu-item index="6">
+      <el-submenu index="8">
+        <template slot="title">
+          <i class="el-icon-document" style="color:white"></i>
+          <span slot="title">配置管理</span>
+        </template>
+        <el-menu-item index="8-1">钉钉通知</el-menu-item>
+        <el-menu-item index="8-2">邮箱管理</el-menu-item>
+      </el-submenu>
+      <el-menu-item index="9">
         <i class="el-icon-document" style="color:white"></i>
         <span slot="title">个人中心</span>
       </el-menu-item>
@@ -141,6 +145,8 @@
           case '7':
             this.$router.push('/apiUtil');
             break;
+          case '8-1':
+            this.$router.push('/dingTalk');
         }
       },
       closeConfirm(data,val){
