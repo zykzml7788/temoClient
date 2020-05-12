@@ -24,8 +24,9 @@
       </el-form-item>
       <el-checkbox
       v-model="checked"
-      class="rememberme" style="color: white;float: left;margin:5px 0  10px 0;">Remember Me</el-checkbox>
-
+      class="rememberme" style="color: white;float: left;margin:5px 0  10px 0;">Remember Me
+      </el-checkbox>
+      <el-link type="primary" style="float: right" href="https://www.baidu.com">没有账号？点击注册</el-link>
       <el-form-item style="width:100%;">
         <el-button type="primary" style="width:100%;" @click="handleSubmit" :loading="logining">Login</el-button>
       </el-form-item>

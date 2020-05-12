@@ -31,16 +31,22 @@
           <el-button slot="append" v-else icon="el-icon-arrow-down" @click="showCronBox = false" title="关闭图形配置"></el-button>
         </el-input>
       </el-form-item>
-      <el-form-item label="邮件开关" :label-width="formLabelWidth">
+      <el-form-item label="钉钉通知开关" :label-width="formLabelWidth">
         <el-switch
-          v-model="form.isMail"
+          v-model="form.isDing"
           active-color="#13ce66"
           inactive-color="#ff4949">
         </el-switch>
       </el-form-item>
-      <transition name="el-zoom-in-top">
-      <el-form-item label="收件人" :label-width="formLabelWidth" v-if="form.isMail" prop="mail">
-        <el-input placeholder="请输入邮箱地址" v-model.number="form.mail" autocomplete="off"></el-input>
+      <el-form-item label="钉钉机器人" :label-width="formLabelWidth" prop="dingId" style="text-align: left" v-if="form.isDing">
+        <el-select v-model="form.dingId" placeholder="请选择机器人">
+          <el-option
+            v-for="item in webhooks"
+            :key="item.descId"
+            :label="item.desc"
+            :value="item.descId">
+          </el-option>
+        </el-select>
       </el-form-item>
       </transition>
       <el-dialog title="添加用例集" :visible.sync="addTestSetShow" :append-to-body="true" style="text-align: left" @close="closeAddTestSetShow">
@@ -121,6 +127,7 @@
     export default {
         data() {
             return {
+                webhooks:[],
                 rules:{
                     taskName:[
                         {required:true,message:'请输入任务名称',trigger:'change'},
@@ -135,8 +142,8 @@
                     cron:[
                         {required:true,message:'cron表达式不能为空',trigger:'change'},
                     ],
-                    mail:[
-                        {required:true,message:'邮箱地址不能为空',trigger:'change'},
+                    dingId:[
+                      { required:true,message:'请选择机器人',trigger:'change'},
                     ]
                 },
                 rules2:{
@@ -165,7 +172,9 @@
                     times:0,
                     cron:'* * * ? * * *',
                     isMail: false,
-                    mail:''
+                    mail:'',
+                    isDing: false,
+                    dingId: ''
                 },
                 formLabelWidth: '110px',
                 addTestSetShow: false,
@@ -186,8 +195,8 @@
                     "isParallel": this.form.isParallel,
                     "testSets": JSON.stringify(this.testSets),
                     "times": this.form.times,
-                    "isMail": this.form.isMail?1:0,
-                    "mail": this.form.mail,
+                    "isDing": this.form.isDing?1:0,
+                    "dingId": this.form.dingId,
                     "cron": this.form.cron,
                     "isOpen": 0
                 };
@@ -219,6 +228,21 @@
 
                     }
                 });
+            },
+            getDings(){
+              this.loading = true;
+              this.$axios.get('/apis/Dingding/list').then(res=>{
+                  if (res.data.code === 200){
+                    this.webhooks = res.data.data;
+                  } else {
+                    this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
+                  }
+                  this.loading = false;
+                }
+
+              ).catch(err=>{
+                this.$notify({title:'操作失败',type:'error',message:err});
+              });
             },
             closeAddTimingTaskView(){
                 this.showCronBox = false;
@@ -291,6 +315,9 @@
                 };
                 this.addTestSetShow = false;
             }
+        },
+        mounted(){
+          this.getDings();
         },
         computed: {
         },

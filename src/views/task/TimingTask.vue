@@ -91,12 +91,12 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="isMail"
-        label="邮件提醒"
+        prop="isDing"
+        label="钉钉通知"
         width="200">
         <template slot-scope="scope">
-          <el-tag  type="danger" v-if="scope.row.isMail===0">关闭</el-tag>
-          <el-tag type="success"  v-if="scope.row.isMail===1">开启</el-tag>
+          <el-tag  type="danger" v-if="scope.row.isDing===0">关闭</el-tag>
+          <el-tag type="success"  v-if="scope.row.isDing===1">开启</el-tag>
         </template>
       </el-table-column>
       <el-table-column

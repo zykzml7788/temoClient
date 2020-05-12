@@ -22,6 +22,23 @@
       <el-form-item label="轮询次数" :label-width="formLabelWidth" prop="times" >
         <el-input placeholder="请输入轮询次数" v-model.number="form.times" autocomplete="off"></el-input>
       </el-form-item>
+      <el-form-item label="钉钉通知开关" :label-width="formLabelWidth">
+        <el-switch
+          v-model="form.isDing"
+          active-color="#13ce66"
+          inactive-color="#ff4949">
+        </el-switch>
+      </el-form-item>
+      <el-form-item label="钉钉机器人" :label-width="formLabelWidth" prop="dingId" style="text-align: left" v-if="form.isDing">
+        <el-select v-model="form.dingId" placeholder="请选择机器人">
+          <el-option
+            v-for="item in webhooks"
+            :key="item.descId"
+            :label="item.desc"
+            :value="item.descId">
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-dialog title="添加用例集" :visible.sync="addTestSetShow" :append-to-body="true" style="text-align: left" @close="closeAddTestSetShow">
         <el-form :model="form2" :rules="rules2" ref="form2">
           <el-form-item label="用例集" :label-width="formLabelWidth" prop="set">
@@ -100,6 +117,7 @@
     export default {
         data() {
             return {
+                webhooks:[],
                 rules:{
                     taskName:[
                         {required:true,message:'请输入任务名称',trigger:'change'},
@@ -110,7 +128,11 @@
                     times:[
                         { required:true,message:'请输入轮询次数',trigger:'change'},
                         { type: 'number', message: '轮询次数必须为数字',trigger:'change'}
+                    ],
+                    dingId:[
+                      { required:true,message:'请选择机器人',trigger:'change'},
                     ]
+
                 },
                 rules2:{
                     set:[
@@ -135,9 +157,11 @@
                     taskName:'',
                     taskDesc:'',
                     isParallel:'',
-                    times:0
+                    times:0,
+                    isDing:false,
+                    dingId:''
                 },
-                formLabelWidth: '80px',
+                formLabelWidth: '120px',
                 addTestSetShow: false,
                 form2: {
                     env:'',
@@ -154,7 +178,9 @@
                     "taskDesc": this.form.taskDesc,
                     "isParallel": this.form.isParallel,
                     "testSets": JSON.stringify(this.testSets),
-                    "times": this.form.times
+                    "times": this.form.times,
+                    "isDing": this.form.isDing?1:0,
+                    "dingId": this.form.dingId
                 };
                 this.$refs['form'].validate(bol=>{
                     if (bol){
@@ -184,6 +210,21 @@
 
                     }
                 });
+            },
+            getDings(){
+              this.loading = true;
+              this.$axios.get('/apis/Dingding/list').then(res=>{
+                  if (res.data.code === 200){
+                    this.webhooks = res.data.data;
+                  } else {
+                    this.$notify({title:'操作失败',type:'warning',message:res.data.msg});
+                  }
+                  this.loading = false;
+                }
+
+              ).catch(err=>{
+                this.$notify({title:'操作失败',type:'error',message:err});
+              });
             },
             closeAddTaskView(){
                 this.$refs['form'].resetFields();
@@ -256,9 +297,13 @@
                 this.addTestSetShow = false;
             }
         },
+        mounted() {
+          this.getDings();
+        },
         computed: {
         },
         components:{
-        }
+        },
+
     };
 </script>
