@@ -32,80 +32,75 @@ Vue.use(JsonViewer);
 Vue.use(kityminder);
 Vue.use(VueCodeMirror);
 
-Vue.prototype.$axios=axios;
+Vue.prototype.$axios = axios;
 axios.defaults.timeout = 10000;
 // axios.defaults.baseURL = 'http://39.105.34.24:8888';
 axios.defaults.withCredentials = true;
-<<<<<<< HEAD
 // Vue.prototype.$websockerUrl = "ws://39.105.34.24:8080/temo/websocket/";
 Vue.prototype.$websockerUrl = "ws://localhost:8096/temo/websocket/";
-=======
-Vue.prototype.$websockerUrl = "ws://39.105.34.24:8096/temo/websocket/";
-
->>>>>>> a554052fd9330321ed7f87e9dba9e689637e8ff4
 
 // 全局导航钩子
 router.beforeEach((to, from, next) => {
-  // 判断该路由是否需要登录权限
-  if (to.meta.requireAuth) {
-    if(localStorage.getItem("userInfo")!==null) {
-      next();
-      store.dispatch('worktabRoute', {
-        to: {
-          name: to.name ? to.name : '',
-          tabname: (to.meta && to.meta.tabname) ? to.meta.tabname : '',
-          path: to.path
-        },
-        from: {
-          name: from.name ? from.name : '',
-          tabname: (from.meta && from.meta.tabname) ? from.meta.tabname : '',
-          path: from.path
+    // 判断该路由是否需要登录权限
+    if (to.meta.requireAuth) {
+        if (localStorage.getItem("userInfo") !== null) {
+            next();
+            store.dispatch('worktabRoute', {
+                to: {
+                    name: to.name ? to.name : '',
+                    tabname: (to.meta && to.meta.tabname) ? to.meta.tabname : '',
+                    path: to.path
+                },
+                from: {
+                    name: from.name ? from.name : '',
+                    tabname: (from.meta && from.meta.tabname) ? from.meta.tabname : '',
+                    path: from.path
+                }
+            })
         }
-      })
+        else {
+            next({
+                path: '/',
+                query: { redirect: to.fullPath }  // 将跳转的路由path作为参数，登录成功后跳转到该路由
+            })
+        }
     }
     else {
-      next({
-        path: '/',
-        query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
-      })
+        next();
     }
-  }
-  else {
-    next();
-  }
 });
 
 // 添加响应拦截器http respones
 axios.interceptors.response.use(function (response) {
     return response;
 }, function (error) {
-  if (error.toString().indexOf("403")!==-1) {
-    Vue.prototype.$alert('你的token已失效，请重新登入','超时提醒').then(()=>{
-      router.push("/");
-      localStorage.removeItem("userInfo");
-    });
+    if (error.toString().indexOf("403") !== -1) {
+        Vue.prototype.$alert('你的token已失效，请重新登入', '超时提醒').then(() => {
+            router.push("/");
+            localStorage.removeItem("userInfo");
+        });
 
-  }
+    }
 });
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  store,
-  data:{
-    return:{
-      jsonData: {
-        total: 25,
-        limit: 10,
-        skip: 0,
-        links: {
-          previous: undefined,
-          next: function () {},
+    el: '#app',
+    router,
+    store,
+    data: {
+        return: {
+            jsonData: {
+                total: 25,
+                limit: 10,
+                skip: 0,
+                links: {
+                    previous: undefined,
+                    next: function () { },
+                }
+            }
         }
-      }
-    }
-  },
-  components: { App },
-  template: '<App/>'
+    },
+    components: { App },
+    template: '<App/>'
 });
