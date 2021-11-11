@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div id="app">
+  <cpn></cpn>
+  <cpn ref="sss"></cpn>
+  <cpn></cpn>
+  <button @click="btn">安宁</button>
+
+
+  <cpn2></cpn2>
+</div>
+
+<template id="cpn">
+  <div>
+    <div>子组件</div>
+  </div>
+</template>
+
+
+
+<template id="cpn2">
+  <div>
+    <div>子组件2</div>
+    <button @click="btn2">安宁</button>
+
+  </div>
+</template>
+
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>
+
+<script>
+  const app = new Vue({
+    el: "#app",
+    data: {
+      num1: 1,
+      num2: 2
+    },
+    methods:{
+      btn(){
+        console.log(this.$children)
+        this.$children[0].showMessage()
+        console.log(this.$refs.sss)
+      }
+    },
+    components: {
+      cpn: {
+        template: '#cpn',
+        data(){
+          return {
+            name:"1231"
+          }
+        },
+        methods:{
+          showMessage(){
+            console.log("show")
+          }
+
+        }
+    },
+      cpn2:{
+        template: '#cpn2',
+        data(){
+          return {
+            name:"1231"
+          }
+        },
+        methods:{
+          btn2(){
+            console.log(this.$parent.num1)
+            console.log(this.name)
+            console.log(this.$root.num1)
+          }
+        }
+      }
+    }
+  })
+
+</script>
+
+</html>
+
+

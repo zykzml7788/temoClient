@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+
+<div style="float: left;">
+  <h1>这里模拟一些html代码：</h1>
+  <label>用户名</label><input type="text" style="height: 30px;width: 200px;" oninput="intp()">
+  <label>密码</label><input type="password" style="height: 30px;width: 200px;">
+  <label>邮箱</label><input type="email" style="height: 30px;width: 200px;">
+  <label>备注</label><textarea style="height: 80px;width: 200px;"></textarea>
+</div>
+
+<div style="float: left">
+  <h1>模拟背景颜色，用来检验录屏画质</h1>
+  <div style="width: 100%;height: 50px;background-color: red;"></div>
+  <div style="width: 100%;height: 50px;background-color: green;"></div>
+  <div style="width: 100%;height: 50px;background-color: #ff50d0;"></div>
+  <div style="width: 100%;height: 50px;background-color: #7eff1f;"></div>
+  <button onclick="get_start()">点击录制</button>
+  <button onclick="playback()">点击播放</button>
+</div>
+<p></p>
+<div style="float: left;">
+  <h1>视频回放</h1>
+  <div id="playback" style="width: 1000px;height: 500px;background-color: #cccccc"></div>
+</div>
+
+
+</body>
+</html>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/record/rrweb-record.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/style.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/index.js"></script>
+<script>
+  //1.存放DOM节点数据
+  let events = [];
+  function intp() {
+    console.log("!2312312")
+  }
+  //2.点击录制
+  function get_start() {
+    //rrwebMin 为启动对象
+    //record() 方法启动录制
+    //emit会监听所有的DOM的动作， 鼠标等，
+    rrweb.record({
+      emit(event) {
+        if (true)
+        // 用任意方式存  储 event
+        {
+        events.push(event);
+        console.log(event)}
+      },
+    });
+  }
+  //3.这一步，应该把数据转为JSON ，然后发送到后台存储，可以写个循环，10S发送一次，再定义一个窗口关闭事件监听，最后关闭时发送一次数据
+  //SON.stringify({ events });
+
+  //4.点击回放
+  function playback() {
+    new rrwebPlayer({
+      target: document.getElementById('playback'), // 可以自定义 DOM 元素
+      data: {events,},
+    });
+  }
+
+</script>

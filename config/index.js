@@ -11,17 +11,17 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      // '/apis': {
-      //   target: 'http://localhost:8096',  // nginx反向代理服务器地址，匹配/apis后反向代理为 /temo/
-      //   changeOrigin: true,  //是否跨域
-      //   pathRewrite: {
-      //     '/apis': ''   //需要rewrite重写的,
-      //   },
-      //   onProxyReq: function (proxyReq, req, res) {
-      //     //实在不知道代理后的路径，可以在这里打印出出来看看
-      //     console.log("原路径：" + req.originalUrl, "代理路径：" + req.path)
-      //   }
-      // }
+      '/apis': {
+        target: 'http://localhost:8096',  // nginx反向代理服务器地址，匹配/apis后反向代理为 /temo/
+        changeOrigin: true,  //是否跨域
+        pathRewrite: {
+          '/apis': ''   //需要rewrite重写的,
+        },
+        onProxyReq: function (proxyReq, req, res) {
+          //实在不知道代理后的路径，可以在这里打印出出来看看
+          console.log("原路径：" + req.originalUrl, "代理路径：" + req.path)
+        }
+      }
     },
 
 
