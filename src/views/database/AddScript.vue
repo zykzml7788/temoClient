@@ -57,7 +57,7 @@
         },
         methods:{
             getDataBases(){
-                this.$axios.get('/apis/database/').then(res=>{
+                this.$axios.get('/apis/database/queryAllDatabase').then(res=>{
                     if (res.data.code === 200){
                         this.dbOptions = res.data.data;
                     } else {

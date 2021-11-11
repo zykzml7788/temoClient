@@ -13,6 +13,7 @@ import TimingTask from "@/views/task/TimingTask";
 import TaskResult from "@/views/task/TaskResult";
 import ApiUtil from '@/views/util/ApiUtil'
 import DingTalk from '@/views/config/DingTalk'
+import HookFunction from '@/views/config/HookFunction'
 
 
 Vue.use(Router);
@@ -129,6 +130,15 @@ export default new Router({
       component: DingTalk,
       meta: {
         tabname: '钉钉通知',
+        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+      },
+    },
+    {
+      path:'/hookFunction',
+      name: 'hookFunction',
+      component: HookFunction,
+      meta: {
+        tabname: 'Hook函数',
         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       },
     },

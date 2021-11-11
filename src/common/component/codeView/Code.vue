@@ -6,7 +6,7 @@
       v-model="curCode"
       :options="cmOptions"
       class="code"
-      @changes="changeData" >
+      @changes="changeData" style="text-align: left">
     </codemirror>
   </div>
 </template>
@@ -26,6 +26,7 @@
   require("codemirror/addon/hint/sql-hint");
   require("codemirror/mode/javascript/javascript.js");
   require("codemirror/mode/python/python.js");
+  require("codemirror/mode/groovy/groovy.js");
   require("codemirror/mode/sql/sql.js");
   require("codemirror/mode/yaml/yaml.js");
   require("codemirror/mode/xml/xml.js");

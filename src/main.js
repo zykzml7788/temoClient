@@ -36,8 +36,13 @@ Vue.prototype.$axios=axios;
 axios.defaults.timeout = 10000;
 // axios.defaults.baseURL = 'http://39.105.34.24:8888';
 axios.defaults.withCredentials = true;
+<<<<<<< HEAD
 // Vue.prototype.$websockerUrl = "ws://39.105.34.24:8080/temo/websocket/";
 Vue.prototype.$websockerUrl = "ws://localhost:8096/temo/websocket/";
+=======
+Vue.prototype.$websockerUrl = "ws://39.105.34.24:8096/temo/websocket/";
+
+>>>>>>> a554052fd9330321ed7f87e9dba9e689637e8ff4
 
 // 全局导航钩子
 router.beforeEach((to, from, next) => {

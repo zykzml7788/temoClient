@@ -82,7 +82,7 @@
           <span slot="title">配置管理</span>
         </template>
         <el-menu-item index="8-1">钉钉通知</el-menu-item>
-        <el-menu-item index="8-2">邮箱管理</el-menu-item>
+        <el-menu-item index="8-2">Hook函数</el-menu-item>
       </el-submenu>
       <el-menu-item index="9">
         <i class="el-icon-document" style="color:white"></i>
@@ -147,6 +147,10 @@
             break;
           case '8-1':
             this.$router.push('/dingTalk');
+            break;
+          case '8-2':
+            this.$router.push('/hookFunction');
+            break;
         }
       },
       closeConfirm(data,val){
